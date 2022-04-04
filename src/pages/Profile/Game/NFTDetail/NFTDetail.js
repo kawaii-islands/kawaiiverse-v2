@@ -60,8 +60,8 @@ const NFTDetail = () => {
 						<div className={cx("title")}>
 							<span className={cx("first")}>{nftInfo?.name}</span>
 							<span className={cx("second")}>#{nftInfo?.tokenId}</span>
-							<span className={cx("third")}>{nftInfo?.category}</span>
 						</div>
+						<div className={cx("third")}>{nftInfo?.category}</div>
 						<div className={cx("content")}>
 							<span className={cx("title")}>Supply:</span>
 							<span className={cx("value")}>{nftInfo?.supply}</span>

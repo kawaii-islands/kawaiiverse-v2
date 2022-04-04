@@ -21,7 +21,7 @@ const NFTItem = ({ onClick, data, handleNavigation, isStore }) => {
 						: `url(https://images.kawaii.global/kawaii-marketplace-image/items/205002.png)`,
 				}}
 			>
-				{!isStore && (
+				{isStore && (
 					<div className={cx("tag")}>
 						{data.amount - data.alreadySale}/{data.amount || data.supply} Left
 					</div>
@@ -31,7 +31,7 @@ const NFTItem = ({ onClick, data, handleNavigation, isStore }) => {
 			<div className={cx("bottom")}>
 				<div className={cx("title")}>{data?.name || "Name"}</div>
 				<div className={cx("nftId")}>#{data?.tokenId}</div>
-				{!isStore && (
+				{isStore && (
 					<div className={cx("number-box")}>
 						<span className={cx("number")}>{data.price ? Number(web3.utils.fromWei(data.price.toString())) : 0} KWT</span>
 					</div>
