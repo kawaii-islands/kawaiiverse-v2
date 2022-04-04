@@ -5,7 +5,7 @@ $mobile: 576px;
 
   .right {
     color: #ffffff !important;
-    margin-left: 48px;
+	
     @media (max-width: $break-point-1) {
       margin-left: 0px;
       max-width: 100%;
