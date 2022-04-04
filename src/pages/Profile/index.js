@@ -15,7 +15,6 @@ import { FACTORY_ADDRESS } from "src/consts/address";
 import CreateGame from "./CreateGame/CreateGame";
 import Game from "./Game/index";
 import StoreProfile from "./Store/index";
-import Marketplace from "./Marketplace/index";
 
 import FilterMobile from "src/components/FilterMobile/FilterMobile";
 import { useParams } from "react-router-dom";
@@ -57,8 +56,6 @@ const Profile = () => {
 				return <Game gameSelected={gameSelected} />;
 			case 2:
 				return <StoreProfile gameSelected={gameSelected} />;
-			case 3:
-				return <Marketplace />;
 			default:
 				return (
 					<CreateGame

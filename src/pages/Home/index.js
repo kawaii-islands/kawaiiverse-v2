@@ -17,7 +17,7 @@ const Home = () => {
 	return (
 		loading ? (<LoadingPage />) : (
 			<MainLayout>
-				Home page hello
+				Home page
 			</MainLayout>
 		)
 	);
