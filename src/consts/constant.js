@@ -1,0 +1,2 @@
+export const URL = "http://159.223.81.170:3000";
+export const KAWAII1155_ADDRESS = "0xD6eb653866F629e372151f6b5a12762D16E192f5";

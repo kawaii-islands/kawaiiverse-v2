@@ -1,0 +1,57 @@
+$break-point-1: 814px;
+$mobile: 576px;
+.profile {
+  padding-bottom: 60px;
+
+  .row {
+    display: flex;
+    align-items: flex-start !important;
+
+    .left {
+      @media (max-width: $break-point-1) {
+        display: none;
+      }
+    }
+
+    .right-wrapper {
+      margin-left: 40px;
+      @media (max-width: $break-point-1) {
+        max-width: 100%;
+        flex: 1 !important;
+      }
+      .filter-mobile {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        background: #fff;
+        border-radius: 4px;
+        width: fit-content;
+
+        @media (min-width: $break-point-1) {
+          display: none;
+        }
+        &-btn {
+          // background: linear-gradient(180deg, #4ad7e0 0%, #4aabe1 100%);
+          font-family: "Mali";
+          font-size: 16px;
+          line-height: 150%;
+          padding: 6px 16px;
+          background: linear-gradient(180deg, #89e6ff 0%, #3b7ce3 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          @media (max-width: $mobile) {
+            font-size: 14px;
+            padding: 6px 12px;
+          }
+          &--active {
+            background: linear-gradient(180deg, #4ad7e0 0%, #4aabe1 100%);
+            color: #ffffff !important;
+            -webkit-background-clip: unset;
+            -webkit-text-fill-color: unset;
+          }
+        }
+      }
+    }
+  }
+}

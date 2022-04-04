@@ -1,0 +1,64 @@
+$mobile: 576px;
+.mint-nft {
+  .table {
+    font-size: 14px;
+    line-height: 150%;
+    @media(max-width: $mobile){
+      font-size: 13px;
+      text-align: center;
+    }
+    &-header {
+      padding: 10px 0px;
+      background: #f3f7fa;
+      border-radius: 4px;
+      color: #181818;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    &-row {
+      padding: 12px 0px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid #a4d9ea;
+      box-sizing: border-box;
+      backdrop-filter: blur(50px);
+      border-radius: 4px;
+      margin-bottom: 5px;
+      align-items: center;
+
+      .preview {
+        color: #2cd7ff;
+      }
+    }
+  }
+
+  .group-button {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+	margin-top: 28px;
+
+    .submit {
+      padding: 5px 25px;
+      background: linear-gradient(90deg, #d35ff0 0%, #9b2ede 100%);
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 150%;
+      color: #ffffff;
+      margin-right: 12px;
+    }
+
+    .create-nft {
+      background: linear-gradient(90deg, #00c6fb 0%, #005bea 100%);
+      border-radius: 4px;
+      padding: 5px 25px;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 150%;
+      color: #ffffff;
+    }
+  }
+}

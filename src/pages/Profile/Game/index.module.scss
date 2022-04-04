@@ -1,0 +1,48 @@
+$break-point-1: 814px;
+$mobile: 576px;
+.profile {
+  padding-bottom: 60px;
+
+  .right {
+    color: #ffffff !important;
+    margin-left: 48px;
+    @media (max-width: $break-point-1) {
+      margin-left: 0px;
+      max-width: 100%;
+    }
+    .group-button {
+      width: fit-content;
+      border-radius: 4px;
+      background: #ffffff;
+      margin-left: auto;
+      margin-right: 0px;
+
+      .button {
+        padding: 8px 16px;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 150%;
+        font-family: "Mali";
+        @media (max-width: $mobile) {
+          font-size: 14px;
+          padding: 6px 12px;
+        }
+      }
+      .text {
+        background: linear-gradient(180deg, #89e6ff 0%, #3b7ce3 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .active {
+        background: linear-gradient(180deg, #4ad7e0 0%, #4aabe1 100%);
+        color: #ffffff !important;
+      }
+    }
+
+    .content {
+      width: 100%;
+      margin-top: 40px;
+    }
+  }
+}

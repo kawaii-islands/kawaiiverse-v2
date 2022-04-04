@@ -1,0 +1,120 @@
+.filter {
+  background: #162f54;
+  border-radius: 12px;
+  padding: 60px 20px;
+  height: 100%;
+
+  .create-game {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 18px;
+    padding: 14px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-sizing: border-box;
+    border-radius: 8px;
+    margin-bottom: 40px;
+    cursor: pointer;
+  }
+
+  .game-group {
+    padding: 12px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-sizing: border-box;
+    border-radius: 8px;
+
+    .title {
+      font-weight: 600;
+      font-size: 20px;
+      color: #ffffff;
+      padding: 12px 0px;
+      cursor: pointer;
+    }
+
+    .active {
+      color: #bbf2ff;
+      border-bottom: 2px solid #bbf2ff;
+    }
+
+    .panel {
+      padding: 12px 0px;
+      margin-top: 12px;
+
+      .panel-item {
+        font-weight: 600;
+        font-size: 16px;
+        color: #ffffff;
+        padding: 12px 8px;
+        display: flex;
+        align-items: center;
+        transition-duration: 0.3s;
+        cursor: pointer;
+		
+        &:hover {
+          background: #172944;
+          color: #8deaff;
+        }
+
+        .game-logo {
+          width: 28px;
+          height: 28px;
+          margin-right: 16px;
+          border-radius: 50px;
+          background-color: #ffffff;
+        }
+      }
+
+      .active-game {
+        background: #172944;
+        color: #8deaff;
+      }
+    }
+  }
+
+  //   .collapse {
+  //     border: 1px solid rgba(255, 255, 255, 0.5);
+  //     box-sizing: border-box;
+  //     border-radius: 8px;
+  //     cursor: pointer;
+  //     margin-bottom: 40px;
+  //     .collapse-title {
+  //       display: flex;
+  //       align-items: center;
+  //       justify-content: space-between;
+  //       font-weight: 600;
+  //       font-size: 18px;
+  //       color: #ffffff;
+  //       padding: 14px 12px;
+  //     }
+
+  //   .panel {
+  //     padding: 12px 0px;
+  //     border-top: 1px solid rgba(255, 255, 255, 0.5);
+
+  //     .panel-item {
+  //       font-weight: 600;
+  //       font-size: 16px;
+  //       color: #ffffff;
+  //       padding: 12px;
+  //       display: flex;
+  //       align-items: center;
+  //       transition-duration: 0.3s;
+
+  //       .game-logo {
+  //         width: 28px;
+  //         height: 28px;
+  //         margin-right: 16px;
+  //         border-radius: 50px;
+  //         background-color: #ffffff;
+  //       }
+  //     }
+
+  //     .active {
+  //       background: #172944;
+  //       color: #8deaff;
+  //     }
+  //   }
+  //   }
+}

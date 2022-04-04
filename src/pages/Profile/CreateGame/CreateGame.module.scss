@@ -1,0 +1,214 @@
+$break-point-1: 814px;
+$tablet: 768px;
+$mobile: 576px;
+.container {
+  font-family: "Mali";
+  .form {
+    border: 1px dashed #6dd0e7;
+    padding: 28px 32px;
+    position: relative;
+    border-radius: 4px;
+    .form-input {
+      display: flex;
+      justify-content: space-between;
+      @media (max-width: $mobile) {
+        flex-direction: column;
+        gap: 20px;
+      }
+    }
+    .form-item {
+      width: 45%;
+      @media (max-width: $mobile) {
+        width: 100%;
+      }
+      .label {
+        width: fit-content;
+        background: white;
+        color: #162f54;
+        font-size: 14px;
+        border-radius: 3px;
+        padding: 2px 16px;
+        font-weight: 600;
+      }
+      input {
+        color: white;
+        margin-top: 20px;
+        border: 1px solid #a4d9ea;
+        padding: 13px 24px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(50px);
+        border-radius: 4px;
+        width: 100%;
+      }
+    }
+    .btn-wrapper {
+      margin-top: 28px;
+      margin-left: auto;
+      margin-right: 0;
+      width: fit-content;
+      .confirm-btn {
+        text-align: center;
+        padding: 6px 38px;
+        width: fit-content;
+        color: #fff;
+        background: #00c6fb;
+        border-radius: 4px;
+        border: none;
+      }
+    }
+  }
+  .divider {
+    margin-top: 54px;
+    height: 1px;
+    width: 100%;
+    background-color: rgba(189, 243, 255, 0.35);
+  }
+  .name-title {
+    margin-top: 40px;
+    font-size: 24px;
+    line-height: 36px;
+    color: #fff;
+  }
+  .name {
+    display: flex;
+    align-items: center;
+    margin-top: 24px;
+    cursor: pointer;
+    font-size: 20px;
+    &-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: #ffffff;
+      //   border: 1px solid #6dd0e7;
+    }
+
+    &-text {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 21px;
+      color: #ffffff;
+      margin-left: 12px;
+
+      &:hover {
+        color: rgba(255, 255, 255, 0.8);
+        transition-duration: 0.3s;
+      }
+    }
+  }
+  .name-selected {
+    display: flex;
+    align-items: center;
+    margin-top: 24px;
+    font-size: 20px;
+
+    cursor: pointer;
+    color: #8deaff;
+
+    &-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #ffffff;
+      //   border: 1px solid #6dd0e7;
+    }
+
+    &-text {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 21px;
+      margin-left: 12px;
+      color: #8deaff !important;
+      &:hover {
+        color: rgba(255, 255, 255, 0.8);
+        transition-duration: 0.3s;
+      }
+    }
+  }
+}
+
+.modal {
+  // background: rgba(36, 78, 120, 1);
+  // width: 428px;
+  // height: 327px;
+  font-family: "Mali";
+  :global {
+    .ant-modal-content {
+      border-radius: 12px;
+      
+      width: 428px;
+      min-height: 327px;
+      height: fit-content;
+      color: white;
+      
+      background: rgba(36, 78, 120, 1);
+      @media(max-width: 600px){
+        width: 100%;
+      }
+    }
+  }
+  &-content {
+    .modal-act {
+      font-size: 18px;
+      line-height: 27px;
+      font-weight: 600;
+      padding-left: 10px;
+      border-left: 1px solid rgba(0, 91, 234, 1);
+      
+    }
+    .modal-act-btn {
+
+      margin-left: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+      color: rgba(60, 174, 201, 1);
+      background: rgba(226, 236, 252, 1);
+      cursor: pointer;
+    }
+    .modal-table-header {
+      margin-top: 15px;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 21px;
+      height: 36px;
+      padding: 8px 70px;
+      background: #173249;
+      color: #6dd0e7;
+      border-radius: 4px;
+    }
+    .modal-table-content {
+      margin-top: 10px;
+      background: #173249;
+      font-size: 13px;
+      font-weight: 500;
+      .modal-table-item {
+        padding: 8px 70px;
+        border-top: 1px solid rgba(48, 96, 145, 0.23);
+      }
+    }
+    .modal-footer {
+      height: 60px;
+      width: 100%;
+      background: #173249;
+      padding: 15px 78px;
+      margin-left: auto;
+      margin-right: 0;
+      border-top: 1px solid rgba(48, 96, 145, 0.23);
+      &-btn {
+        font-weight: 600;
+        font-size: 11px;
+        line-height: 14px;
+        background: #e0f9ff;
+        border: 1px solid rgba(137, 230, 255, 0.44);
+        padding: 5px 15px;
+        border-radius: 4px;
+        color: #01a7db;
+      }
+    }
+  }
+}

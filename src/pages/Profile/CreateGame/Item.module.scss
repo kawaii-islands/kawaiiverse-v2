@@ -1,0 +1,15 @@
+.modal-table-item {
+    padding: 8px 70px;
+    border-top: 1px solid rgba(48, 96, 145, 0.23);
+    display: flex;
+    align-items: center;
+    input{
+        width: 80%;
+        padding: 8px;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        border: 1px solid #a4d9ea;
+        background: rgba(255, 255, 255, 0.1);
+    }
+  }

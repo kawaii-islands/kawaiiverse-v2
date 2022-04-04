@@ -1,0 +1,90 @@
+.mint-nft-detail {
+  .left {
+    display: flex;
+    align-items: flex-start;
+
+    .back {
+      background: rgba(109, 208, 231, 0.5);
+      border-radius: 4px;
+      padding: 20px 22px;
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 700;
+      margin-right: 20px;
+      cursor: pointer;
+    }
+
+    .image-box {
+      border: 3px solid rgba(109, 208, 231, 0.51);
+      box-sizing: border-box;
+      border-radius: 8px;
+      background: #162f54;
+      width: 440px;
+      height: 440px;
+      padding: 40px;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  .right {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(50px);
+    border-radius: 4px;
+    padding: 32px;
+
+    .title {
+      display: flex;
+      align-items: baseline;
+      margin-bottom: 8px;
+
+      .first {
+        font-weight: 700;
+        font-size: 36px;
+        line-height: 150%;
+        color: #ffffff;
+        margin-right: 10px;
+      }
+
+      .second {
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 150%;
+        color: #8feaff;
+        margin-right: 10px;
+      }
+
+      .third {
+        background: #b6eaf6;
+        border-radius: 4px;
+        padding: 2px 11px;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 150%;
+        color: #162f54;
+      }
+    }
+
+    .content {
+      display: flex;
+      align-items: baseline;
+      margin-top: 16px;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 150%;
+
+      .title {
+        color: #8feaff;
+        padding-right: 10px;
+      }
+
+      .value {
+        color: #ffffff;
+        text-align: justify;
+      }
+    }
+  }
+}
