@@ -46,7 +46,10 @@ const NFTDetail = () => {
 					<Col span={10} className={cx("left")}>
 						<Button
 							className={cx("back")}
-							onClick={() => history.push("/profile/game")}
+							onClick={() => history.push({
+								pathname: `/profile/manage-nft`,
+								state: { isMintNft: false }
+							})}
 						><LeftOutlined /></Button>
 						<div className={cx("image-box")}>
 							<img src={nftInfo.imageUrl || `https://images.kawaii.global/kawaii-marketplace-image/items/201103.png`} alt="icon" />

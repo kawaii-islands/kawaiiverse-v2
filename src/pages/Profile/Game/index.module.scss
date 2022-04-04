@@ -5,7 +5,7 @@ $mobile: 576px;
 
   .right {
     color: #ffffff !important;
-	
+
     @media (max-width: $break-point-1) {
       margin-left: 0px;
       max-width: 100%;
@@ -13,7 +13,7 @@ $mobile: 576px;
     .group-button {
       width: fit-content;
       border-radius: 4px;
-      background: #ffffff;
+	  background: linear-gradient(270.09deg, #6441A5 0.1%, #2A0845 99.94%);
       margin-left: auto;
       margin-right: 0px;
 
@@ -29,14 +29,12 @@ $mobile: 576px;
         }
       }
       .text {
-        background: linear-gradient(180deg, #89e6ff 0%, #3b7ce3 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #FFFFFF;
       }
 
       .active {
-        background: linear-gradient(180deg, #4ad7e0 0%, #4aabe1 100%);
-        color: #ffffff !important;
+		background: #FFFFFF;
+        color: #402A7D !important;
       }
     }
 
