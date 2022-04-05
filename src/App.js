@@ -51,7 +51,7 @@ function App() {
 							<Route path="/store/:id" component={props => <NFTDetail {...props} />} />
 							<Route exact path="/profile" component={props => <Profile {...props} />} />
 							<Route exact path="/profile/:tab" component={props => <Profile {...props} />} />
-							<Route exact path="/profile/game/:address/:nftId" component={props => <MintNFTDetail {...props} />} />
+							<Route exact path="/profile/manage-nft/:address/:nftId" component={props => <MintNFTDetail {...props} />} />
 						</CacheSwitch>
 					</Suspense>
 				</Router>

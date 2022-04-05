@@ -14,17 +14,19 @@ import FACTORY_ABI from "src/utils/abi/factory.json";
 import NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
 import { useWeb3React } from "@web3-react/core";
 import { FACTORY_ADDRESS } from "src/consts/address";
-
 import FilterMobile from "src/components/FilterMobile/FilterMobile";
+import { useLocation } from "react-router-dom";
 
 const cx = cn.bind(styles);
 
-const Game = ({gameSelected }) => {
+const Game = ({ gameSelected }) => {
 	const { account } = useWeb3React();
 	const [loading, setLoading] = useState(true);
 	const [isMintNFT, setIsMintNFT] = useState(true);
+	const location = useLocation();
 
 	useEffect(() => {
+		// setIsMintNFT(location.state?.isMintNft);
 		setTimeout(() => {
 			setLoading(false);
 		}, 1500);

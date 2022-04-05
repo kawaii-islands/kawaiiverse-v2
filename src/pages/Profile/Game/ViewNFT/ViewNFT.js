@@ -6,10 +6,12 @@ import NFTItem from "src/components/NFTItem/NFTItem";
 import { Col, Empty, Pagination, Row } from "antd";
 import { useHistory } from "react-router";
 import axios from "axios";
-import {URL} from "src/consts/constant";
+import { URL } from "src/consts/constant";
+import { Input, InputAdornment } from "@mui/material";
+import { Search as SearchIcon } from "@material-ui/icons";
 const cx = cn.bind(styles);
 
-const pageSize = 6;
+const pageSize = 15;
 
 const ViewNFT = ({ gameSelected }) => {
 	const history = useHistory();
@@ -48,21 +50,36 @@ const ViewNFT = ({ gameSelected }) => {
 
 	return (
 		<div className={cx("view-nft")}>
-			<Row gutter={[20, 20]}>
+			<div className={cx("top")}>
+				<div className={cx("title")}>{listNftByContract?.length} Items</div>
+				<div className={cx("group-search")}>
+					<Input
+						disableUnderline
+						placeholder="Search for NFT"
+						className={cx("search")}
+						endAdornment={
+							<InputAdornment position="end">
+								<SearchIcon className={cx("icon")} />
+							</InputAdornment>
+						}
+					/>
+				</div>
+			</div>
+
+			<Row>
 				{loading ? (
 					<ListSkeleton />
 				) : (
 					listNftByContract.length > 0 ?
 						listNftByContract.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) => (
-							<Col xs={24} sm={12} md={8} key={index}>
-								<NFTItem
-									data={item}
-									handleNavigation={() => history.push({
-										pathname: `/profile/game/${gameSelected}/${item.tokenId}`,
-										state: { gameSelected }
-									})}
-								/>
-							</Col>
+							<NFTItem
+								data={item}
+								isStore={false}
+								handleNavigation={() => history.push({
+									pathname: `/profile/manage-nft/${gameSelected}/${item.tokenId}`,
+									state: { gameSelected }
+								})}
+							/>
 						)) : (
 							<div style={{ margin: '0 auto' }}>
 								<Empty />

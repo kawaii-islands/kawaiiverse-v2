@@ -24,8 +24,8 @@ const cx = cn.bind(styles);
 
 const tabObject = {
 	"create-game": 0,
-	game: 1,
-	store: 2,
+	"manage-nft": 1,
+	"store": 2,
 };
 
 const Profile = () => {
@@ -101,8 +101,8 @@ const Profile = () => {
 						setActiveTab={setActiveTab}
 					/>
 				)}
-				<Row className={cx("row")}>
-					<Col md={6} className={cx("left")}>
+				<div className={cx("row")}>
+					<div className={cx("left")}>
 						<Filter
 							setIsGameTab={setIsGameTab}
 							gameList={gameList}
@@ -111,12 +111,12 @@ const Profile = () => {
 							activeTab={activeTab}
 							setActiveTab={setActiveTab}
 						/>
-					</Col>
+					</div>
 
-					<Col offset={1} md={17} className={cx("right-wrapper")}>
+					<div className={cx("right")}>
 						{getActiveTab(activeTab)}
-					</Col>
-				</Row>
+					</div>
+				</div>
 			</div>
 		</MainLayout>
 	);
