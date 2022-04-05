@@ -16,6 +16,12 @@ $mobile: 576px;
         padding-top: 5%;
     }
 
+    .skeleton {
+        height: 200px;
+        width: 100%;
+        border-radius: 8px;
+    }
+
     .grid-parent {
         display: flex;
         align-items: stretch;

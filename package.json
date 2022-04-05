@@ -39,7 +39,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-	"build": "DISABLE_ESLINT_PLUGIN=true GENERATE_SOURCEMAP=false react-app-rewired build",
+    "build": "DISABLE_ESLINT_PLUGIN=true GENERATE_SOURCEMAP=false react-app-rewired build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
