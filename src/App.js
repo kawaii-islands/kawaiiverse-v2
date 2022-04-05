@@ -4,11 +4,8 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { light } from "src/themes/light";
 import "./App.css";
 import "antd/dist/antd.css";
-// import 'react-toastify/dist/ReactToastify.css';
-import {
-	BrowserRouter as Router,
-	Route
-} from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store";
 import { useWeb3React } from "@web3-react/core";
@@ -25,40 +22,46 @@ const NFTDetail = React.lazy(() => import("src/pages/NFTDetail/index.js"));
 const Profile = React.lazy(() => import("src/pages/Profile/index"));
 const MintNFTDetail = React.lazy(() => import("src/pages/Profile/Game/NFTDetail/NFTDetail"));
 
-
 function App() {
-	const context = useWeb3React();
-	const { connector } = context;
-	const [activatingConnector, setActivatingConnector] = useState();
-	const triedEager = useEagerConnect();
-	useInactiveListener(!triedEager || !!activatingConnector);
-	useEffect(() => {
-		if (activatingConnector && activatingConnector === connector) {
-			setActivatingConnector(undefined);
-		}
-	}, [activatingConnector, connector]);
+    const context = useWeb3React();
+    const { connector } = context;
+    const [activatingConnector, setActivatingConnector] = useState();
+    const triedEager = useEagerConnect();
+    useInactiveListener(!triedEager || !!activatingConnector);
+    useEffect(() => {
+        if (activatingConnector && activatingConnector === connector) {
+            setActivatingConnector(undefined);
+        }
+    }, [activatingConnector, connector]);
 
-	return (
-		<Provider store={store}>
-			<ThemeProvider theme={light}>
-				<CssBaseline />
-				<Messages />
-				<Router>
-					<Header />
-					<Suspense fallback={<LoadingPage />}>
-						<CacheSwitch>
-							<Route exact path="/" component={props => <Home {...props} />} />
-							<Route exact path="/store" component={props => <Store {...props} />} />
-							<Route path="/store/:id" component={props => <NFTDetail {...props} />} />
-							<Route exact path="/profile" component={props => <Profile {...props} />} />
-							<Route exact path="/profile/:tab" component={props => <Profile {...props} />} />
-							<Route exact path="/profile/manage-nft/:address/:nftId" component={props => <MintNFTDetail {...props} />} />
-						</CacheSwitch>
-					</Suspense>
-				</Router>
-			</ThemeProvider>
-		</Provider >
-	);
+    return (
+        <Router>
+            <Provider store={store}>
+                <ThemeProvider theme={light}>
+                    <CssBaseline />
+                    <Messages />
+                    <Suspense 
+                    fallback={'Loading...'}
+                    // fallback={<LoadingPage />}
+                    >
+                        <Header />
+                        <CacheSwitch>
+                            <Route exact path="/" component={props => <Home {...props} />} />
+                            <Route exact path="/store" component={props => <Store {...props} />} />
+                            <Route path="/store/:id" component={props => <NFTDetail {...props} />} />
+                            <Route exact path="/profile" component={props => <Profile {...props} />} />
+                            <Route exact path="/profile/:tab" component={props => <Profile {...props} />} />
+                            <Route
+                                exact
+                                path="/profile/manage-nft/:address/:nftId"
+                                component={props => <MintNFTDetail {...props} />}
+                            />
+                        </CacheSwitch>
+                    </Suspense>
+                </ThemeProvider>
+            </Provider>
+        </Router>
+    );
 }
 
 export default App;
