@@ -10,7 +10,7 @@ import logoCreate from "../../../assets/images/add.png";
 import addImage from "../../../assets/images/add-img.png";
 import logoSuccess from "../../../assets/images/success.png";
 import Web3 from "web3";
-import Box from "@mui/material/Box";
+import { useHistory } from "react-router";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -20,6 +20,7 @@ import Modal from "@mui/material/Modal";
 
 const cx = cn.bind(styles);
 const web3 = new Web3(BSC_rpcUrls);
+const KAWAII1155_ADDRESS = "0xD6eb653866F629e372151f6b5a12762D16E192f5";
 
 const CreateGame = () => {
     const [open, setOpen] = useState(false);
@@ -29,6 +30,8 @@ const CreateGame = () => {
     const [errorSymbol, setErrorSymbol] = useState(false);
     const [errorImage, setErrorImage] = useState(false);
     const [fileName, setFileName] = useState();
+    const [gameSelected, setGameSelected] = useState(KAWAII1155_ADDRESS);
+
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
         setOpen(false);
@@ -38,6 +41,7 @@ const CreateGame = () => {
         setErrorImage(false);
         setFileName();
     };
+    const history = useHistory();
 
     const inputChangeHandler = (key, value) => {
         setgameInfo({ ...gameInfo, [key]: value });
@@ -62,7 +66,6 @@ const CreateGame = () => {
     const handleCreate = () => {
         console.log(checkValidation());
         checkValidation() == 1 ? setSuccess(true) : setSuccess(false);
-        // setSuccess(true);
     };
 
     const checkValidation = () => {
@@ -106,7 +109,11 @@ const CreateGame = () => {
                                 </Typography>
                             </CardContent>
                             <CardActions className={cx("create-action")}>
-                                <Button size="small" className={cx("create-button")}>
+                                <Button
+                                    size="small"
+                                    className={cx("create-button")}
+                                    onClick={() => history.push(`profile/manage-nft/${gameSelected}`)}
+                                >
                                     Join now
                                 </Button>
                             </CardActions>
@@ -129,7 +136,11 @@ const CreateGame = () => {
                                 </Typography>
                             </CardContent>
                             <CardActions className={cx("create-action")}>
-                                <Button size="small" className={cx("create-button")}>
+                                <Button
+                                    size="small"
+                                    className={cx("create-button")}
+                                    onClick={() => history.push("profile/manage-nft")}
+                                >
                                     Join now
                                 </Button>
                             </CardActions>
@@ -152,7 +163,11 @@ const CreateGame = () => {
                                 </Typography>
                             </CardContent>
                             <CardActions className={cx("create-action")}>
-                                <Button size="small" className={cx("create-button")}>
+                                <Button
+                                    size="small"
+                                    className={cx("create-button")}
+                                    onClick={() => history.push("profile/manage-nft")}
+                                >
                                     Join now
                                 </Button>
                             </CardActions>
@@ -175,7 +190,11 @@ const CreateGame = () => {
                                 </Typography>
                             </CardContent>
                             <CardActions className={cx("create-action")}>
-                                <Button size="small" className={cx("create-button")}>
+                                <Button
+                                    size="small"
+                                    className={cx("create-button")}
+                                    onClick={() => history.push("profile/manage-nft")}
+                                >
                                     Join now
                                 </Button>
                             </CardActions>
@@ -189,7 +208,7 @@ const CreateGame = () => {
                             <>
                                 <Typography className={cx("modal_header")}>CREATE GAME</Typography>
                                 <input
-                                    placeholder="&nbsp;&nbsp;Name"
+                                    placeholder="Name"
                                     className={errorName == false ? cx("input") : cx("input_error")}
                                     required
                                     onChange={handleChangeName}
@@ -202,7 +221,7 @@ const CreateGame = () => {
                                     <></>
                                 )}
                                 <input
-                                    placeholder="&nbsp;&nbsp;Symbol"
+                                    placeholder="Symbol"
                                     className={errorSymbol == false ? cx("input") : cx("input_error")}
                                     required
                                     onChange={handleChangeSymbol}
@@ -216,7 +235,7 @@ const CreateGame = () => {
                                 )}
                                 <div className={cx("input_container")}>
                                     <input
-                                        placeholder="&nbsp;&nbsp;Avatar"
+                                        placeholder="Avatar"
                                         value={fileName}
                                         className={errorImage == false ? cx("input") : cx("input_error")}
                                         readOnly

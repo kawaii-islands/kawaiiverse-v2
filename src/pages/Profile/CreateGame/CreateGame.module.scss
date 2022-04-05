@@ -4,11 +4,11 @@ $mobile: 576px;
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap");
 
 .container {
-    // font-family: "Mali";
-    min-height: 100vh;
+    min-height: calc(100vh - 70px);
     width: 100%;
     background: #1b1349;
     color: white;
+    padding-bottom: 20px;
 
     .content {
         width: 70%;
@@ -110,6 +110,9 @@ $mobile: 576px;
     border-radius: 8px;
     text-align: center;
     justify-content: center;
+    @media (max-width: $tablet) {
+        width: 80%;
+    }
     .modal_header {
         margin-top: 30px;
         font-weight: 500;
@@ -123,11 +126,12 @@ $mobile: 576px;
             margin: 0;
             padding-left: 10px;
             padding-top: 8px;
-            color: #776de7;
+            color: #dc615d;
             font-size: 14px;
         }
     }
     .input {
+        padding-left: 10px;
         background-color: #ebe3ff;
         line-height: 45px;
         margin-top: 15px;
@@ -137,6 +141,7 @@ $mobile: 576px;
         border-radius: 4px;
     }
     .input_error {
+        padding-left: 10px;
         background-color: #ebe3ff;
         line-height: 45px;
         margin-top: 15px;
@@ -144,7 +149,7 @@ $mobile: 576px;
         border: 1px solid rgba(82, 64, 130, 0.2);
         box-sizing: border-box;
         border-radius: 4px;
-        border-color: #776de7;
+        border-color: #dc615d;
         border-width: 1.5px;
     }
     .modal_create {
