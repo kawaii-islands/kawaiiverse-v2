@@ -29,22 +29,24 @@ const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setS
             [name]: value,
         });
         if (name === "tokenId") {
-            let listSearch = list.filter(nft => {
+            let array = listSearch.length > 0 ? listSearch : list;
+            let newListSearch = array.filter(nft => {
                 return nft.tokenId.toString().indexOf(value) > -1;
             });
-            listSearch = listSearch.filter(nft => {
+            newListSearch = newListSearch.filter(nft => {
                 return listSell.indexOf(nft) === -1;
             });
-            setListSearch(listSearch);
+            setListSearch(newListSearch);
         }
         if (name === "name") {
-            let listSearch = list.filter(nft => {
+            let array = listSearch.length > 0 ? listSearch : list;
+            let newListSearch = array.filter(nft => {
                 return nft.name.indexOf(value) > -1;
             });
-            listSearch = listSearch.filter(nft => {
+            newListSearch = newListSearch.filter(nft => {
                 return listSell.indexOf(nft) === -1;
             });
-            setListSearch(listSearch);
+            setListSearch(newListSearch);
         }
     };
     const addNft = id => {
@@ -107,6 +109,7 @@ const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setS
                 index = idx;
                 return item._id === nft._id;
             }
+            return false;
         });
         if (name === "minus") {
             setInfo({ ...info, quantity: Math.max(info.quantity - 1, 0) });

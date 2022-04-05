@@ -52,13 +52,13 @@ $w-input : 100px;
     .dropdown {
 
       min-width: $w-input;
+      text-align: left;
       width: fit-content;
       position: absolute;
       left: 0;
       right: 0;
       margin-left: auto;
       margin-right: auto;
-
       background: #4D3494;
       box-shadow: 0px 0px 20px rgba(225, 211, 255, 0.15);
       color: #fff;

@@ -68,6 +68,7 @@ $break-point-3: 767px;
           }
 
           &-label {
+            cursor: default;
             display: flex;
             align-items: center;
             justify-content: space-between;

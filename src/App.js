@@ -35,17 +35,14 @@ function App() {
     }, [activatingConnector, connector]);
 
     return (
-        <Router>
-            <Provider store={store}>
-                <ThemeProvider theme={light}>
-                    <CssBaseline />
-                    <Messages />
-                    <Suspense 
-                    fallback={'Loading...'}
-                    // fallback={<LoadingPage />}
-                    >
-                        <Header />
-                        <CacheSwitch>
+        <Provider store={store}>
+            <ThemeProvider theme={light}>
+                <CssBaseline />
+                <Messages />
+                <Router>
+                    <Header />
+                    <CacheSwitch>
+                        <Suspense fallback={<LoadingPage />}>
                             <Route exact path="/" component={props => <Home {...props} />} />
                             <Route exact path="/store" component={props => <Store {...props} />} />
                             <Route path="/store/:id" component={props => <NFTDetail {...props} />} />
@@ -56,11 +53,11 @@ function App() {
                                 path="/profile/manage-nft/:address/:nftId"
                                 component={props => <MintNFTDetail {...props} />}
                             />
-                        </CacheSwitch>
-                    </Suspense>
-                </ThemeProvider>
-            </Provider>
-        </Router>
+                        </Suspense>
+                    </CacheSwitch>
+                </Router>
+            </ThemeProvider>
+        </Provider>
     );
 }
 
