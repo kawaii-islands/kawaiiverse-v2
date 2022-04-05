@@ -71,14 +71,16 @@ const Profile = () => {
 	const logInfo = async () => {
 		if (account) {
 			setGameList([]);
+			const list = [];
 			try {
 				const totalGame = await read("nftOfUserLength", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account]);
 				for (let index = 0; index < totalGame; index++) {
 					let gameAddress = await read("nftOfUser", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account, index]);
 					let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
-					setGameList(gameList => [...gameList, { gameAddress, gameName }]);
+					// setGameList(gameList => [...gameList, { gameAddress, gameName }]);
+					list.push({gameAddress, gameName});
 				}
-				console.log(gameList);
+				setGameList(list);
 			} catch (err) {
 				console.log(err);
 			}

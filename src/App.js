@@ -4,6 +4,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { light } from "src/themes/light";
 import "./App.css";
 import "antd/dist/antd.css";
+// import 'react-toastify/dist/ReactToastify.css';
 import {
 	BrowserRouter as Router,
 	Route

@@ -14,7 +14,7 @@ const ListNft = ({ gameItemList }) => {
         <Col xs={24} sm={12} md={8} key={`nft-item-${index}`}>
           <NFTItem data={item} onClick={() => history.push(`/store/1`)} />
         </Col>
-      )): <><h1 style={{color: 'white'}}>You own 0 Nft</h1><Empty /></> }
+      )): <><Empty style={{margin: '20px auto'}}/></> }
       
     </>
   );
