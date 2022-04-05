@@ -1,189 +1,281 @@
 import React, { useEffect, useState } from "react";
 import styles from "./CreateGame.module.scss";
+import Grid from "@mui/material/Grid";
 import cn from "classnames/bind";
-import { read, createNetworkOrSwitch, write } from "src/services/web3";
-import { BSC_CHAIN_ID, BSC_rpcUrls } from "src/consts/blockchain";
-import { toast } from "react-toastify";
-import { Col, Row, Spin, Modal } from "antd";
+import { BSC_rpcUrls } from "src/consts/blockchain";
+import logoKawaii from "../../../assets/images/logo_kawaii.png";
+import logoTrend from "../../../assets/images/trend1.png";
+import logoLayers from "../../../assets/images/layers1.png";
+import logoCreate from "../../../assets/images/add.png";
+import addImage from "../../../assets/images/add-img.png";
+import logoSuccess from "../../../assets/images/success.png";
 import Web3 from "web3";
-import plusIcon from "src/assets/icons/plus.svg";
-import { useWeb3React } from "@web3-react/core";
-import trashIcon from "src/assets/icons/coolicon.svg";
-import { Button } from "@mui/material";
-import RELAY_ABI from "src/utils/abi/relay.json";
-import { RELAY_ADDRESS, KAWAIIVERSE_NFT1155_ADDRESS, FACTORY_ADDRESS } from "src/consts/address";
-import { Close } from "@mui/icons-material";
-import MainLayout from "src/components/MainLayout";
-import logoKawaii from "src/assets/images/logo_kawaii.png";
-import Item from "./Item";
+import { useHistory } from "react-router";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+
 const cx = cn.bind(styles);
 const web3 = new Web3(BSC_rpcUrls);
+const KAWAII1155_ADDRESS = "0xD6eb653866F629e372151f6b5a12762D16E192f5";
 
-const CreateGame = ({ gameList, setGameSelected, gameSelected, logInfo }) => {
-  const [open, setOpen] = React.useState(false);
+const CreateGame = () => {
+    const [open, setOpen] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [errorName, setErrorName] = useState(false);
+    const [gameInfo, setgameInfo] = useState({});
+    const [errorSymbol, setErrorSymbol] = useState(false);
+    const [errorImage, setErrorImage] = useState(false);
+    const [fileName, setFileName] = useState();
+    const [gameSelected, setGameSelected] = useState(KAWAII1155_ADDRESS);
 
-  const { account, chainId, library } = useWeb3React();
-  const [loading, setLoading] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => {
+        setOpen(false);
+        setSuccess(false);
+        setErrorName(false);
+        setErrorSymbol(false);
+        setErrorImage(false);
+        setFileName();
+    };
+    const history = useHistory();
 
-  const [gameInfo, setgameInfo] = useState("");
-  const [rowItem, setRowItem] = useState(0);
-	const [listToken, setListToken] = useState([]);
+    const inputChangeHandler = (key, value) => {
+        setgameInfo({ ...gameInfo, [key]: value });
+    };
 
-  const inputChangeHandler = (key, value) => {
-    setgameInfo({ ...gameInfo, [key]: value });
-  };
-  const handleGameClick = (address, idx) => {
-    console.log(address);
-    setGameSelected(address);
-    setOpen(true);
-  };
-  const createGame = async () => {
-    if (!gameInfo?.name || !gameInfo?.symbol) return;
-    setLoading(true);
+    const handleChangeName = e => {
+        e.target.value ? setErrorName(false) : setErrorName(true);
+        inputChangeHandler("name", e.target.value);
+    };
 
-    const _data = web3.eth.abi.encodeFunctionCall(
-      {
-        inputs: [
-          {
-            internalType: "address",
-            name: "_owner",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "_imp",
-            type: "address",
-          },
-          {
-            internalType: "string",
-            name: "_name",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "_symbol",
-            type: "string",
-          },
-        ],
-        name: "createNFT1155",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
-      },
-      [account, KAWAIIVERSE_NFT1155_ADDRESS, gameInfo.name, gameInfo.symbol],
+    const handleChangeSymbol = e => {
+        e.target.value ? setErrorSymbol(false) : setErrorSymbol(true);
+        inputChangeHandler("symbol", e.target.value);
+    };
+
+    const handleUploadImage = e => {
+        e.target.files[0] ? setErrorImage(false) : setErrorImage(true);
+        setFileName(e.target.files[0].name);
+        inputChangeHandler("avatar", e.target.files[0]);
+    };
+
+    const handleCreate = () => {
+        console.log(checkValidation());
+        checkValidation() == 1 ? setSuccess(true) : setSuccess(false);
+    };
+
+    const checkValidation = () => {
+        console.log(gameInfo);
+        !gameInfo.name ? setErrorName(true) : setErrorName(false);
+        !gameInfo.symbol ? setErrorSymbol(true) : setErrorSymbol(false);
+        !gameInfo.avatar ? setErrorImage(true) : setErrorImage(false);
+        if (!gameInfo.name || !gameInfo.symbol || !gameInfo.avatar) return 0;
+        else return 1;
+    };
+
+    return (
+        <div className={cx("container")}>
+            <div className={cx("content")}>
+                <Grid container spacing={2} className={cx("grid-parent")}>
+                    <Grid item md={4} sm={6} xs={12}>
+                        <Card className={cx("create-card", "card")} onClick={handleOpen}>
+                            <CardContent>
+                                <Typography className={cx("create-header")}>
+                                    <img src={logoCreate} alt="logo" className={cx("create-logo")} />
+                                </Typography>
+
+                                <Typography className={cx("create-paragraph")}>CREATE GAME</Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item md={4} sm={6} xs={12}>
+                        <Card className={cx("item-card", "card")}>
+                            <CardContent>
+                                <Typography className={cx("item-header")}>
+                                    <img src={logoKawaii} alt="logo" className={cx("game-logo")} />
+                                    Kawaii Islands
+                                </Typography>
+                                <Typography className={cx("item-paragraph")}>
+                                    <img src={logoLayers} alt="logo" className={cx("game-mini")} />
+                                    Items: <span className={cx("game-amount")}>100</span>
+                                </Typography>
+                                <Typography className={cx("item-paragraph")}>
+                                    <img src={logoTrend} alt="logo" className={cx("game-mini")} />
+                                    Total sale: <span className={cx("game-amount")}>1,000,000 KWT</span>
+                                </Typography>
+                            </CardContent>
+                            <CardActions className={cx("create-action")}>
+                                <Button
+                                    size="small"
+                                    className={cx("create-button")}
+                                    onClick={() => history.push(`profile/manage-nft/${gameSelected}`)}
+                                >
+                                    Join now
+                                </Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                    <Grid item md={4} sm={6} xs={12}>
+                        <Card className={cx("item-card", "card")}>
+                            <CardContent>
+                                <Typography className={cx("item-header")}>
+                                    <img src={logoKawaii} alt="logo" className={cx("game-logo")} />
+                                    Kawaii Islands
+                                </Typography>
+                                <Typography className={cx("item-paragraph")}>
+                                    <img src={logoLayers} alt="logo" className={cx("game-mini")} />
+                                    Items: <span className={cx("game-amount")}>100</span>
+                                </Typography>
+                                <Typography className={cx("item-paragraph")}>
+                                    <img src={logoTrend} alt="logo" className={cx("game-mini")} />
+                                    Total sale: <span className={cx("game-amount")}>1,000,000 KWT</span>
+                                </Typography>
+                            </CardContent>
+                            <CardActions className={cx("create-action")}>
+                                <Button
+                                    size="small"
+                                    className={cx("create-button")}
+                                    onClick={() => history.push("profile/manage-nft")}
+                                >
+                                    Join now
+                                </Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                    <Grid item md={4} sm={6} xs={12}>
+                        <Card className={cx("item-card", "card")}>
+                            <CardContent>
+                                <Typography className={cx("item-header")}>
+                                    <img src={logoKawaii} alt="logo" className={cx("game-logo")} />
+                                    Kawaii Islands
+                                </Typography>
+                                <Typography className={cx("item-paragraph")}>
+                                    <img src={logoLayers} alt="logo" className={cx("game-mini")} />
+                                    Items: <span className={cx("game-amount")}>100</span>
+                                </Typography>
+                                <Typography className={cx("item-paragraph")}>
+                                    <img src={logoTrend} alt="logo" className={cx("game-mini")} />
+                                    Total sale: <span className={cx("game-amount")}>1,000,000 KWT</span>
+                                </Typography>
+                            </CardContent>
+                            <CardActions className={cx("create-action")}>
+                                <Button
+                                    size="small"
+                                    className={cx("create-button")}
+                                    onClick={() => history.push("profile/manage-nft")}
+                                >
+                                    Join now
+                                </Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                    <Grid item md={4} sm={6} xs={12}>
+                        <Card className={cx("item-card", "card")}>
+                            <CardContent>
+                                <Typography className={cx("item-header")}>
+                                    <img src={logoKawaii} alt="logo" className={cx("game-logo")} />
+                                    Kawaii Islands
+                                </Typography>
+                                <Typography className={cx("item-paragraph")}>
+                                    <img src={logoLayers} alt="logo" className={cx("game-mini")} />
+                                    Items: <span className={cx("game-amount")}>100</span>
+                                </Typography>
+                                <Typography className={cx("item-paragraph")}>
+                                    <img src={logoTrend} alt="logo" className={cx("game-mini")} />
+                                    Total sale: <span className={cx("game-amount")}>1,000,000 KWT</span>
+                                </Typography>
+                            </CardContent>
+                            <CardActions className={cx("create-action")}>
+                                <Button
+                                    size="small"
+                                    className={cx("create-button")}
+                                    onClick={() => history.push("profile/manage-nft")}
+                                >
+                                    Join now
+                                </Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                </Grid>
+                <Modal open={open} onClose={handleClose}>
+                    <div className={cx("modal-style")}>
+                        {console.log(success)}
+                        {success == false ? (
+                            <>
+                                <Typography className={cx("modal_header")}>CREATE GAME</Typography>
+                                <input
+                                    placeholder="Name"
+                                    className={errorName == false ? cx("input") : cx("input_error")}
+                                    required
+                                    onChange={handleChangeName}
+                                />
+                                {errorName == true ? (
+                                    <div className={cx("error_tag")}>
+                                        <p className={cx("error_tag_text")}>This field should not be empty!</p>
+                                    </div>
+                                ) : (
+                                    <></>
+                                )}
+                                <input
+                                    placeholder="Symbol"
+                                    className={errorSymbol == false ? cx("input") : cx("input_error")}
+                                    required
+                                    onChange={handleChangeSymbol}
+                                />
+                                {errorSymbol == true ? (
+                                    <div className={cx("error_tag")}>
+                                        <p className={cx("error_tag_text")}>This field should not be empty!</p>
+                                    </div>
+                                ) : (
+                                    <></>
+                                )}
+                                <div className={cx("input_container")}>
+                                    <input
+                                        placeholder="Avatar"
+                                        value={fileName}
+                                        className={errorImage == false ? cx("input") : cx("input_error")}
+                                        readOnly
+                                        // onChange={handleChangeImage}
+                                    />
+                                    <label htmlFor="file-input">
+                                        <img src={addImage} alt="upload-img" className={cx("input_img")} />
+                                    </label>
+                                    <input
+                                        placeholder="String"
+                                        id="file-input"
+                                        type="file"
+                                        accept="image/*"
+                                        style={{ display: "none" }}
+                                        onChange={e => handleUploadImage(e)}
+                                    />
+                                    {errorImage == true ? (
+                                        <div className={cx("error_tag")}>
+                                            <p className={cx("error_tag_text")}>This field should not be empty!</p>
+                                        </div>
+                                    ) : (
+                                        <></>
+                                    )}
+                                </div>
+
+                                <Button className={cx("modal_create")} onClick={handleCreate}>
+                                    Create now
+                                </Button>
+                            </>
+                        ) : (
+                            <div className={cx("modal_success")}>
+                                <img src={logoSuccess} alt="logo" className={cx("success_logo")} />
+                                <p className={cx("modal_text")}>SUCCESSFUL</p>
+                            </div>
+                        )}
+                    </div>
+                </Modal>
+            </div>
+        </div>
     );
-
-    try {
-      if (chainId !== BSC_CHAIN_ID) {
-        console.log("BSC_CHAIN_ID :>> ", BSC_CHAIN_ID);
-        console.log("chainId :>> ", chainId);
-        const error = await createNetworkOrSwitch(library.provider);
-        if (error) {
-          throw new Error("Please change network to Testnet Binance smart chain.");
-        }
-      }
-      await write(
-        "execute",
-        library.provider,
-        RELAY_ADDRESS,
-        RELAY_ABI,
-        [FACTORY_ADDRESS, _data],
-        { from: account },
-        hash => {
-          console.log(hash);
-        },
-      );
-      setLoading(false);
-      logInfo();
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-      toast.error(error.message || "An error occurred!");
-    }
-  };
-	const createToken = () => {
-		console.log(listToken)
-	}
-  return (
-    <div className={cx("container")}>
-      <div className={cx("form")}>
-        <div className={cx("form-input")}>
-          <div className={cx("form-item")}>
-            <div className={cx("label")}>Name</div>
-            <input
-              placeholder="String..."
-              value={gameInfo.name}
-              className={cx("input")}
-              required
-              onChange={e => inputChangeHandler("name", e.target.value)}
-            />
-          </div>
-          <div className={cx("form-item")}>
-            <div className={cx("label")}>Symbol</div>
-            <input
-              placeholder="String..."
-              value={gameInfo.symbol}
-              className={cx("input")}
-              required
-              onChange={e => inputChangeHandler("symbol", e.target.value)}
-            />
-          </div>
-        </div>
-        <div className={cx("btn-wrapper")}>
-          <Button className={cx("confirm-btn")} onClick={createGame}>
-            {loading ? <Spin style={{ color: "white" }} /> : "CONFIRM"}
-          </Button>
-        </div>
-      </div>
-      <div className={cx("divider")}></div>
-      <div className={cx("name-title")}>My game</div>
-      {gameList?.map((gameName, idx) => (
-        <div
-          className={gameName.gameAddress == gameSelected ? cx("name-selected") : cx("name")}
-          key={idx}
-          onClick={() => handleGameClick(gameName.gameAddress, idx)}
-        >
-          <img src={logoKawaii} className={cx("name-avatar")} />
-          <span className={gameName.gameAddress == gameSelected ? cx("name-selected-text") : cx("name-text")}>
-            {gameName.gameName}
-          </span>
-        </div>
-      ))}
-      <Modal
-        className={cx("modal")}
-        visible={open}
-        footer={null}
-        onCancel={() => setOpen(false)}
-        onOk={() => setOpen(false)}
-      >
-        <div className={cx("modal-content")}>
-          <Row>
-            <Col className={cx("modal-act")}>Create ID</Col>
-            <Col className={cx("modal-act-btn")} onClick={() => setRowItem(rowItem + 1)}>
-              +
-            </Col>
-          </Row>
-          <Row className={cx("modal-table-header")}>
-            <Col span={10}>Token ID</Col>
-            <Col span={10}>Supply</Col>
-            <Col span={3}></Col>
-          </Row>
-          <div className={cx("modal-table-content")}>
-            {new Array(rowItem).fill().map((i,idx) => (
-              <Item 
-							rowItem={rowItem}
-              idx={idx}
-							listToken={listToken} 
-							setListToken={setListToken} key={`token-item-${idx}`}/>
-            ))}
-          </div>
-          <div className={cx("modal-footer")}>
-            <Button className={cx("modal-footer-btn")} onClick={createToken}>Confirm</Button>
-          </div>
-        </div>
-      </Modal>
-    </div>
-  );
 };
 
 export default CreateGame;
