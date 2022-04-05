@@ -1,214 +1,183 @@
 $break-point-1: 814px;
 $tablet: 768px;
 $mobile: 576px;
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap");
+
 .container {
-  font-family: "Mali";
-  .form {
-    border: 1px dashed #6dd0e7;
-    padding: 28px 32px;
-    position: relative;
-    border-radius: 4px;
-    .form-input {
-      display: flex;
-      justify-content: space-between;
-      @media (max-width: $mobile) {
-        flex-direction: column;
-        gap: 20px;
-      }
-    }
-    .form-item {
-      width: 45%;
-      @media (max-width: $mobile) {
-        width: 100%;
-      }
-      .label {
-        width: fit-content;
-        background: white;
-        color: #162f54;
-        font-size: 14px;
-        border-radius: 3px;
-        padding: 2px 16px;
-        font-weight: 600;
-      }
-      input {
-        color: white;
-        margin-top: 20px;
-        border: 1px solid #a4d9ea;
-        padding: 13px 24px;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(50px);
-        border-radius: 4px;
-        width: 100%;
-      }
-    }
-    .btn-wrapper {
-      margin-top: 28px;
-      margin-left: auto;
-      margin-right: 0;
-      width: fit-content;
-      .confirm-btn {
-        text-align: center;
-        padding: 6px 38px;
-        width: fit-content;
-        color: #fff;
-        background: #00c6fb;
-        border-radius: 4px;
-        border: none;
-      }
-    }
-  }
-  .divider {
-    margin-top: 54px;
-    height: 1px;
+    // font-family: "Mali";
+    min-height: 100vh;
     width: 100%;
-    background-color: rgba(189, 243, 255, 0.35);
-  }
-  .name-title {
-    margin-top: 40px;
-    font-size: 24px;
-    line-height: 36px;
-    color: #fff;
-  }
-  .name {
-    display: flex;
-    align-items: center;
-    margin-top: 24px;
-    cursor: pointer;
-    font-size: 20px;
-    &-avatar {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background-color: #ffffff;
-      //   border: 1px solid #6dd0e7;
+    background: #1b1349;
+    color: white;
+
+    .content {
+        width: 70%;
+        margin: 0 auto;
+        padding-top: 5%;
     }
 
-    &-text {
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 21px;
-      color: #ffffff;
-      margin-left: 12px;
-
-      &:hover {
-        color: rgba(255, 255, 255, 0.8);
-        transition-duration: 0.3s;
-      }
-    }
-  }
-  .name-selected {
-    display: flex;
-    align-items: center;
-    margin-top: 24px;
-    font-size: 20px;
-
-    cursor: pointer;
-    color: #8deaff;
-
-    &-avatar {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background-color: #ffffff;
-      //   border: 1px solid #6dd0e7;
+    .grid-parent {
+        display: flex;
+        align-items: stretch;
     }
 
-    &-text {
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 21px;
-      margin-left: 12px;
-      color: #8deaff !important;
-      &:hover {
-        color: rgba(255, 255, 255, 0.8);
-        transition-duration: 0.3s;
-      }
+    .card {
+        background: #ebe3ff;
+        border-radius: 8px;
+        min-height: 100%;
     }
-  }
+
+    .create-card {
+        padding-top: 30px;
+        text-align: center;
+        cursor: pointer;
+        .create-paragraph {
+            color: #8355e5;
+            font-family: Montserrat;
+            font-size: 20px;
+            font-weight: 600;
+            padding-top: 25px;
+        }
+        .create-logo {
+            width: 60px;
+            height: 60px;
+        }
+    }
+
+    .item-card {
+        .item-header {
+            font-family: Montserrat;
+            font-size: 20px;
+            font-weight: 500;
+            line-height: 30px;
+            letter-spacing: 0em;
+            color: #402a7d;
+            .game-logo {
+                width: 40px;
+                height: 40px;
+                margin-right: 16px;
+                border-radius: 50px;
+            }
+            // text-align: center;
+        }
+        .item-paragraph {
+            font-family: Montserrat;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 21px;
+            letter-spacing: 0em;
+            padding-top: 14px;
+            text-align: left;
+            color: #402a7d;
+            padding-left: 10px;
+            .game-mini {
+                width: 18px;
+                height: 18px;
+                margin-right: 16px;
+            }
+            .game-amount {
+                color: #8d34ff;
+            }
+        }
+
+        .create-action {
+            justify-content: center;
+            .create-button {
+                font-weight: 700;
+                font-size: 14px;
+                line-height: 21px;
+                display: flex;
+                justify-content: flex-end;
+                gap: 12px;
+                color: white;
+                padding: 5px 24px;
+                width: fit-content;
+                color: white;
+                background: linear-gradient(270.94deg, #fb35ff 4.88%, #8d4abc 99.69%);
+                border-radius: 15.5px;
+            }
+        }
+    }
 }
-
-.modal {
-  // background: rgba(36, 78, 120, 1);
-  // width: 428px;
-  // height: 327px;
-  font-family: "Mali";
-  :global {
-    .ant-modal-content {
-      border-radius: 12px;
-      
-      width: 428px;
-      min-height: 327px;
-      height: fit-content;
-      color: white;
-      
-      background: rgba(36, 78, 120, 1);
-      @media(max-width: 600px){
-        width: 100%;
-      }
+.modal-style {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40%;
+    min-height: 335px;
+    transform: translate(-50%, -50%);
+    background-color: #ebe3ff;
+    border-radius: 8px;
+    text-align: center;
+    justify-content: center;
+    .modal_header {
+        margin-top: 30px;
+        font-weight: 500;
+        font-size: 20px;
     }
-  }
-  &-content {
-    .modal-act {
-      font-size: 18px;
-      line-height: 27px;
-      font-weight: 600;
-      padding-left: 10px;
-      border-left: 1px solid rgba(0, 91, 234, 1);
-      
+    .error_tag {
+        margin: 0 auto;
+        width: 70%;
+        text-align: left;
+        &_text {
+            margin: 0;
+            padding-left: 10px;
+            padding-top: 8px;
+            color: #776de7;
+            font-size: 14px;
+        }
     }
-    .modal-act-btn {
-
-      margin-left: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      font-size: 28px;
-      width: 28px;
-      height: 28px;
-      color: rgba(60, 174, 201, 1);
-      background: rgba(226, 236, 252, 1);
-      cursor: pointer;
-    }
-    .modal-table-header {
-      margin-top: 15px;
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 21px;
-      height: 36px;
-      padding: 8px 70px;
-      background: #173249;
-      color: #6dd0e7;
-      border-radius: 4px;
-    }
-    .modal-table-content {
-      margin-top: 10px;
-      background: #173249;
-      font-size: 13px;
-      font-weight: 500;
-      .modal-table-item {
-        padding: 8px 70px;
-        border-top: 1px solid rgba(48, 96, 145, 0.23);
-      }
-    }
-    .modal-footer {
-      height: 60px;
-      width: 100%;
-      background: #173249;
-      padding: 15px 78px;
-      margin-left: auto;
-      margin-right: 0;
-      border-top: 1px solid rgba(48, 96, 145, 0.23);
-      &-btn {
-        font-weight: 600;
-        font-size: 11px;
-        line-height: 14px;
-        background: #e0f9ff;
-        border: 1px solid rgba(137, 230, 255, 0.44);
-        padding: 5px 15px;
+    .input {
+        background-color: #ebe3ff;
+        line-height: 45px;
+        margin-top: 15px;
+        width: 70%;
+        border: 1px solid rgba(82, 64, 130, 0.2);
+        box-sizing: border-box;
         border-radius: 4px;
-        color: #01a7db;
-      }
     }
-  }
+    .input_error {
+        background-color: #ebe3ff;
+        line-height: 45px;
+        margin-top: 15px;
+        width: 70%;
+        border: 1px solid rgba(82, 64, 130, 0.2);
+        box-sizing: border-box;
+        border-radius: 4px;
+        border-color: #776de7;
+        border-width: 1.5px;
+    }
+    .modal_create {
+        font-weight: 600;
+        font-size: 18px;
+        margin-top: 15px;
+        margin-bottom: 30px;
+        width: 70%;
+        background: linear-gradient(180deg, #6441a5 0%, #2a0845 100%);
+        border-radius: 4px;
+        cursor: pointer;
+        color: white;
+    }
+    .input_container {
+        position: relative;
+        .input_img {
+            position: absolute;
+            top: 28px;
+            width: 24px;
+            right: 17%;
+            height: 22px;
+            cursor: pointer;
+        }
+    }
+    .modal_success {
+        position: relative;
+        top: 50%;
+        transform: translateY(40%);
+    }
+    .modal_text {
+        padding-top: 30px;
+        font-family: Montserrat;
+        font-size: 24px;
+        font-weight: 600;
+    }
 }
