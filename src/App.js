@@ -4,6 +4,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { light } from "src/themes/light";
 import "./App.css";
 import "antd/dist/antd.css";
+import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store";
@@ -35,13 +36,16 @@ function App() {
     }, [activatingConnector, connector]);
 
     return (
-        <Provider store={store}>
-            <ThemeProvider theme={light}>
-                <CssBaseline />
-                <Messages />
-                <Router>
-                    <Header />
-                    <Suspense fallback={<LoadingPage />}>
+        <Router>
+            <Provider store={store}>
+                <ThemeProvider theme={light}>
+                    <CssBaseline />
+                    <Messages />
+                    <Suspense
+                        fallback={"Loading..."}
+                        // fallback={<LoadingPage />}
+                    >
+                        <Header />
                         <CacheSwitch>
                             <Route exact path="/" component={props => <Home {...props} />} />
                             <Route exact path="/store" component={props => <Store {...props} />} />
@@ -56,9 +60,9 @@ function App() {
                             />
                         </CacheSwitch>
                     </Suspense>
-                </Router>
-            </ThemeProvider>
-        </Provider>
+                </ThemeProvider>
+            </Provider>
+        </Router>
     );
 }
 

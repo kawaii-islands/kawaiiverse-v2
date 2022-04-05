@@ -75,6 +75,8 @@ body,
     box-sizing: border-box;
 }
 
+body > iframe {pointer-events: none;}
+
 [data-theme="compact"] .site-collapse-custom-collapse .site-collapse-custom-panel,
 .site-collapse-custom-collapse .site-collapse-custom-panel {
     margin-bottom: 32px;
