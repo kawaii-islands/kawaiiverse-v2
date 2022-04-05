@@ -23,7 +23,7 @@ import { DownOutlined } from "@ant-design/icons";
 // import filter from "../../assets/icons/filter.svg";
 import filter from "src/assets/icons/filter.svg";
 import { Search as SearchIcon } from "@material-ui/icons";
-
+const PAGE_SIZE = 15;
 const menu = (
     <Menu>
         <Menu.Item key="low-high">
@@ -44,6 +44,7 @@ const ViewItemNFT = ({ gameSelected }) => {
     const [loadingListNFT, setLoadingListNFT] = useState(false);
     const [allItemFromGame, setAllItemFromGame] = useState([]);
     const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
     useEffect(() => {
         logGameList();
     }, [account]);
@@ -59,6 +60,16 @@ const ViewItemNFT = ({ gameSelected }) => {
             setGameItemList([]);
         }
     }, [gameList, allItemFromGame]);
+    
+    const itemRender = (current, type, originalElement) => {
+        if (type === "prev") {
+            return <span style={{ color: "#FFFFFF" }}>Prev</span>;
+        }
+        if (type === "next") {
+            return <span style={{ color: "#FFFFFF" }}>Next</span>;
+        }
+        return originalElement;
+    };
     const handleSearch = e => {
         setSearch(e.target.value);
         let listSearch = gameItemList.filter(nft => {
@@ -216,6 +227,18 @@ const ViewItemNFT = ({ gameSelected }) => {
                     <ListNft gameItemList={displayList} gameSelected={gameSelected} />
                 )}
             </Row>
+            {gameItemList?.length > 0 && (
+                <div className={cx("pagination")}>
+                    <Pagination
+                        pageSize={PAGE_SIZE}
+                        showSizeChanger={false}
+                        current={currentPage}
+                        total={gameItemList?.length}
+                        onChange={page => setCurrentPage(page)}
+                        itemRender={itemRender}
+                    />
+                </div>
+            )}
         </div>
     );
 };
