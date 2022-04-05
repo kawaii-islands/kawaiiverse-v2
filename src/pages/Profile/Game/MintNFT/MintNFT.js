@@ -9,6 +9,8 @@ import { useWeb3React } from "@web3-react/core";
 import web3 from "web3";
 import axios from "axios";
 import { URL, KAWAII1155_ADDRESS } from "src/consts/constant";
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const cx = cn.bind(styles);
 
@@ -22,12 +24,12 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 		type: "",
 		tokenId: 0,
 		author: "",
-		name: "string",
+		name: "",
 		description: "",
 		mimeType: "",
 		imageUrl: "",
 		imageThumbnailUrl: "",
-		imagePreviewUrl: "http://abc",
+		imagePreviewUrl: "",
 		tags: [""],
 		attributes: [
 			{
@@ -36,9 +38,9 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 				image: "",
 			},
 		],
-		rarity: "string",
+		rarity: "",
 		supply: 0,
-		category: "string",
+		category: "",
 	};
 
 	const [listNft, setListNft] = useState([oneNft]);
@@ -152,14 +154,15 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 		<div className={cx("mint-nft")}>
 			<div className={cx("table")}>
 				<Row className={cx("table-header")}>
-					<Col span={3} style={{ textAlign: "center" }}>
-						NFT
-					</Col>
-					<Col span={4}>Name</Col>
-					<Col span={4}>TokenID</Col>
-					<Col span={4}>Supply</Col>
-					<Col span={4}>Category</Col>
-					<Col span={4}>Preview</Col>
+					{/* <Col span={1} style={{ textAlign: "center" }}>
+						No.
+					</Col> */}
+					<Col span={4}>TokenID <span className={cx("required-icon")}>*</span></Col>
+					<Col span={4}>Name <span className={cx("required-icon")}>*</span></Col>
+					<Col span={4}>Supply <span className={cx("required-icon")}>*</span></Col>
+					<Col span={5}>Image <span className={cx("required-icon")}>*</span></Col>
+					<Col span={5}>Preview detail</Col>
+					<Col span={1}></Col>
 					<Col span={1}></Col>
 				</Row>
 
@@ -178,9 +181,11 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 						<Row
 							className={cx("table-row")}
 							key={index}
-							onClick={() => setOpenMintNFTBox(openMintNFTBox === index ? null : index)}
 						>
-							<Col span={3} style={{ textAlign: "center" }}>
+							<Col span={4}>{item?.tokenId}</Col>
+							<Col span={4}>{item?.name}</Col>
+							<Col span={4}>{item?.supply}</Col>
+							<Col span={5}>
 								<img
 									src={
 										item?.imageUrl
@@ -190,17 +195,23 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 									alt="nft-icon"
 									width={36}
 									height={36}
-								/>
+								/> &nbsp;
+								{item?.imageUrl.slice(0, 16)}
 							</Col>
-							<Col span={4}>{item?.name}</Col>
-							<Col span={4}>{item?.tokenId}</Col>
-							<Col span={4}>{item?.supply}</Col>
-							<Col span={4}>{item?.category}</Col>
-							<Col span={4} className={cx("preview")}>
+							<Col span={5} className={cx("preview")}>
 								{item?.preview}
 							</Col>
 							<Col span={1} style={{ cursor: "pointer" }}>
-								<img src={plusIcon} alt="plus-icon" />
+								<DeleteOutlinedIcon
+									className={cx("delete-icon")}
+									onClick={() => listNft.length > 1 && setListNft(listNft.slice(0, listNft.length - 1))}
+								/>
+							</Col>
+							<Col span={1} style={{ cursor: "pointer", textAlign: 'right' }}>
+								<ExpandMoreIcon
+									className={cx("expand-icon")}
+									onClick={() => setOpenMintNFTBox(openMintNFTBox === index ? null : index)}
+								/>
 							</Col>
 						</Row>
 					),

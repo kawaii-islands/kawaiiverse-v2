@@ -24,8 +24,8 @@ const cx = cn.bind(styles);
 
 const tabObject = {
 	"create-game": 0,
-	game: 1,
-	store: 2,
+	"manage-nft": 1,
+	"store": 2,
 };
 
 const Profile = () => {
@@ -71,14 +71,16 @@ const Profile = () => {
 	const logInfo = async () => {
 		if (account) {
 			setGameList([]);
+			const list = [];
 			try {
 				const totalGame = await read("nftOfUserLength", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account]);
 				for (let index = 0; index < totalGame; index++) {
 					let gameAddress = await read("nftOfUser", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account, index]);
 					let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
-					setGameList(gameList => [...gameList, { gameAddress, gameName }]);
+					// setGameList(gameList => [...gameList, { gameAddress, gameName }]);
+					list.push({gameAddress, gameName});
 				}
-				console.log(gameList);
+				setGameList(list);
 			} catch (err) {
 				console.log(err);
 			}
@@ -101,8 +103,8 @@ const Profile = () => {
 						setActiveTab={setActiveTab}
 					/>
 				)}
-				<Row className={cx("row")}>
-					<Col md={6} className={cx("left")}>
+				<div className={cx("row")}>
+					<div className={cx("left")}>
 						<Filter
 							setIsGameTab={setIsGameTab}
 							gameList={gameList}
@@ -111,12 +113,12 @@ const Profile = () => {
 							activeTab={activeTab}
 							setActiveTab={setActiveTab}
 						/>
-					</Col>
+					</div>
 
-					<Col offset={1} md={17} className={cx("right-wrapper")}>
+					<div className={cx("right")}>
 						{getActiveTab(activeTab)}
-					</Col>
-				</Row>
+					</div>
+				</div>
 			</div>
 		</MainLayout>
 	);

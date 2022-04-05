@@ -6,9 +6,8 @@ import ViewItemNFT from "./ViewItemNFT";
 import SellItemNFT from "./SellItemNFT";
 
 const cx = cn.bind(styles);
-
 const StoreProfile = ({ gameSelected }) => {
-  const [isSellNFT, setIsSellNFT] = useState(true);
+  const [isSellNFT, setIsSellNFT] = useState(false);
 
   return (
     <div className={cx("profile")}>
@@ -21,6 +20,7 @@ const StoreProfile = ({ gameSelected }) => {
             Sell NFT
           </Button>
         </div>
+        
         <div className={cx("content")}>
           {isSellNFT ? <SellItemNFT gameSelected={gameSelected} /> : <ViewItemNFT gameSelected={gameSelected} />}
         </div>

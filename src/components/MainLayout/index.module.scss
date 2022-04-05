@@ -4,30 +4,31 @@ $break-point-3: 767px;
 
 .main-layout {
   .body {
-    background-image: url("../../assets/images/main-background.svg");
-    width: 100vw;
+    // background-image: url("../../assets/images/main-background.svg");
+    // width: 100vw;
     min-height: 100vh;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    padding-top: 80px;
+    // background-repeat: no-repeat;
+    // background-size: cover;
+    // background-position: center;
+    // padding-top: 80px;
+	background: #1B1349;
 
     .container {
-      max-width: 1180px;
-      margin: 0 auto;
+    //   max-width: 1180px;
+    //   margin: 0 auto;
 
-      @media (max-width: $break-point-1) {
-        max-width: 940px;
-      }
+    //   @media (max-width: $break-point-1) {
+    //     max-width: 940px;
+    //   }
 
-      @media (max-width: $break-point-2) {
-        max-width: 760px;
-      }
+    //   @media (max-width: $break-point-2) {
+    //     max-width: 760px;
+    //   }
 
-      @media (max-width: $break-point-2) {
-        max-width: 100%;
-        padding: 0px 25px;
-      }
+    //   @media (max-width: $break-point-2) {
+    //     max-width: 100%;
+    //     padding: 0px 25px;
+    //   }
     }
   }
 }

@@ -1,101 +1,103 @@
 $break-point-1: 814px;
 $mobile: 576px;
 .table {
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    @media(max-width: $mobile){
-      text-align: center;
-    }
-    &-cell {
-      border-right: 1px solid rgba(109, 208, 231, 0.16);
-      padding: 12px 20px;
-      @media(max-width: $mobile){
-        padding: 6px 8px;
-      }
-    }
-
-    &-cell-last {
-      padding: 12px 20px;
-      border-right: none !important;
-    }
-  }
-
-  .data {
-    align-items: center;
-    border-top: 1px solid rgba(109, 208, 231, 0.16);
-    .delete-icon {
-      cursor: pointer;
-      padding: 7px;
-      border-radius: 50%;
-      background: #697fa0;
-      transition-duration: 0.35s;
-      margin-left: 30px;
-      @media(max-width: $break-point-1){
-        margin-left: 0;
-      }
-      &:hover {
-        background: #5d78a1;
-      }
-
-      &:active {
-        background: #899cb9;
-      }
-    }
-
-    &-cell {
-      border-right: 1px solid rgba(109, 208, 231, 0.16);
-      // border-top: 1px solid rgba(109, 208, 231, 0.16);
-      padding: 12px 20px;
-      @media(max-width: $break-point-1){
-        min-height: 56px;
-        padding: 6px 20px;
-        text-align: center;
-        input{
-          text-align: center;
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        @media (max-width: $mobile) {
+            text-align: center;
         }
-      }
-      @media(max-width: $mobile){
-        padding: 6px 8px;
-        text-align: center;
-        input{
-          text-align: center;
+        &-cell {
+            border-right: 1px solid rgba(109, 208, 231, 0.16);
+            padding: 12px 20px;
+            @media (max-width: $mobile) {
+                padding: 6px 8px;
+            }
         }
-      }
-      .input {
-        @extend .input;
-        width: 80%;
-      }
 
-	  .image-upload {
-		input {
-		  display: none;
-		}
-
-		.upload-img-icon {
-		  cursor: pointer !important;
-		  padding-left: 5px;
-		}
-	  }
+        &-cell-last {
+            padding: 12px 20px;
+            border-right: none !important;
+        }
     }
 
-    &-cell-last {
-      @extend .data-cell;
-      border-right: none !important;
+    .data {
+        align-items: center;
+        border-top: 1px solid rgba(109, 208, 231, 0.16);
+
+        .delete-icon {
+            cursor: pointer;
+            padding: 7px;
+            border-radius: 50%;
+            background: rgba(112, 0, 255, 0.25);
+            transition-duration: 0.35s;
+            margin-left: 30px;
+			color: #7000ff;
+            @media (max-width: $break-point-1) {
+                margin-left: 0;
+            }
+            &:hover {
+                background: rgba(112, 0, 255, 0.15);
+            }
+
+            &:active {
+                background: rgba(112, 0, 255, 0.35);
+            }
+        }
+
+        &-cell {
+            border-right: 1px solid rgba(109, 208, 231, 0.16);
+            // border-top: 1px solid rgba(109, 208, 231, 0.16);
+            padding: 12px 20px;
+            @media (max-width: $break-point-1) {
+                min-height: 56px;
+                padding: 6px 20px;
+                text-align: center;
+                input {
+                    text-align: center;
+                }
+            }
+            @media (max-width: $mobile) {
+                padding: 6px 8px;
+                text-align: center;
+                input {
+                    text-align: center;
+                }
+            }
+            .input {
+                @extend .input;
+                width: 80%;
+            }
+
+            .image-upload {
+                input {
+                    display: none;
+                }
+
+                .upload-img-icon {
+                    cursor: pointer !important;
+                    padding-left: 5px;
+                }
+            }
+        }
+
+        &-cell-last {
+            @extend .data-cell;
+            border-right: none !important;
+        }
     }
-  }
 }
 
 .input {
-  color: #ffffff;
-  background: none;
-  border: none;
-  margin: 0 auto;
-
-  &:focus {
-    outline: none !important;
+    color: #ffffff;
+    background: none;
     border: none;
-    border-bottom: 1px solid #ffffff;
-  }
+    margin: 0 auto;
+
+    &:focus {
+        outline: none !important;
+        border: none;
+        border-bottom: 1px solid #ffffff;
+    }
 }
