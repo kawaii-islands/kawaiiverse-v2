@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "kawaii-island"
+  },
+  "targets": {
+    "kawaii-island": {
+      "hosting": {
+        "prod": [
+          "kawaiiverse"
+        ]
+      }
+    }
+  }
+}
