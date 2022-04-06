@@ -49,12 +49,22 @@ const PreviewModal = ({ open, onHide, listNft }) => {
                         >
                             <div
                                 className={cx("top")}
-                                style={{
-                                    backgroundImage: item?.imageUrl
-                                        ? `url(${item.imageUrl})`
-                                        : `url(https://images.kawaii.global/kawaii-marketplace-image/items/201003.png)`,
-                                }}
-                            ></div>
+                                // style={{
+                                //     backgroundImage: item?.imageUrl
+                                //         ? `url(${item.imageUrl})`
+                                //         : `url(https://images.kawaii.global/kawaii-marketplace-image/items/201003.png)`,
+                                // }}
+                            >
+                                <img
+                                    src={
+                                        item?.imageUrl
+                                            ? `${item.imageUrl}`
+                                            : `https://images.kawaii.global/kawaii-marketplace-image/items/201003.png`
+                                    }
+									alt="preview-img"
+									className={cx("preview-img")}
+                                />
+                            </div>
 
                             <div className={cx("bottom")}>
                                 <div className={cx("title")}>{item?.name || "Name"}</div>

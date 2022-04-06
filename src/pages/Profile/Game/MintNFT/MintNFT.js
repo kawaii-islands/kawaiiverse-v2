@@ -152,21 +152,23 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         let list = [];
         let check = false;
 
-        await Promise.all(data.map(async (item, ind) => {
-            if (isNaN(item.tokenId)) return;
+        await Promise.all(
+            data.map(async (item, ind) => {
+                if (isNaN(item.tokenId)) return;
 
-            let itemSupply = await read("getSupplyOfNft", BSC_CHAIN_ID, gameSelected, KAWAIIVERSE_NFT1155_ABI, [
-                item.tokenId,
-            ]);
+                let itemSupply = await read("getSupplyOfNft", BSC_CHAIN_ID, gameSelected, KAWAIIVERSE_NFT1155_ABI, [
+                    item.tokenId,
+                ]);
 
-            list[ind] = itemSupply;
-            console.log("itemSupply :>> ", itemSupply);
+                list[ind] = itemSupply;
+                console.log("itemSupply :>> ", itemSupply);
 
-            if (itemSupply != 0) {
-                check = true;
-            }
-            console.log(check);
-        }));
+                if (itemSupply != 0) {
+                    check = true;
+                }
+                console.log(check);
+            }),
+        );
 
         setListInvalidToken(list);
         setCheckedTokenId(true);
@@ -279,7 +281,9 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                         className={cx(
                                             "input",
                                             isSubmitted &&
-                                                (!item.tokenId || isNaN(item.tokenId) || listInvalidToken[index] > 0) &&
+                                                (!item.tokenId ||
+                                                    isNaN(item.tokenId) ||
+                                                    (listInvalidToken[index] > 0 && checkedTokenId)) &&
                                                 "invalid",
                                         )}
                                         onChange={e => setStateForNftData("tokenId", e.target.value, index)}
