@@ -27,7 +27,9 @@ $w-input : 100px;
     font-weight: bold;
     border: 1px solid #DBD2F2;
     outline: none;
-
+    @media(max-width: $mobile-2){
+      width: 50px;
+    }
     &::placeholder {
       color: #e4e4e4;
     }
@@ -37,7 +39,9 @@ $w-input : 100px;
     text-align: center;
     @extend .search-input;
     width: 60px;
-
+    @media(max-width: $mobile-2){
+      width: 40px;
+    }
   }
 
   .price-input::-webkit-outer-spin-button,
@@ -52,13 +56,13 @@ $w-input : 100px;
     .dropdown {
 
       min-width: $w-input;
+      text-align: left;
       width: fit-content;
       position: absolute;
       left: 0;
       right: 0;
       margin-left: auto;
       margin-right: auto;
-
       background: #4D3494;
       box-shadow: 0px 0px 20px rgba(225, 211, 255, 0.15);
       color: #fff;

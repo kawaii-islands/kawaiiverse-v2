@@ -32,6 +32,7 @@ const ViewNFT = ({ gameSelected }) => {
 
             if (res.status === 200) {
                 setListNftByContract(res.data.data);
+                console.log(res.data.data)
                 setLoading(false);
             }
         } catch (err) {

@@ -7,7 +7,7 @@ import styles from "./Item.module.scss";
 import addRowItem from "src/assets/icons/addRowItem.svg";
 
 const cx = cn.bind(styles);
-const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setSubmitted }) => {
+const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setSubmitted, rowItem, setRowItem }) => {
     const [search, setSearch] = useState({
         name: "",
         tokenId: "",
@@ -29,22 +29,24 @@ const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setS
             [name]: value,
         });
         if (name === "tokenId") {
-            let listSearch = list.filter(nft => {
+            let array = listSearch.length > 0 ? listSearch : list;
+            let newListSearch = array.filter(nft => {
                 return nft.tokenId.toString().indexOf(value) > -1;
             });
-            listSearch = listSearch.filter(nft => {
+            newListSearch = newListSearch.filter(nft => {
                 return listSell.indexOf(nft) === -1;
             });
-            setListSearch(listSearch);
+            setListSearch(newListSearch);
         }
         if (name === "name") {
-            let listSearch = list.filter(nft => {
+            let array = listSearch.length > 0 ? listSearch : list;
+            let newListSearch = array.filter(nft => {
                 return nft.name.indexOf(value) > -1;
             });
-            listSearch = listSearch.filter(nft => {
+            newListSearch = newListSearch.filter(nft => {
                 return listSell.indexOf(nft) === -1;
             });
-            setListSearch(listSearch);
+            setListSearch(newListSearch);
         }
     };
     const addNft = id => {
@@ -107,6 +109,7 @@ const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setS
                 index = idx;
                 return item._id === nft._id;
             }
+            return false;
         });
         if (name === "minus") {
             setInfo({ ...info, quantity: Math.max(info.quantity - 1, 0) });
@@ -127,13 +130,14 @@ const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setS
 
         setListSell([...newList]);
     };
-    const deleteRow = () => {
-        const id = nft._id;
-        let index = listSell.findIndex(x => x._id === id);
+    const deleteRow = (id) => {
         let newList = [...listSell];
-        newList.splice(index, index);
-
-        setListSell(newList);
+        newList = newList.filter((item,idx) => {
+            return item._id !== id;
+        } );
+        setRowItem(rowItem - 1);
+        setListSell([...newList]);
+        setCanAdd(true)
         setNft({});
         setInfo({ price: 0, quantity: 0 });
     };
@@ -229,6 +233,7 @@ const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setS
                 </Col>
                 <Col span={4} style={{ textAlign: "center" }}>
                     {/* <input type="checkbox" style={{background: "#A4B8EA"}} /> */}
+                    <div onClick={() => deleteRow(nft._id)}>X</div>
                 </Col>
             </Row>
             {submitted && showError && (nft.quantity <= 0 || nft.price <= 0) && (
