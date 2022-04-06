@@ -237,7 +237,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                         src={
                                             item?.imageUrl
                                                 ? item?.imageUrl
-                                                : `https://images.kawaii.global/kawaii-marketplace-image/category/${"Icon_Plant_Big"}.png`
+                                                : `https://images.kawaii.global/kawaii-marketplace-image/items/201003.png`
                                         }
                                         alt="nft-icon"
                                         width={36}

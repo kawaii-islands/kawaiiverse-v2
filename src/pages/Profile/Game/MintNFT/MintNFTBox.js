@@ -59,6 +59,10 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
         }, 1500);
     }, []);
 
+    useEffect(() => {
+        setStateForNftData("attributes", listAttribute);
+    }, [listAttribute]);
+
     const setDetailAttribute = (key, value, index) => {
         let listAttributeCopy = [...listAttribute];
         listAttributeCopy[index] = { ...listAttributeCopy[index], [key]: value };
@@ -75,10 +79,11 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
             const url = `https://ipfs.infura.io/ipfs/${added.path}`;
 
             setStateForNftData("imageUrl", url);
-            setLoadingUploadImg(false);
         } catch (error) {
             console.log("Error uploading file: ", error);
         }
+
+        setLoadingUploadImg(false);
     };
 
     return (
@@ -112,12 +117,16 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
                 </Col>
 
                 <Col span={5}>
-                    <input
-                        value={data.imageUrl}
-                        placeholder="Image url"
-                        className={cx("input")}
-                        onChange={e => setStateForNftData("imageUrl", e.target.value)}
-                    />
+                    {loadingUploadImg ? (
+                        <Spin />
+                    ) : (
+                        <input
+                            value={data.imageUrl}
+                            placeholder="Image url"
+                            className={cx("input")}
+                            onChange={e => setStateForNftData("imageUrl", e.target.value)}
+                        />
+                    )}
                 </Col>
 
                 <Col span={3}>
@@ -228,9 +237,7 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
                                 listAttribute={listAttribute}
                                 setListAttribute={setListAttribute}
                                 setDetailAttribute={setDetailAttribute}
-                                deleteAttribute={() => {
-                                    setStateForNftData("attributes", listAttribute);
-                                }}
+                                setStateForNftData={setStateForNftData}
                             />
                         </div>
                         <img

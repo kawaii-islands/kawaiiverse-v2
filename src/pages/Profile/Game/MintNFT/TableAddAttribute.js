@@ -9,7 +9,7 @@ import uploadImageIcon from 'src/assets/icons/uploadImage.svg';
 const cx = cn.bind(styles);
 const client = create("https://ipfs.infura.io:5001/api/v0");
 
-const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute, deleteAttribute }) => {
+const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute, setStateForNftData }) => {
     const [loadingUploadAttributeImg, setLoadingUploadAttributeImg] = useState(false);
     const [indexImg, setIndexImg] = useState(0);
 
@@ -99,7 +99,6 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
 									arr.splice(idx, 1);
 									setListAttribute(arr);
 								}
-                                deleteAttribute();
                             }}
                         />
                     </Col>

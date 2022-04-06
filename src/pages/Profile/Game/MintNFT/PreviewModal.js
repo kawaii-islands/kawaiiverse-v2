@@ -56,7 +56,7 @@ const PreviewModal = ({ open, onHide, listNft }) => {
                                 style={{
                                     backgroundImage: item?.imageUrl
                                         ? `url(${item.imageUrl})`
-                                        : `url(https://images.kawaii.global/kawaii-marketplace-image/items/206008.png)`,
+                                        : `url(https://images.kawaii.global/kawaii-marketplace-image/items/201003.png)`,
                                 }}
                             ></div>
 

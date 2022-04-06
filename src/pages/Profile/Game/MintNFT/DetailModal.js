@@ -24,9 +24,10 @@ const DetailModal = ({ openDetailModal, onHide, selectedNft }) => {
                             src={
                                 selectedNft?.imageUrl
                                     ? selectedNft.imageUrl
-                                    : `https://images.kawaii.global/kawaii-marketplace-image/items/206008.png`
+                                    : `https://images.kawaii.global/kawaii-marketplace-image/items/201003.png`
                             }
                             width="100%"
+							height="100%"
                             alt="nft"
                         />
                     </div>
