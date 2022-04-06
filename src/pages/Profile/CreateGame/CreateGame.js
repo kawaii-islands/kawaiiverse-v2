@@ -40,11 +40,12 @@ const client = create("https://ipfs.infura.io:5001/api/v0");
 const CreateGame = () => {
     const [open, setOpen] = useState(false);
     const [success, setSuccess] = useState(false);
-    const [errorName, setErrorName] = useState(false);
     const [gameInfo, setgameInfo] = useState({});
+    const [errorName, setErrorName] = useState(false);
     const [errorSymbol, setErrorSymbol] = useState(false);
     const [errorImage, setErrorImage] = useState(false);
     const [fileName, setFileName] = useState();
+    const [fileSize, setFileSize] = useState();
     const [gameSelected, setGameSelected] = useState(KAWAII1155_ADDRESS);
     const [gameList, setGameList] = useState([]);
     const [loadingGameList, setLoadingGameList] = useState(false);
@@ -60,10 +61,6 @@ const CreateGame = () => {
     const handleClose = () => {
         setOpen(false);
         setSuccess(false);
-        // setErrorName(false);
-        // setErrorSymbol(false);
-        // setErrorImage(false);
-        // setFileName();
     };
     const history = useHistory();
     const skeletonArray = Array.from(Array(8).keys());
@@ -82,7 +79,6 @@ const CreateGame = () => {
                 let gameUrl = res.data.data[0] ? res.data.data[0].logoUrl : "";
                 lists.push({ gameAddress, gameName, gameUrl });
             }
-            console.log(lists);
             setGameList(lists);
         } catch (err) {
             console.log(err);
@@ -107,17 +103,25 @@ const CreateGame = () => {
 
     const handleUploadImage = async e => {
         setUploadImageLoading(true);
+
         e.target.files[0] ? setErrorImage(false) : setErrorImage(true);
+        const imageSize = Math.round(e.target.files[0].size / 1024);
+        imageSize < 5000 ? setErrorImage(false) : setErrorImage(true);
 
         if (!e.target.files[0]) return;
 
         const file = e.target.files[0];
         setFileName(e.target.files[0].name);
+        setFileSize(imageSize);
+
+        if (imageSize >= 5000) {
+            setUploadImageLoading(false);
+            return;
+        }
         try {
             const added = await client.add(file);
             const url = `https://ipfs.infura.io/ipfs/${added.path}`;
             inputChangeHandler("avatar", url);
-            console.log(url);
         } catch (error) {
             console.log("Error uploading file: ", error);
         } finally {
@@ -125,10 +129,65 @@ const CreateGame = () => {
         }
     };
 
+    const sign = async (account, data, provider) => {
+        let res = await provider.send("eth_signTypedData_v4", [account, data]);
+        return res.result;
+    };
+
+    const getSignature = async (gameAddress, imageUrl) => {
+        const EIP712Domain = [
+            {
+                name: "domain",
+                type: "string",
+            },
+            {
+                name: "version",
+                type: "string",
+            },
+            {
+                name: "time",
+                type: "uint256",
+            },
+        ];
+
+        const domain = {
+            domain: "http://kawaiiverse.io",
+            version: "1",
+            time: Date.now(),
+        };
+
+        const Data = [
+            {
+                name: "contract",
+                type: "address",
+            },
+            {
+                name: "logoUrl",
+                type: "string",
+            },
+        ];
+
+        const message = {
+            contract: gameAddress,
+            logoUrl: imageUrl,
+        };
+
+        const data = JSON.stringify({
+            types: {
+                EIP712Domain,
+                Data,
+            },
+            domain,
+            primaryType: "Data",
+            message,
+        });
+
+        const signature = await sign(account, data, library.provider);
+        return signature;
+    };
+
     const handleCreate = async () => {
         setUploadGameLoading(true);
-        console.log(checkValidation());
-        // checkValidation() == 1 ? setSuccess(true) : setSuccess(false);
         if (checkValidation()) {
             const _data = web3.eth.abi.encodeFunctionCall(
                 {
@@ -180,27 +239,32 @@ const CreateGame = () => {
                         console.log(hash);
                     },
                 );
-                logInfo();
 
                 const totalGame = await read("nftOfUserLength", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account]);
                 let gameAddress = await read("nftOfUser", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [
                     account,
                     totalGame - 1,
                 ]);
+                const signature = await getSignature(gameAddress, gameInfo.avatar);
 
                 let bodyParams = {
                     contract: gameAddress,
                     logoUrl: gameInfo.avatar,
-                    sign: "signature",
-                    // data: listNft,
+                    sign: signature,
                 };
-                console.log(bodyParams);
 
                 const res = await axios.post(`${URL}/v1/game/logo`, bodyParams);
                 if (res.status === 200) {
                     console.log(res);
                 }
+                logInfo();
                 setSuccess(true);
+                setgameInfo({});
+                setFileName();
+                setFileSize();
+                setTimeout(() => {
+                    handleClose();
+                }, 2000);
             } catch (err) {
                 setSuccess(false);
                 console.log(err.response);
@@ -213,11 +277,10 @@ const CreateGame = () => {
     };
 
     const checkValidation = () => {
-        console.log(gameInfo);
         !gameInfo.name ? setErrorName(true) : setErrorName(false);
         !gameInfo.symbol ? setErrorSymbol(true) : setErrorSymbol(false);
-        !gameInfo.avatar ? setErrorImage(true) : setErrorImage(false);
-        if (!gameInfo.name || !gameInfo.symbol || !gameInfo.avatar) return 0;
+        !gameInfo.avatar || fileSize >= 5000 ? setErrorImage(true) : setErrorImage(false);
+        if (!gameInfo.name || !gameInfo.symbol || !gameInfo.avatar || fileSize >= 5000) return 0;
         else return 1;
     };
 
@@ -286,7 +349,6 @@ const CreateGame = () => {
                 </Grid>
                 <Modal open={open} onClose={handleClose}>
                     <div className={cx("modal-style")}>
-                        {/* {console.log(success)} */}
                         {success == false ? (
                             <>
                                 <Typography className={cx("modal_header")}>CREATE GAME</Typography>
@@ -299,7 +361,7 @@ const CreateGame = () => {
                                 />
                                 {errorName == true ? (
                                     <div className={cx("error_tag")}>
-                                        <p className={cx("error_tag_text")}>This field should not be empty!</p>
+                                        <p className={cx("error_tag_text")}>Name should not be empty!</p>
                                     </div>
                                 ) : (
                                     <></>
@@ -312,7 +374,7 @@ const CreateGame = () => {
                                 />
                                 {errorSymbol == true ? (
                                     <div className={cx("error_tag")}>
-                                        <p className={cx("error_tag_text")}>This field should not be empty!</p>
+                                        <p className={cx("error_tag_text")}>Symbol should not be empty!</p>
                                     </div>
                                 ) : (
                                     <></>
@@ -323,7 +385,6 @@ const CreateGame = () => {
                                         value={fileName}
                                         className={errorImage == false ? cx("input") : cx("input_error")}
                                         readOnly
-                                        // onChange={handleChangeImage}
                                     />
                                     <label htmlFor="file-input">
                                         <img src={addImage} alt="upload-img" className={cx("input_img")} />
@@ -338,7 +399,9 @@ const CreateGame = () => {
                                     />
                                     {errorImage == true ? (
                                         <div className={cx("error_tag")}>
-                                            <p className={cx("error_tag_text")}>This field should not be empty!</p>
+                                            <p className={cx("error_tag_text")}>
+                                                Image should not be empty or larger than 5MB!
+                                            </p>
                                         </div>
                                     ) : (
                                         <></>
