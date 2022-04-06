@@ -34,7 +34,7 @@ const Profile = () => {
 	const [isGameTab, setIsGameTab] = useState(false);
 	const [openFilterModal, setOpenFilterModal] = useState(false);
 	const [gameList, setGameList] = useState([]);
-	const [gameSelected, setGameSelected] = useState(KAWAII1155_ADDRESS);
+	const [gameSelected, setGameSelected] = useState("0xF5802BA0dA9E5056197290FC86be3AAd552f412C");
 	const [activeTab, setActiveTab] = useState(1);
 	const tabParam = useParams();
 

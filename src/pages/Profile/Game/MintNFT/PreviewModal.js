@@ -8,14 +8,14 @@ import { Pagination } from "antd";
 
 const cx = cn.bind(styles);
 
-const pageSize = 8;
+const pageSize = 4;
 
 const PreviewModal = ({ open, onHide, listNft }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [openDetailModal, setOpenDetailModal] = useState(false);
     const [selectedNft, setSelectedNft] = useState();
 
-	const itemRender = (current, type, originalElement) => {
+    const itemRender = (current, type, originalElement) => {
         if (type === "prev") {
             return <span style={{ color: "#402A7D" }}>Prev</span>;
         }
@@ -23,10 +23,6 @@ const PreviewModal = ({ open, onHide, listNft }) => {
             return <span style={{ color: "#402A7D" }}>Next</span>;
         }
         return originalElement;
-    };
-
-    const handleOpenModal = () => {
-        setOpenDetailModal(false);
     };
 
     return (
@@ -42,7 +38,7 @@ const PreviewModal = ({ open, onHide, listNft }) => {
                 </div>
 
                 <div className={cx("list-nft")}>
-                    {listNft.map((item, index) => (
+                    {listNft.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) => (
                         <div
                             className={cx("nft-item")}
                             key={index}
@@ -68,7 +64,7 @@ const PreviewModal = ({ open, onHide, listNft }) => {
                     ))}
                 </div>
 
-				<div className={cx("pagination")}>
+                <div className={cx("pagination")}>
                     <Pagination
                         pageSize={pageSize}
                         showSizeChanger={false}

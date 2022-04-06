@@ -31,7 +31,6 @@ $mobile: 576px;
                 backdrop-filter: blur(50px);
                 border-radius: 4px;
                 margin-bottom: 5px;
-                align-items: center;
 
                 .input {
                     color: #ffffff;
@@ -55,6 +54,10 @@ $mobile: 576px;
                     &:focus {
                         border-radius: 0px;
                     }
+                }
+
+                .error-mes {
+                    color: #b11b23;
                 }
 
                 .preview {
