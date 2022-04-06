@@ -76,7 +76,6 @@ const SellItemNFT = ({ gameSelected }) => {
   };
 
   const sellNft = async () => {
-    
     if(listSell?.length === 0) return;
     setSubmitted(true);
     let pass = true;
@@ -264,6 +263,8 @@ const SellItemNFT = ({ gameSelected }) => {
         {new Array(rowItem).fill().map((i,idx) => (
           <Item 
           setCanAdd={setCanAdd}
+          setRowItem={setRowItem}
+          rowItem={rowItem}
           addItem={addItem}
           submitted={submitted}
           setSubmitted={setSubmitted}

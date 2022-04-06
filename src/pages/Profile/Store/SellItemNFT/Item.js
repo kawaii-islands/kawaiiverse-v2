@@ -7,7 +7,7 @@ import styles from "./Item.module.scss";
 import addRowItem from "src/assets/icons/addRowItem.svg";
 
 const cx = cn.bind(styles);
-const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setSubmitted }) => {
+const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setSubmitted, rowItem, setRowItem }) => {
     const [search, setSearch] = useState({
         name: "",
         tokenId: "",
@@ -130,13 +130,14 @@ const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setS
 
         setListSell([...newList]);
     };
-    const deleteRow = () => {
-        const id = nft._id;
-        let index = listSell.findIndex(x => x._id === id);
+    const deleteRow = (id) => {
         let newList = [...listSell];
-        newList.splice(index, index);
-
-        setListSell(newList);
+        newList = newList.filter((item,idx) => {
+            return item._id !== id;
+        } );
+        setRowItem(rowItem - 1);
+        setListSell([...newList]);
+        setCanAdd(true)
         setNft({});
         setInfo({ price: 0, quantity: 0 });
     };
@@ -232,6 +233,7 @@ const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setS
                 </Col>
                 <Col span={4} style={{ textAlign: "center" }}>
                     {/* <input type="checkbox" style={{background: "#A4B8EA"}} /> */}
+                    <div onClick={() => deleteRow(nft._id)}>X</div>
                 </Col>
             </Row>
             {submitted && showError && (nft.quantity <= 0 || nft.price <= 0) && (

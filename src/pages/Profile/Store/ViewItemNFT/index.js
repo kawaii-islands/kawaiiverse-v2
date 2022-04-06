@@ -212,10 +212,10 @@ const ViewItemNFT = ({ gameSelected }) => {
                                 <span>Sort by</span> <DownOutlined />
                             </div>
                         </Dropdown>
-                        <div className={cx("button-filter")}>
+                        {/* <div className={cx("button-filter")}>
                             <img src={filter} alt="filter" />
                             <span style={{ paddingLeft: "8px" }}>Filter</span>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

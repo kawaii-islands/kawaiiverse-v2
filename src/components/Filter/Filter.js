@@ -5,6 +5,7 @@ import logoKawaii from "../../assets/images/logo_kawaii.png";
 import { useHistory, useParams } from "react-router";
 import manageNftIcon from "src/assets/icons/manage-nft-icon.svg";
 import storeIcon from "src/assets/icons/store-icon.svg";
+import Modal from "@mui/material/Modal";
 
 const cx = cn.bind(styles);
 
@@ -26,17 +27,17 @@ const tab = [
 const Filter = ({ gameList, setGameSelected, gameSelected, activeTab, setActiveTab }) => {
     const history = useHistory();
     let { address } = useParams();
-
     const handleGameClick = (address, idx) => {
         console.log(address);
         setGameSelected(address);
     };
 
     return (
+        <>
         <div className={cx("filter")}>
             <div className={cx("game-info")}>
                 <div className={cx("image-box")}>
-                    <img src={logoKawaii} alt="game-image" className={cx("game-image")} />
+                    <img src={logoKawaii} alt="game" className={cx("game-image")} />
                 </div>
                 <div className={cx("game-name")}>Kawaii Islands</div>
             </div>
@@ -59,7 +60,11 @@ const Filter = ({ gameList, setGameSelected, gameSelected, activeTab, setActiveT
                     </div>
                 ))}
             </div>
+                
+            
         </div>
+       
+    </>
     );
 };
 

@@ -7,11 +7,17 @@ $mobile: 576px;
         .left {
             min-width: 300px;
             min-height: 100vh;
+            @media(max-width: $break-point-1){
+                display: none;
+            }
         }
 
         .right {
             padding: 80px 48px 30px 48px;
             width: 100%;
+            @media(max-width: $break-point-1){
+                padding: 40px 8px;
+            }
         }
     }
 }
