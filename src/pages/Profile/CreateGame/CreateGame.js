@@ -28,6 +28,7 @@ import FACTORY_ABI from "src/utils/abi/factory.json";
 import NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
 import RELAY_ABI from "src/utils/abi/relay.json";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import Item from "./Item";
 import "react-loading-skeleton/dist/skeleton.css";
 import axios from "axios";
 import { Spin } from "antd";
@@ -101,20 +102,29 @@ const CreateGame = () => {
         inputChangeHandler("symbol", e.target.value);
     };
 
+    const checkImageSize = size => {
+        if (size > 5000) {
+            setErrorImage(true);
+            return false;
+        }
+        return true;
+    };
+
     const handleUploadImage = async e => {
         setUploadImageLoading(true);
 
         e.target.files[0] ? setErrorImage(false) : setErrorImage(true);
+
+        if (!e.target.files[0]) {
+            setUploadImageLoading(false);
+            return;
+        }
         const imageSize = Math.round(e.target.files[0].size / 1024);
-        imageSize < 5000 ? setErrorImage(false) : setErrorImage(true);
-
-        if (!e.target.files[0]) return;
-
         const file = e.target.files[0];
         setFileName(e.target.files[0].name);
         setFileSize(imageSize);
 
-        if (imageSize >= 5000) {
+        if (!checkImageSize(imageSize)) {
             setUploadImageLoading(false);
             return;
         }
@@ -254,17 +264,18 @@ const CreateGame = () => {
                 };
 
                 const res = await axios.post(`${URL}/v1/game/logo`, bodyParams);
-                if (res.status === 200) {
+                console.log(res);
+                if (res.data.status) {
                     console.log(res);
+                    setgameInfo({});
+                    setFileName();
+                    setFileSize();
+                    setSuccess(true);
+                    setTimeout(() => {
+                        handleClose();
+                    }, 2000);
                 }
                 logInfo();
-                setSuccess(true);
-                setgameInfo({});
-                setFileName();
-                setFileSize();
-                setTimeout(() => {
-                    handleClose();
-                }, 2000);
             } catch (err) {
                 setSuccess(false);
                 console.log(err.response);
@@ -277,12 +288,70 @@ const CreateGame = () => {
     };
 
     const checkValidation = () => {
-        !gameInfo.name ? setErrorName(true) : setErrorName(false);
-        !gameInfo.symbol ? setErrorSymbol(true) : setErrorSymbol(false);
-        !gameInfo.avatar || fileSize >= 5000 ? setErrorImage(true) : setErrorImage(false);
-        if (!gameInfo.name || !gameInfo.symbol || !gameInfo.avatar || fileSize >= 5000) return 0;
-        else return 1;
+        let valid = true;
+        if (!gameInfo.name) {
+            setErrorName(true);
+            valid = false;
+        } else setErrorName(false);
+        if (!gameInfo.symbol) {
+            setErrorSymbol(true);
+            valid = false;
+        } else setErrorSymbol(false);
+        if (!gameInfo.avatar || fileSize >= 5000) {
+            setErrorImage(true);
+            valid = false;
+        } else setErrorName(false);
+
+        return valid;
     };
+
+    let componentGameList;
+    if (loadingGameList) {
+        componentGameList = (
+            <>
+                {skeletonArray.map((item, idx) => (
+                    <Grid item md={4} sm={6} xs={12} key={idx}>
+                        <SkeletonTheme baseColor="#3D1C6C" highlightColor="#402A7D" duration={2}>
+                            <Skeleton className={cx("skeleton")} />
+                        </SkeletonTheme>
+                    </Grid>
+                ))}
+            </>
+        );
+    } else {
+        componentGameList = gameList.map((item, idx) => (
+            <Grid item md={4} sm={6} xs={12} key={idx}>
+                <Item item={item} />
+            </Grid>
+        ));
+    }
+
+    let componentErrorName;
+    if (errorName) {
+        componentErrorName = (
+            <div className={cx("error_tag")}>
+                <p className={cx("error_tag_text")}>Name should not be empty!</p>
+            </div>
+        );
+    }
+
+    let componentErrorSymbol;
+    if (errorSymbol) {
+        componentErrorSymbol = (
+            <div className={cx("error_tag")}>
+                <p className={cx("error_tag_text")}>Symbol should not be empty!</p>
+            </div>
+        );
+    }
+
+    let componentErrorImage;
+    if (errorImage) {
+        componentErrorImage = (
+            <div className={cx("error_tag")}>
+                <p className={cx("error_tag_text")}>Image should not be empty or larger than 5MB!</p>
+            </div>
+        );
+    }
 
     return (
         <div className={cx("container")}>
@@ -300,52 +369,7 @@ const CreateGame = () => {
                         </Card>
                     </Grid>
 
-                    {!loadingGameList ? (
-                        gameList.map((item, idx) => (
-                            <Grid item md={4} sm={6} xs={12} key={idx}>
-                                <Card className={cx("item-card", "card")}>
-                                    <CardContent>
-                                        <Typography className={cx("item-header")}>
-                                            <img
-                                                src={item.gameUrl != "" ? item.gameUrl : logoKawaii}
-                                                alt="logo"
-                                                className={cx("game-logo")}
-                                            />
-                                            {/* Kawaii Islands */}
-                                            {item.gameName}
-                                        </Typography>
-                                        <Typography className={cx("item-paragraph")}>
-                                            <img src={logoLayers} alt="logo" className={cx("game-mini")} />
-                                            Items: <span className={cx("game-amount")}>100</span>
-                                        </Typography>
-                                        <Typography className={cx("item-paragraph")}>
-                                            <img src={logoTrend} alt="logo" className={cx("game-mini")} />
-                                            Total sale: <span className={cx("game-amount")}>1,000,000 KWT</span>
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions className={cx("create-action")}>
-                                        <Button
-                                            size="small"
-                                            className={cx("create-button")}
-                                            onClick={() => history.push(`profile/manage-nft/${gameSelected}`)}
-                                        >
-                                            Join now
-                                        </Button>
-                                    </CardActions>
-                                </Card>
-                            </Grid>
-                        ))
-                    ) : (
-                        <>
-                            {skeletonArray.map((item, idx) => (
-                                <Grid item md={4} sm={6} xs={12} key={idx}>
-                                    <SkeletonTheme baseColor="#3D1C6C" highlightColor="#402A7D" duration={2}>
-                                        <Skeleton className={cx("skeleton")} />
-                                    </SkeletonTheme>
-                                </Grid>
-                            ))}
-                        </>
-                    )}
+                    {componentGameList}
                 </Grid>
                 <Modal open={open} onClose={handleClose}>
                     <div className={cx("modal-style")}>
@@ -356,33 +380,22 @@ const CreateGame = () => {
                                     placeholder="Name"
                                     className={errorName == false ? cx("input") : cx("input_error")}
                                     required
-                                    value={gameInfo.name}
+                                    value={gameInfo.name || ""}
                                     onChange={handleChangeName}
                                 />
-                                {errorName == true ? (
-                                    <div className={cx("error_tag")}>
-                                        <p className={cx("error_tag_text")}>Name should not be empty!</p>
-                                    </div>
-                                ) : (
-                                    <></>
-                                )}
+                                {componentErrorName}
                                 <input
                                     placeholder="Symbol"
                                     className={errorSymbol == false ? cx("input") : cx("input_error")}
                                     required
+                                    value={gameInfo.symbol || ""}
                                     onChange={handleChangeSymbol}
                                 />
-                                {errorSymbol == true ? (
-                                    <div className={cx("error_tag")}>
-                                        <p className={cx("error_tag_text")}>Symbol should not be empty!</p>
-                                    </div>
-                                ) : (
-                                    <></>
-                                )}
+                                {componentErrorSymbol}
                                 <div className={cx("input_container")}>
                                     <input
                                         placeholder="Avatar"
-                                        value={fileName}
+                                        value={fileName || ""}
                                         className={errorImage == false ? cx("input") : cx("input_error")}
                                         readOnly
                                     />
@@ -397,15 +410,7 @@ const CreateGame = () => {
                                         style={{ display: "none" }}
                                         onChange={e => handleUploadImage(e)}
                                     />
-                                    {errorImage == true ? (
-                                        <div className={cx("error_tag")}>
-                                            <p className={cx("error_tag_text")}>
-                                                Image should not be empty or larger than 5MB!
-                                            </p>
-                                        </div>
-                                    ) : (
-                                        <></>
-                                    )}
+                                    {componentErrorImage}
                                 </div>
 
                                 {!uploadImageLoading && !uploadGameLoading ? (
