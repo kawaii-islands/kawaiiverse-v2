@@ -21,44 +21,85 @@ $mobile: 576px;
             }
         }
 
-        &-row {
-            padding: 12px 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid #ccb9ff;
-            box-sizing: border-box;
-            backdrop-filter: blur(50px);
-            border-radius: 4px;
-            margin-bottom: 5px;
-            align-items: center;
+        .table-body {
+            position: relative;
+            .table-row {
+                padding: 12px 20px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid #ccb9ff;
+                box-sizing: border-box;
+                backdrop-filter: blur(50px);
+                border-radius: 4px;
+                margin-bottom: 5px;
+                align-items: center;
 
-            .preview {
-                color: #2cd7ff;
+                .input {
+                    color: #ffffff;
+                    background: none;
+                    border: none;
+                    margin: 0 auto;
+                    width: 80%;
+                    padding: 4px;
+
+                    &:focus {
+                        outline: none !important;
+                        border: none;
+                        border-bottom: 1px solid #ffffff;
+                    }
+                }
+
+                .invalid {
+                    border: 1px solid #9e494d;
+                    border-radius: 4px;
+
+                    &:focus {
+                        border-radius: 0px;
+                    }
+                }
+
+                .preview {
+                    color: #2cd7ff;
+                }
+
+                .delete-icon {
+                    cursor: pointer;
+                    padding: 5px;
+                    border-radius: 50%;
+                    background: rgba(254, 253, 255, 0.25);
+                    transition-duration: 0.35s;
+                    color: #e7dfff;
+                    font-size: 32px;
+
+                    &:hover {
+                        background: rgba(254, 253, 255, 0.25);
+                    }
+
+                    &:active {
+                        background: rgba(254, 253, 255, 0.35);
+                    }
+                }
+
+                .expand-icon {
+                    cursor: pointer;
+                    transition-duration: 0.35s;
+                    font-size: 28px;
+                    color: #e7dfff;
+                }
             }
 
-            .delete-icon {
+            .add-nft {
+                position: absolute;
+                right: -50px;
+                bottom: 8px;
                 cursor: pointer;
-                padding: 5px;
-                border-radius: 50%;
-				background: rgba(254, 253, 255, 0.25);
-                transition-duration: 0.35s;
-                color: #E7DFFF;
-				font-size: 32px;
-
-                &:hover {
-					background: rgba(254, 253, 255, 0.25);
-                }
-
-                &:active {
-                    background: rgba(254, 253, 255, 0.35);
-                }
             }
 
-			.expand-icon {
-				cursor: pointer;
-                transition-duration: 0.35s;
-				font-size: 28px;
-				color: #E7DFFF;
-			}
+            .add-nft-open {
+                position: absolute;
+                right: -50px;
+                bottom: 455px;
+                cursor: pointer;
+            }
         }
     }
 
@@ -69,24 +110,22 @@ $mobile: 576px;
         margin-top: 28px;
 
         .submit {
-            padding: 5px 25px;
-            background: linear-gradient(90deg, #d35ff0 0%, #9b2ede 100%);
+            padding: 8px 25px;
+            background: #7000ff;
             border-radius: 4px;
-            text-transform: uppercase;
-            font-weight: 600;
-            font-size: 12px;
+            font-weight: 500;
+            font-size: 16px;
             line-height: 150%;
+            margin-left: 12px;
             color: #ffffff;
-            margin-right: 12px;
         }
 
-        .create-nft {
-            background: linear-gradient(90deg, #00c6fb 0%, #005bea 100%);
+        .preview {
+            background: #d785fe;
             border-radius: 4px;
-            padding: 5px 25px;
-            text-transform: uppercase;
-            font-weight: 600;
-            font-size: 12px;
+            padding: 8px 25px;
+            font-weight: 500;
+            font-size: 16px;
             line-height: 150%;
             color: #ffffff;
         }
