@@ -166,7 +166,7 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
                     </Col>
                 </Row>
 
-                <Row className={cx("one-field")}>
+                {/* <Row className={cx("one-field")}>
                     <Col span={4} className={cx("title")}>
                         Author:
                     </Col>
@@ -178,7 +178,7 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
                             onChange={e => setStateForNftData("author", e.target.value)}
                         />
                     </Col>
-                </Row>
+                </Row> */}
 
                 <Row className={cx("one-field")}>
                     <Col span={4} className={cx("title")}>

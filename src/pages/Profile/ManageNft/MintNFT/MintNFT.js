@@ -48,7 +48,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 
     const { account, chainId, library } = useWeb3React();
     const [loading, setLoading] = useState(true);
-    const [openMintNFTBox, setOpenMintNFTBox] = useState();
+    const [openMintNFTBox, setOpenMintNFTBox] = useState(0);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
     const [open, setOpen] = useState(false);
     const [listNft, setListNft] = useState([oneNft]);

@@ -22,7 +22,7 @@ const cx = cn.bind(styles);
 const Game = ({gameSelected}) => {
     const { account } = useWeb3React();
     const [loading, setLoading] = useState(true);
-    const [isMintNFT, setIsMintNFT] = useState(true);
+    const [isMintNFT, setIsMintNFT] = useState(false);
 
     useEffect(() => {
         setTimeout(() => {
