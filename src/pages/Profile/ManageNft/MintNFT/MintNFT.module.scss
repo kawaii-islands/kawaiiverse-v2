@@ -25,15 +25,15 @@ $mobile: 576px;
             position: relative;
             .table-row {
                 padding: 12px 20px;
-                background: rgba(255, 255, 255, 0.1);
-                border: 1px solid #ccb9ff;
+                background: #ebe3ff;
+                border: 1px solid rgba(202, 186, 245, 0.3);
                 box-sizing: border-box;
                 backdrop-filter: blur(50px);
                 border-radius: 4px;
                 margin-bottom: 5px;
 
                 .input {
-                    color: #ffffff;
+                    color: #402a7d;
                     background: none;
                     border: none;
                     margin: 0 auto;
@@ -43,7 +43,7 @@ $mobile: 576px;
                     &:focus {
                         outline: none !important;
                         border: none;
-                        border-bottom: 1px solid #ffffff;
+                        border-bottom: 1px solid #402a7d;
                     }
                 }
 
@@ -68,17 +68,16 @@ $mobile: 576px;
                     cursor: pointer;
                     padding: 5px;
                     border-radius: 50%;
-                    background: rgba(254, 253, 255, 0.25);
+                    color: #7000FF;
                     transition-duration: 0.35s;
-                    color: #e7dfff;
                     font-size: 32px;
 
                     &:hover {
-                        background: rgba(254, 253, 255, 0.25);
+						color: #4f00b6;
                     }
 
                     &:active {
-                        background: rgba(254, 253, 255, 0.35);
+						color: #7d1cfc;
                     }
                 }
 
@@ -86,7 +85,7 @@ $mobile: 576px;
                     cursor: pointer;
                     transition-duration: 0.35s;
                     font-size: 28px;
-                    color: #e7dfff;
+                    color: #14142b;
                 }
             }
 

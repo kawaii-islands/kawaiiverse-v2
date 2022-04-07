@@ -7,7 +7,7 @@ import { BSC_CHAIN_ID } from "src/consts/blockchain";
 import { KAWAIIVERSE_STORE_ADDRESS } from "src/consts/address";
 import { toast } from "react-toastify";
 import { useWeb3React } from "@web3-react/core";
-import { useHistory } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { read } from "src/services/web3";
 import ListNft from "src/components/ListNft/ListNft";
 import { Row, Col } from "antd";
@@ -36,7 +36,7 @@ const menu = (
 );
 const cx = cn.bind(styles);
 
-const ViewItemNFT = ({ gameSelected }) => {
+const ViewItemNFT = ({  }) => {
     const { account } = useWeb3React();
     const [gameList, setGameList] = useState([]);
     const [gameItemList, setGameItemList] = useState([]);
@@ -45,13 +45,14 @@ const ViewItemNFT = ({ gameSelected }) => {
     const [allItemFromGame, setAllItemFromGame] = useState([]);
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+    let { address } = useParams();
     useEffect(() => {
         logGameList();
     }, [account]);
 
     useEffect(() => {
         getListNft();
-    }, [gameSelected]);
+    }, [address]);
 
     useEffect(() => {
         if (gameList.length && allItemFromGame.length) {
@@ -86,7 +87,7 @@ const ViewItemNFT = ({ gameSelected }) => {
     };
     const getListNft = async () => {
         try {
-            const res = await axios.get(`${URL}/v1/nft/${gameSelected}`);
+            const res = await axios.get(`${URL}/v1/nft/${address}`);
             if (res.status === 200) {
                 setAllItemFromGame(res.data.data);
             } else {
@@ -125,7 +126,6 @@ const ViewItemNFT = ({ gameSelected }) => {
                         lists.push({ gameAddress, gameName });
                     }),
                 ).then(() => {
-                    // console.log(gameListData)
                     setGameList(lists);
                 });
             } catch (error) {
@@ -139,7 +139,7 @@ const ViewItemNFT = ({ gameSelected }) => {
         setLoadingListNFT(true);
         // setGameItemList([]);
         let list = [];
-        const tmpGameArray = [...Array(gameSelected ? 1 : gameList.length).keys()];
+        const tmpGameArray = [...Array(address ? 1 : gameList.length).keys()];
         // const tmpGameArray = [...Array(gameList.length).keys()];
 
         try {
@@ -150,7 +150,7 @@ const ViewItemNFT = ({ gameSelected }) => {
                         BSC_CHAIN_ID,
                         KAWAIIVERSE_STORE_ADDRESS,
                         KAWAII_STORE_ABI,
-                        [gameSelected ? gameSelected : gameList[idx].gameAddress],
+                        [address ? address : gameList[idx].gameAddress],
                         // ["0x227cD23002900A412644bE16ECE9D9C3A4B44c65"]
                         // [gameList[idx].gameAddress],
                     );
@@ -162,18 +162,20 @@ const ViewItemNFT = ({ gameSelected }) => {
                                 BSC_CHAIN_ID,
                                 KAWAIIVERSE_STORE_ADDRESS,
                                 KAWAII_STORE_ABI,
-                                [gameSelected ? gameSelected : gameList[idx].gameAddress, index],
+                                [address ? address : gameList[idx].gameAddress, index],
                                
                             );
+                            // console.log(gameItem);
                             let itemInfo = getItemInfo(gameItem.tokenId);
-                            list.push(Object.assign({}, gameItem, itemInfo)[0]);
-                            // return(Object.assign({}, gameItem, itemInfo[0]))
+                            
+                            list.push(Object.assign({}, gameItem, itemInfo[0]));
                         }),
                     );
                     let myNftList = [];
                     if (list?.length) {
                         myNftList = list.filter(nft => nft.owner === account);
                     }
+                    console.log(myNftList);
                     setGameItemList(myNftList);
                 }),
             );
@@ -224,7 +226,7 @@ const ViewItemNFT = ({ gameSelected }) => {
                 {loadingListNFT ? (
                     <ListSkeleton page={"store"} />
                 ) : (
-                    <ListNft gameItemList={displayList} gameSelected={gameSelected} />
+                    <ListNft gameItemList={displayList.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)} gameSelected={address} />
                 )}
             </Row>
             {gameItemList?.length > 0 && (
@@ -233,7 +235,7 @@ const ViewItemNFT = ({ gameSelected }) => {
                         pageSize={PAGE_SIZE}
                         showSizeChanger={false}
                         current={currentPage}
-                        total={gameItemList?.length}
+                        total={displayList?.length}
                         onChange={page => setCurrentPage(page)}
                         itemRender={itemRender}
                     />

@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { read, createNetworkOrSwitch, write } from "src/services/web3";
 import KAWAIIVERSE_NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
 import { BSC_CHAIN_ID, BSC_rpcUrls } from "src/consts/blockchain";
+import LoadingModal from "src/components/LoadingModal/LoadingModal";
 
 const web3 = new Web3(BSC_rpcUrls);
 const cx = cn.bind(styles);
@@ -390,10 +391,12 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                         Preview
                     </Button>
                     <Button className={cx("submit")} onClick={submit}>
-                        {loadingSubmit ? <Spin /> : "Submit"}
+                        Submit
                     </Button>
                 </div>
             </div>
+
+			<LoadingModal open={loadingSubmit} />
 
             <PreviewModal open={open} onHide={() => setOpen(!open)} listNft={listNft} />
         </div>

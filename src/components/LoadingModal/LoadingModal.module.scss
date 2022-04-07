@@ -1,0 +1,46 @@
+.loading-modal {
+	width: fit-content;
+    background: #ebe3ff;
+    border-radius: 8px;
+    padding: 60px 120px 40px 120px;
+    margin: 15% auto;
+    letter-spacing: 5px;
+    text-align: center;
+
+    .loading-logo {
+        -webkit-transform: translateZ(0);
+        -ms-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-animation: spin-animation 1.5s infinite linear;
+        animation: spin-animation 1.5s infinite linear;
+        display: inline-block;
+    }
+
+    @keyframes spin-animation {
+        0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    @-webkit-keyframes spin-animation {
+        0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    .modal-text {
+        padding-top: 30px;
+        font-size: 24px;
+        font-weight: 500;
+    }
+}
