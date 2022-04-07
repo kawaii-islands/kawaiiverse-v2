@@ -9,6 +9,7 @@ import axios from "axios";
 import { URL } from "src/consts/constant";
 import { Input, InputAdornment } from "@mui/material";
 import { Search as SearchIcon } from "@material-ui/icons";
+import ListNft from "src/components/ListNft/ListNft";
 const cx = cn.bind(styles);
 
 const pageSize = 15;

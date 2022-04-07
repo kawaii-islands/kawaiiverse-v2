@@ -1,28 +1,56 @@
-$tablet: 868px;
+$tablet: 814px;
 $mobile: 600px;
 $mobile-2: 500px;
 $mobile-3: 400px;
 .table{
-    font-family: "Mali";
+    font-family: 'Montserrat';
+    position: relative;
+    @media(max-width: $tablet){
+      width: calc(100% - 40px);
+
+    }
+    @media(max-width: $mobile-2){
+      width: calc(100% - 25px);
+    }
     &-header{
         height: 40px;
         padding: 9px 0px;
-        border-radius: 4px;
-        background: #F3F7FA;
+        border-radius: 4px 4px 0px 0px;
+        background: #FAF0FF;
         color: #181818;
         font-size: 14px;
         line-height: 21px;
         font-weight: bold;
+        @media(max-width: $mobile-2){
+          font-size: 13px;
+          
+        } 
+        
     }
     &-body{
-        padding: 10px 16px;
-        color: #E4E4E4;
-        border-radius: 4px;
-        border: 1px solid #A4D9EA;
-
-        background: rgba(255, 255, 255, 0.1);
+        padding: 10px 8px;
+        color: #402A7D;
+        border-radius: 0px 0px 4px 4px;
+        border: 1px solid #CFA4EA;
+        background: #EBE3FF;
         backdrop-filter: blur(50px);
-        
+        position: relative;
+        .add-icon {
+          position: absolute;
+          right: -48px;
+          bottom: 4px;
+          cursor: pointer;
+          @media(max-width: $tablet){
+            right: -40px;
+            width: 30px;
+            height: 30px;
+          }
+          @media(max-width: $mobile-2){
+            right: -30px;
+            width: 25px;
+            height: 25px;
+          }
+        }
        
     }
     .wrapper-btn{
@@ -48,6 +76,7 @@ $mobile-3: 400px;
     border-radius: 4px;
    }
     }
+    
     
 
 }

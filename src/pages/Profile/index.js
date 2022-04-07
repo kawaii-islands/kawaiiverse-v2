@@ -13,7 +13,7 @@ import NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
 import { useWeb3React } from "@web3-react/core";
 import { FACTORY_ADDRESS } from "src/consts/address";
 import CreateGame from "./CreateGame/CreateGame";
-import Game from "./Game/index";
+import Game from "./ManageNft/index";
 import StoreProfile from "./Store/index";
 
 import FilterMobile from "src/components/FilterMobile/FilterMobile";
@@ -23,103 +23,97 @@ import { KAWAII1155_ADDRESS } from "src/consts/constant";
 const cx = cn.bind(styles);
 
 const tabObject = {
-	"create-game": 0,
-	"manage-nft": 1,
-	"store": 2,
+    "create-game": 0,
+    "manage-nft": 1,
+    store: 2,
 };
 
 const Profile = () => {
-	const { account } = useWeb3React();
-	const [loading, setLoading] = useState(true);
-	const [isGameTab, setIsGameTab] = useState(false);
-	const [openFilterModal, setOpenFilterModal] = useState(false);
-	const [gameList, setGameList] = useState([]);
-	const [gameSelected, setGameSelected] = useState("0xF5802BA0dA9E5056197290FC86be3AAd552f412C");
-	const [activeTab, setActiveTab] = useState(1);
-	const tabParam = useParams();
+    const { account } = useWeb3React();
+    const [loading, setLoading] = useState(true);
+    const [isGameTab, setIsGameTab] = useState(false);
+    const [openFilterModal, setOpenFilterModal] = useState(false);
+    const [gameList, setGameList] = useState([]);
+    const [gameSelected, setGameSelected] = useState(KAWAII1155_ADDRESS);
+    const [activeTab, setActiveTab] = useState(0);
+    const tabParam = useParams();
 
-	useEffect(() => {
-		setLoading(true);
-		if (tabParam.tab) {
-			setActiveTab(tabObject[tabParam.tab]);
-		}
-		setLoading(false);
-	}, [tabParam]);
+    useEffect(() => {
+        setLoading(true);
+        if (tabParam.tab) {
+            setActiveTab(tabObject[tabParam.tab]);
+        }
+        setLoading(false);
+    }, [tabParam]);
 
-	useEffect(() => {
-		logInfo();
-	}, [account]);
+    useEffect(() => {
+        logInfo();
+    }, [account]);
 
-	const getActiveTab = tab => {
-		switch (tab) {
-			case 1:
-				return <Game gameSelected={gameSelected} />;
-			case 2:
-				return <StoreProfile gameSelected={gameSelected} />;
-			default:
-				return (
-					<CreateGame
-						gameList={gameList}
-						setGameSelected={setGameSelected}
-						gameSelected={gameSelected}
-						logInfo={logInfo}
-					/>
-				);
-		}
-	};
+    const getActiveTab = tab => {
+        switch (tab) {
+            case 1:
+                return <Game gameSelected={gameSelected} />;
+            default:
+                return <StoreProfile gameSelected={gameSelected} />;
+        }
+    };
 
-	const logInfo = async () => {
-		if (account) {
-			setGameList([]);
-			try {
-				const totalGame = await read("nftOfUserLength", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account]);
-				for (let index = 0; index < totalGame; index++) {
-					let gameAddress = await read("nftOfUser", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account, index]);
-					let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
-					setGameList(gameList => [...gameList, { gameAddress, gameName }]);
-				}
-				console.log(gameList);
-			} catch (err) {
-				console.log(err);
-			}
-		}
-	};
+    const logInfo = async () => {
+        if (account) {
+            setGameList([]);
+            const list = [];
+            try {
+                const totalGame = await read("nftOfUserLength", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account]);
+                for (let index = 0; index < totalGame; index++) {
+                    let gameAddress = await read("nftOfUser", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [
+                        account,
+                        index,
+                    ]);
+                    let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
+                    // setGameList(gameList => [...gameList, { gameAddress, gameName }]);
+                    list.push({ gameAddress, gameName });
+                }
+                setGameList(list);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+    };
 
-	return loading ? (
-		<LoadingPage />
-	) : (
-		<MainLayout>
-			<div className={cx("profile")}>
-				{openFilterModal && (
-					<FilterMobile
-						setOpenFilterModal={setOpenFilterModal}
-						setIsGameTab={setIsGameTab}
-						gameList={gameList}
-						setGameSelected={setGameSelected}
-						gameSelected={gameSelected}
-						activeTab={activeTab}
-						setActiveTab={setActiveTab}
-					/>
-				)}
-				<div className={cx("row")}>
-					<div className={cx("left")}>
-						<Filter
-							setIsGameTab={setIsGameTab}
-							gameList={gameList}
-							setGameSelected={setGameSelected}
-							gameSelected={gameSelected}
-							activeTab={activeTab}
-							setActiveTab={setActiveTab}
-						/>
-					</div>
+    return loading ? (
+        <LoadingPage />
+    ) : (
+        <MainLayout>
+            <div className={cx("profile")}>
+                {openFilterModal && (
+                    <FilterMobile
+                        setOpenFilterModal={setOpenFilterModal}
+                        setIsGameTab={setIsGameTab}
+                        gameList={gameList}
+                        setGameSelected={setGameSelected}
+                        gameSelected={gameSelected}
+                        activeTab={activeTab}
+                        setActiveTab={setActiveTab}
+                    />
+                )}
+                <div className={cx("row")}>
+                    <div className={cx("left")}>
+                        <Filter
+                            setIsGameTab={setIsGameTab}
+                            gameList={gameList}
+                            setGameSelected={setGameSelected}
+                            gameSelected={gameSelected}
+                            activeTab={activeTab}
+                            setActiveTab={setActiveTab}
+                        />
+                    </div>
 
-					<div className={cx("right")}>
-						{getActiveTab(activeTab)}
-					</div>
-				</div>
-			</div>
-		</MainLayout>
-	);
+                    <div className={cx("right")}>{getActiveTab(activeTab)}</div>
+                </div>
+            </div>
+        </MainLayout>
+    );
 };
 
 export default Profile;
