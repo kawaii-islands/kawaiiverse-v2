@@ -6,7 +6,7 @@ export function useEagerConnect() {
     const { activate, active } = useWeb3React();
 
     const [tried, setTried] = useState(false);
-    console.log("triggered");
+
     useEffect(() => {
         injected.isAuthorized().then(isAuthorized => {
             if (isAuthorized) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from "react";
+import React, { Suspense } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { light } from "src/themes/light";
@@ -8,8 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store";
-import { useWeb3React } from "@web3-react/core";
-import { useEagerConnect, useInactiveListener } from "src/helpers/hooks";
 import { CacheSwitch } from "react-router-cache-route";
 
 import Header from "src/components/Header/index";
@@ -24,18 +22,6 @@ const Profile = React.lazy(() => import("src/pages/Profile/index"));
 const MintNFTDetail = React.lazy(() => import("src/pages/Profile/Game/NFTDetail/NFTDetail"));
 
 function App() {
-    // const context = useWeb3React();
-    // const { connector } = context;
-    // const [activatingConnector, setActivatingConnector] = useState();
-    // const triedEager = useEagerConnect();
-    // useInactiveListener(!triedEager || !!activatingConnector);
-    // useEffect(() => {
-    //     console.log("triggered");
-    //     if (activatingConnector && activatingConnector === connector) {
-    //         setActivatingConnector(undefined);
-    //     }
-    // }, [activatingConnector, connector]);
-
     return (
         <Provider store={store}>
             <ThemeProvider theme={light}>

@@ -19,7 +19,6 @@ const Header = () => {
     const triedEager = useEagerConnect();
     useInactiveListener(!triedEager || !!activatingConnector);
     useEffect(() => {
-        console.log("triggered");
         if (activatingConnector && activatingConnector === connector) {
             setActivatingConnector(undefined);
         }
