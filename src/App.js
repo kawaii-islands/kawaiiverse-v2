@@ -24,16 +24,17 @@ const Profile = React.lazy(() => import("src/pages/Profile/index"));
 const MintNFTDetail = React.lazy(() => import("src/pages/Profile/Game/NFTDetail/NFTDetail"));
 
 function App() {
-    const context = useWeb3React();
-    const { connector } = context;
-    const [activatingConnector, setActivatingConnector] = useState();
-    const triedEager = useEagerConnect();
-    useInactiveListener(!triedEager || !!activatingConnector);
-    useEffect(() => {
-        if (activatingConnector && activatingConnector === connector) {
-            setActivatingConnector(undefined);
-        }
-    }, [activatingConnector, connector]);
+    // const context = useWeb3React();
+    // const { connector } = context;
+    // const [activatingConnector, setActivatingConnector] = useState();
+    // const triedEager = useEagerConnect();
+    // useInactiveListener(!triedEager || !!activatingConnector);
+    // useEffect(() => {
+    //     console.log("triggered");
+    //     if (activatingConnector && activatingConnector === connector) {
+    //         setActivatingConnector(undefined);
+    //     }
+    // }, [activatingConnector, connector]);
 
     return (
         <Provider store={store}>
