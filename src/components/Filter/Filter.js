@@ -24,7 +24,7 @@ const tab = [
     },
 ];
 
-const Filter = ({ gameList, setGameSelected, gameSelected, activeTab, setActiveTab }) => {
+const Filter = ({ gameList, setGameSelected, gameSelected, activeTab, setActiveTab, gameInfo }) => {
     const history = useHistory();
     let { address } = useParams();
     const handleGameClick = (address, idx) => {
@@ -34,37 +34,34 @@ const Filter = ({ gameList, setGameSelected, gameSelected, activeTab, setActiveT
 
     return (
         <>
-        <div className={cx("filter")}>
-            <div className={cx("game-info")}>
-                <div className={cx("image-box")}>
-                    <img src={logoKawaii} alt="game" className={cx("game-image")} />
-                </div>
-                <div className={cx("game-name")}>Kawaii Islands</div>
-            </div>
-
-            <div className={cx("menu")}>
-                {tab.map((tab, id) => (
-                    <div
-                        className={cx("menu-item", activeTab === tab.key && "active")}
-                        key={id}
-                        onClick={() => {
-                            console.log("tab.key :>> ", tab.key);
-                            setActiveTab(tab.key);
-                            history.push(`/profile/${tab.path}/${address}`);
-                        }}
-                    >
-                        <div className={cx("menu-title")}>
-                            <img src={tab.icon} alt="icon-title" />
-                            <span>{tab.name}</span>
-                        </div>
+            <div className={cx("filter")}>
+                <div className={cx("game-info")}>
+                    <div className={cx("image-box")}>
+                        <img src={gameInfo.gameUrl || logoKawaii} alt="game" className={cx("game-image")} />
                     </div>
-                ))}
+                    <div className={cx("game-name")}>{gameInfo.gameName || "Kawaii Islands"}</div>
+                </div>
+
+                <div className={cx("menu")}>
+                    {tab.map((tab, id) => (
+                        <div
+                            className={cx("menu-item", activeTab === tab.key && "active")}
+                            key={id}
+                            onClick={() => {
+                                console.log("tab.key :>> ", tab.key);
+                                setActiveTab(tab.key);
+                                history.push(`/profile/${tab.path}/${address}`);
+                            }}
+                        >
+                            <div className={cx("menu-title")}>
+                                <img src={tab.icon} alt="icon-title" />
+                                <span>{tab.name}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
-                
-            
-        </div>
-       
-    </>
+        </>
     );
 };
 

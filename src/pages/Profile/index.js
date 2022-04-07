@@ -15,10 +15,11 @@ import { FACTORY_ADDRESS } from "src/consts/address";
 import CreateGame from "./CreateGame/CreateGame";
 import Game from "./ManageNft/index";
 import StoreProfile from "./Store/index";
-
+import { URL } from "src/consts/constant";
 import FilterMobile from "src/components/FilterMobile/FilterMobile";
 import { useParams } from "react-router-dom";
 import { KAWAII1155_ADDRESS } from "src/consts/constant";
+import axios from "axios";
 
 const cx = cn.bind(styles);
 
@@ -34,9 +35,14 @@ const Profile = () => {
     const [isGameTab, setIsGameTab] = useState(false);
     const [openFilterModal, setOpenFilterModal] = useState(false);
     const [gameList, setGameList] = useState([]);
-    const [gameSelected, setGameSelected] = useState(KAWAII1155_ADDRESS);
     const [activeTab, setActiveTab] = useState(0);
     const tabParam = useParams();
+    const { address } = useParams();
+    const [gameSelected, setGameSelected] = useState(address);
+    const [gameInfo, setGameInfo] = useState({
+        gameName: "",
+        gameUrl: "",
+    });
 
     useEffect(() => {
         setLoading(true);
@@ -49,6 +55,29 @@ const Profile = () => {
     useEffect(() => {
         logInfo();
     }, [account]);
+
+    useEffect(() => {
+        setGameSelected(address);
+        getGameInfo();
+    }, [address]);
+
+    const getGameInfo = async () => {
+        try {
+            let gameName = await read("name", BSC_CHAIN_ID, address, NFT1155_ABI, []);
+            const res = await axios.get(`${URL}/v1/game/logo?contract=${address}`);
+            let gameUrl = "";
+            if (res.data.data[0]) {
+                gameUrl = res.data.data[0].logoUrl;
+            }
+            setGameInfo({ gameName, gameUrl });
+
+            console.log("gameName :>> ", gameName);
+            console.log("gameUrl :>> ", gameUrl);
+			
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const getActiveTab = tab => {
         switch (tab) {
@@ -106,6 +135,7 @@ const Profile = () => {
                             gameSelected={gameSelected}
                             activeTab={activeTab}
                             setActiveTab={setActiveTab}
+                            gameInfo={gameInfo}
                         />
                     </div>
 

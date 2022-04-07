@@ -19,15 +19,12 @@ import { useParams } from "react-router-dom";
 
 const cx = cn.bind(styles);
 
-const Game = () => {
+const Game = ({gameSelected}) => {
     const { account } = useWeb3React();
     const [loading, setLoading] = useState(true);
     const [isMintNFT, setIsMintNFT] = useState(true);
-    const { address } = useParams();
-	const [gameSelected, setGameSelected] = useState(address);
 
     useEffect(() => {
-		setGameSelected(address);
         setTimeout(() => {
             setLoading(false);
         }, 1500);
