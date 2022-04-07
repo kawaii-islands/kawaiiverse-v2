@@ -78,7 +78,7 @@ const ViewNFT = ({ gameSelected }) => {
                             isStore={false}
                             handleNavigation={() =>
                                 history.push({
-                                    pathname: `/profile/manage-nft/${gameSelected}/${item.tokenId}`,
+                                    pathname: `/profile/manage-nft/view-nft/${gameSelected}/${item.tokenId}`,
                                     state: { gameSelected },
                                 })
                             }

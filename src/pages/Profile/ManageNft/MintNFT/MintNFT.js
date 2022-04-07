@@ -391,7 +391,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                         Preview
                     </Button>
                     <Button className={cx("submit")} onClick={submit}>
-                        {loadingSubmit ? <Spin /> : "Submit"}
+                        Submit
                     </Button>
                 </div>
             </div>

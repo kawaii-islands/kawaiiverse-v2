@@ -15,29 +15,6 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 
 const cx = cn.bind(styles);
 
-let oneNft = {
-    type: "",
-    tokenId: 0,
-    author: "",
-    name: "",
-    description: "",
-    mimeType: "",
-    imageUrl: "",
-    imageThumbnailUrl: "",
-    imagePreviewUrl: "",
-    tags: [""],
-    attributes: [
-        {
-            type: "",
-            value: "",
-            image: "",
-        },
-    ],
-    rarity: "",
-    supply: 0,
-    category: "",
-};
-
 let oneAttribute = {
     type: "",
     value: "",
@@ -181,6 +158,7 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
                     </Col>
                     <Col span={20}>
                         <input
+                            value={data.category}
                             placeholder="Enter category"
                             className={cx("input")}
                             onChange={e => setStateForNftData("category", e.target.value)}
@@ -194,6 +172,7 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
                     </Col>
                     <Col span={20}>
                         <input
+                            value={data.author}
                             placeholder="Enter author"
                             className={cx("input")}
                             onChange={e => setStateForNftData("author", e.target.value)}
@@ -207,6 +186,7 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
                     </Col>
                     <Col span={20}>
                         <input
+                            value={data.rarity}
                             placeholder="Enter rarity"
                             className={cx("input")}
                             onChange={e => setStateForNftData("rarity", e.target.value)}
@@ -220,6 +200,7 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
                     </Col>
                     <Col span={20}>
                         <input
+                            value={data.description}
                             placeholder="Enter description"
                             className={cx("input")}
                             onChange={e => setStateForNftData("description", e.target.value)}

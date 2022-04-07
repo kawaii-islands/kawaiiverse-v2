@@ -27,27 +27,26 @@ $mobile: 576px;
 
     .data {
         align-items: center;
-        background: #594f75;
+        background: #E3DAFF;
         border-radius: 4px;
 		margin-top: 3px;
+		
+		.delete-icon {
+			cursor: pointer;
+			padding: 5px;
+			border-radius: 50%;
+			color: #7000FF;
+			transition-duration: 0.35s;
+			font-size: 32px;
 
-        .delete-icon {
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 50%;
-            background: rgba(254, 253, 255, 0.25);
-            transition-duration: 0.35s;
-            color: #e7dfff;
-            font-size: 24px;
+			&:hover {
+				color: #4f00b6;
+			}
 
-            &:hover {
-                background: rgba(254, 253, 255, 0.25);
-            }
-
-            &:active {
-                background: rgba(254, 253, 255, 0.35);
-            }
-        }
+			&:active {
+				color: #7d1cfc;
+			}
+		}
 
         &-cell {
             padding: 8px 20px;
