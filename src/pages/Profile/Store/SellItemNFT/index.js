@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import Item from "./Item";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
-import { read, sign, write } from "src/services/web3";
+import { read, sign, write, createNetworkOrSwitch } from "src/services/web3";
 import { KAWAIIVERSE_STORE_ADDRESS, RELAY_ADDRESS } from "src/consts/address";
 import KAWAIIVERSE_NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
 import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
@@ -16,17 +16,19 @@ import RELAY_ABI from "src/utils/abi/relay.json";
 import { BSC_CHAIN_ID, BSC_rpcUrls } from "src/consts/blockchain";
 import 'react-toastify/dist/ReactToastify.css';
 import addRowItem from "src/assets/icons/addRowItem.svg";
+import LoadingModal from "src/components/LoadingModal/LoadingModal";
 const cx = cn.bind(styles);
 const web3 = new Web3(BSC_rpcUrls);
 
-const SellItemNFT = ({ gameSelected }) => {
+const SellItemNFT = ({ gameSelected,setIsSellNFT }) => {
   const [list, setList] = useState([]);
   const [rowItem, setRowItem] = useState(1);
   const [canAdd, setCanAdd] = useState(false);
   const [listSell, setListSell] = useState([]);
   const [error, setError] = useState(false);
+  const [loadingTx, setLoadingTx] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const { account, library } = useWeb3React();
+  const { account, library, chainId } = useWeb3React();
   const [isApprovedForAll, setIsApprovedForAll] = useState(false);
   useEffect(() => {
     getListNft();
@@ -76,6 +78,7 @@ const SellItemNFT = ({ gameSelected }) => {
   };
 
   const sellNft = async () => {
+    console.log(listSell);
     if(listSell?.length === 0) return;
     setSubmitted(true);
     let pass = true;
@@ -86,6 +89,16 @@ const SellItemNFT = ({ gameSelected }) => {
       return;
     }
     try{
+      setLoadingTx(true);
+      if (chainId !== BSC_CHAIN_ID) {
+        const error = await createNetworkOrSwitch(library.provider);
+        console.log(error);
+        if (error) {
+            toast.error(error);
+            throw new Error("Please change network to Testnet Binance smart chain.");
+            
+        }
+    }
       if (!isApprovedForAll) {
         
           await write(
@@ -102,8 +115,8 @@ const SellItemNFT = ({ gameSelected }) => {
       }
   
       const { r, s, v } = await getSignature();
-  
-      if (listSell.length === 1) {
+      
+      // if (listSell.length === 1) {
         console.log("1:" + gameSelected);
         const _data = web3.eth.abi.encodeFunctionCall(
           {
@@ -187,9 +200,12 @@ const SellItemNFT = ({ gameSelected }) => {
             console.log(hash);
           },
         );
-      }
+        setLoadingTx(false);
+        setIsSellNFT(false);
+      // }
     }catch(err){
       console.log(err);
+      setLoadingTx(false);
       toast.error(err);
     }
     
@@ -244,6 +260,7 @@ const SellItemNFT = ({ gameSelected }) => {
 
   return (
     <div className={cx("table")}>
+      <LoadingModal open={loadingTx}/>
       <Row className={cx("table-header")}>
         <Col span={4} style={{ textAlign: "center" }}>
           Token ID

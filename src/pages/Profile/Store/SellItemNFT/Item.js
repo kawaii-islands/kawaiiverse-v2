@@ -24,50 +24,62 @@ const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setS
     }, [submitted]);
     const handleSearch = e => {
         const { name, value } = e.target;
+
         setSearch({
             ...search,
             [name]: value,
         });
         if (name === "tokenId") {
-            let array = listSearch.length > 0 ? listSearch : list;
+            let array = list;
             let newListSearch = array.filter(nft => {
                 return nft.tokenId.toString().indexOf(value) > -1;
             });
-            newListSearch = newListSearch.filter(nft => {
+            
+            let newListSearch2 = newListSearch.filter(nft => {
                 return listSell.indexOf(nft) === -1;
             });
-            setListSearch(newListSearch);
+            
+            setListSearch(newListSearch2);
         }
         if (name === "name") {
-            let array = listSearch.length > 0 ? listSearch : list;
+            let array = list;
             let newListSearch = array.filter(nft => {
                 return nft.name.indexOf(value) > -1;
             });
-            newListSearch = newListSearch.filter(nft => {
+           
+            let newListSearch2 =  newListSearch.filter(nft => {
                 return listSell.indexOf(nft) === -1;
             });
-            setListSearch(newListSearch);
+            
+            setListSearch(newListSearch2);
         }
     };
     const addNft = id => {
-        const nft = list.filter(nft => nft._id === id)[0];
+        const newNft = list.filter(nft => nft._id === id)[0];
         setSubmitted(false);
         setShowError(false);
-        setNft({
-            ...nft,
-            quantity: nft.supply,
-            price: 0,
-        });
         setInfo({
             price: 0,
-            quantity: nft.supply || 0,
+            quantity: 1,
         });
         setSearch({
-            name: nft.name,
-            tokenId: nft.tokenId,
+            name: newNft.name,
+            tokenId: newNft.tokenId,
+        });
+        let newList = [...listSell];
+        newList = newList.filter((item, idx) => {
+            return item._id !== nft._id;
         });
         setListSearch([]);
-        setListSell([...listSell, { ...nft, quantity: nft.supply || 0, price: 0 }]);
+        setListSell([...newList]);
+        setInfo({ price: 0, quantity: 0 });
+        setListSell([...newList, { ...newNft, quantity: newNft.supply || 0, price: 0 }]);
+
+        setNft({
+            ...newNft,
+            quantity: newNft.supply,
+            price: 0,
+        });
 
         setCanAdd(true);
     };
@@ -77,7 +89,9 @@ const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setS
         }
         setShowError(false);
         setSubmitted(false);
-
+        if(e.target.name === "quantity"){
+            if(Number(e.target.value) > nft.supply) return;
+        }
         setInfo({ ...info, [e.target.name]: Number(e.target.value) });
         setNft({ ...nft, [e.target.name]: Number(e.target.value) });
         let index;
@@ -86,6 +100,7 @@ const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setS
                 index = idx;
                 return item._id === nft._id;
             }
+            return false;
         });
         updateNft[0][e.target.name] = e.target.value;
         const newList = listSell.map((item, idx) => {
@@ -130,14 +145,15 @@ const Item = ({ list, listSell, setListSell, setCanAdd, addItem, submitted, setS
 
         setListSell([...newList]);
     };
-    const deleteRow = (id) => {
+    const deleteRow = id => {
         let newList = [...listSell];
-        newList = newList.filter((item,idx) => {
+        newList = newList.filter((item, idx) => {
             return item._id !== id;
-        } );
+        });
+
         setRowItem(rowItem - 1);
         setListSell([...newList]);
-        setCanAdd(true)
+        setCanAdd(true);
         setNft({});
         setInfo({ price: 0, quantity: 0 });
     };
