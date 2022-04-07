@@ -54,7 +54,7 @@ $mobile: 576px;
     }
 
     .main-box {
-        padding: 30px 90px;
+        padding: 30px 40px;
         box-sizing: border-box;
         border-radius: 6px;
         margin: 16px 30px;
@@ -65,7 +65,23 @@ $mobile: 576px;
 
         .one-field {
             @extend .one-field;
+            align-items: flex-start !important;
             margin-bottom: 30px;
+
+			.table-attribute {
+				display: flex;
+				align-items: flex-start;
+				justify-content: space-between;
+
+				.table {
+					width: 95%;
+				}
+
+				.add-icon {
+					padding-top: 14px;
+					cursor: pointer;
+				}
+			}
         }
     }
 
@@ -163,19 +179,5 @@ $mobile: 576px;
         width: 80%;
         margin: 0px !important;
         margin-left: 5px !important;
-    }
-
-    .table {
-        margin-left: 30px;
-        width: 80%;
-        @media (max-width: $break-point-1) {
-            width: 100%;
-            text-align: center;
-        }
-        @media (max-width: 600px) {
-            margin-left: 0px;
-            margin-top: 10px;
-            width: 100%;
-        }
     }
 }

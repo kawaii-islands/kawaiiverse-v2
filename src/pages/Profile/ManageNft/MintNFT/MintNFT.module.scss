@@ -1,0 +1,136 @@
+$mobile: 576px;
+.mint-nft {
+    .table {
+        font-size: 14px;
+        line-height: 150%;
+        @media (max-width: $mobile) {
+            font-size: 13px;
+            text-align: center;
+        }
+        &-header {
+            padding: 10px 20px;
+            background: #faf0ff;
+            border-radius: 4px;
+            color: #402a7d;
+            font-weight: 600;
+            margin-bottom: 5px;
+
+            .required-icon {
+                font-size: 14px;
+                color: #da0a0a;
+            }
+        }
+
+        .table-body {
+            position: relative;
+            .table-row {
+                padding: 12px 20px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid #ccb9ff;
+                box-sizing: border-box;
+                backdrop-filter: blur(50px);
+                border-radius: 4px;
+                margin-bottom: 5px;
+
+                .input {
+                    color: #ffffff;
+                    background: none;
+                    border: none;
+                    margin: 0 auto;
+                    width: 80%;
+                    padding: 4px;
+
+                    &:focus {
+                        outline: none !important;
+                        border: none;
+                        border-bottom: 1px solid #ffffff;
+                    }
+                }
+
+                .invalid {
+                    border: 1px solid #9e494d;
+                    border-radius: 4px;
+
+                    &:focus {
+                        border-radius: 0px;
+                    }
+                }
+
+                .error-mes {
+                    color: #b11b23;
+                }
+
+                .preview {
+                    color: #2cd7ff;
+                }
+
+                .delete-icon {
+                    cursor: pointer;
+                    padding: 5px;
+                    border-radius: 50%;
+                    background: rgba(254, 253, 255, 0.25);
+                    transition-duration: 0.35s;
+                    color: #e7dfff;
+                    font-size: 32px;
+
+                    &:hover {
+                        background: rgba(254, 253, 255, 0.25);
+                    }
+
+                    &:active {
+                        background: rgba(254, 253, 255, 0.35);
+                    }
+                }
+
+                .expand-icon {
+                    cursor: pointer;
+                    transition-duration: 0.35s;
+                    font-size: 28px;
+                    color: #e7dfff;
+                }
+            }
+
+            .add-nft {
+                position: absolute;
+                right: -50px;
+                bottom: 8px;
+                cursor: pointer;
+            }
+
+            .add-nft-open {
+                position: absolute;
+                right: -50px;
+                bottom: 455px;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .group-button {
+        display: flex;
+        align-items: center;
+        justify-content: right;
+        margin-top: 28px;
+
+        .submit {
+            padding: 8px 25px;
+            background: #7000ff;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 150%;
+            margin-left: 12px;
+            color: #ffffff;
+        }
+
+        .preview {
+            background: #d785fe;
+            border-radius: 4px;
+            padding: 8px 25px;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 150%;
+            color: #ffffff;
+        }
+    }
+}

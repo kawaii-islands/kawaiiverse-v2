@@ -18,7 +18,7 @@ const NFTItem = ({ onClick, data, handleNavigation, isStore }) => {
 				style={{
 					backgroundImage: data?.imageUrl
 						? `url(${data.imageUrl})`
-						: `url(https://images.kawaii.global/kawaii-marketplace-image/items/205002.png)`,
+						: `url(https://images.kawaii.global/kawaii-marketplace-image/items/206008.png)`,
 				}}
 			>
 				{isStore && (

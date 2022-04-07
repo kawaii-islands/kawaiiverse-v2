@@ -32,7 +32,6 @@ const ViewNFT = ({ gameSelected }) => {
 
             if (res.status === 200) {
                 setListNftByContract(res.data.data);
-                console.log(res.data.data)
                 setLoading(false);
             }
         } catch (err) {
@@ -73,26 +72,23 @@ const ViewNFT = ({ gameSelected }) => {
                     <ListSkeleton />
                 ) : listNftByContract.length > 0 ? (
                     listNftByContract.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) => (
-                        <Col xs={24} sm={12} md={8} key={`nft-item-${index}`}>
-                            <NFTItem
-                                data={item}
-                                isStore={false}
-                                handleNavigation={() =>
-                                    history.push({
-                                        pathname: `/profile/manage-nft/${gameSelected}/${item.tokenId}`,
-                                        state: { gameSelected },
-                                    })
-                                }
-                            />
-                        </Col>
+                        <NFTItem
+                            key={index}
+                            data={item}
+                            isStore={false}
+                            handleNavigation={() =>
+                                history.push({
+                                    pathname: `/profile/manage-nft/${gameSelected}/${item.tokenId}`,
+                                    state: { gameSelected },
+                                })
+                            }
+                        />
                     ))
                 ) : (
                     <div style={{ margin: "0 auto" }}>
                         <Empty />
                     </div>
-                )
-                // <ListNft gameItemList={listNftByContract.slice((currentPage - 1) * pageSize, currentPage * pageSize)} />
-                }
+                )}
             </Row>
 
             {listNftByContract?.length > 0 && (

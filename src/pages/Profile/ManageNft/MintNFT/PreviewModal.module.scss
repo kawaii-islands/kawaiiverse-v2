@@ -1,0 +1,100 @@
+.modal-style {
+    background: #ebe3ff;
+    border-radius: 8px;
+    width: 1080px;
+    margin: 60px auto;
+    padding: 20px;
+    height: fit-content;
+
+    .close-icon {
+        text-align: right;
+        cursor: pointer;
+    }
+
+    .title {
+        text-align: center;
+        .big-title {
+            font-weight: 600;
+            font-size: 24px;
+            line-height: 29px;
+            color: #402a7d;
+            text-transform: uppercase;
+        }
+
+        .sub-title {
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 150%;
+            color: #402a7d;
+        }
+    }
+
+    .list-nft {
+        padding: 30px 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+
+        $break-point-1: 1180px;
+        $break-point-2: 912px;
+
+        .nft-item {
+            width: 180px;
+            min-height: 200px;
+            background: linear-gradient(180deg, #6f08fe 0%, #513e7d 100%);
+            border: 1px solid #ad99e7;
+            box-sizing: border-box;
+            border-radius: 6px;
+            height: fit-content;
+            cursor: pointer;
+            margin-right: 20px;
+            margin-bottom: 20px;
+
+            .top {
+                border-bottom: 1px solid #ad99e7;
+                box-sizing: border-box;
+                border-radius: 8px;
+                width: 100%;
+                height: 180px;
+                // background-repeat: no-repeat;
+                // background-position: center;
+                // background-size: 101% 101%;
+
+                @media (max-width: $break-point-1) {
+                    background-size: 80px 120px;
+                }
+
+                .preview-img {
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 8px;
+                }
+            }
+
+            .bottom {
+                padding: 12px;
+                .title {
+                    font-weight: 500;
+                    font-size: 16px;
+                    line-height: 23px;
+                    color: #ffffff;
+                    margin-bottom: 6px;
+                    text-align: left;
+                }
+
+                .nftId {
+                    font-weight: 500;
+                    font-size: 16px;
+                    line-height: 20px;
+                    color: #dac6ff;
+                }
+            }
+        }
+    }
+
+    .pagination {
+        text-align: center;
+        margin-top: 30px;
+    }
+}

@@ -1,0 +1,103 @@
+.modal-style {
+    background: #ebe3ff;
+    border-radius: 8px;
+    width: 1080px;
+    margin: 60px auto;
+    padding: 20px;
+    height: fit-content;
+
+    .close-icon {
+        text-align: right;
+        cursor: pointer;
+    }
+
+    .title {
+        text-align: center;
+        .big-title {
+            font-weight: 600;
+            font-size: 24px;
+            line-height: 29px;
+            color: #402a7d;
+            text-transform: uppercase;
+        }
+    }
+
+    .main-content {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        margin: 40px 0px;
+
+        .left {
+            width: 320px;
+            height: 320px;
+            border-radius: 8px;
+            border: 1px solid #ad99e7;
+            margin-right: 40px;
+
+			img {
+				border-radius: 8px;
+			}
+        }
+
+        .right {
+            background: #402a7d;
+            backdrop-filter: blur(50px);
+            border-radius: 4px;
+            padding: 32px;
+            min-width: 500px;
+
+            .title {
+                display: flex;
+                align-items: baseline;
+                margin-bottom: 8px;
+
+                .first {
+                    font-weight: 600;
+                    font-size: 28px;
+                    line-height: 150%;
+                    color: #ffffff;
+                    margin-right: 10px;
+                }
+
+                .second {
+                    font-weight: 500;
+                    font-size: 20px;
+                    line-height: 150%;
+                    color: #be74ff;
+                    margin-right: 10px;
+                }
+            }
+
+            .third {
+                background: #ad99e7;
+                border-radius: 4px;
+                padding: 2px 11px;
+                font-weight: 700;
+                font-size: 14px;
+                line-height: 150%;
+                color: #402a7d;
+                width: fit-content;
+            }
+
+            .content {
+                display: flex;
+                align-items: baseline;
+                margin-top: 16px;
+                font-weight: 500;
+                font-size: 16px;
+                line-height: 150%;
+
+                .title {
+                    color: #d9adff;
+                    padding-right: 10px;
+                }
+
+                .value {
+                    color: #ffffff;
+                    text-align: justify;
+                }
+            }
+        }
+    }
+}

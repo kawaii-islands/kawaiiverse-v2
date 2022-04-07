@@ -13,7 +13,7 @@ import NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
 import { useWeb3React } from "@web3-react/core";
 import { FACTORY_ADDRESS } from "src/consts/address";
 import CreateGame from "./CreateGame/CreateGame";
-import Game from "./Game/index";
+import Game from "./ManageNft/index";
 import StoreProfile from "./Store/index";
 
 import FilterMobile from "src/components/FilterMobile/FilterMobile";
