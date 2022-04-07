@@ -47,7 +47,7 @@ jobs:
     - name: Install Dependencies
       run: yarn install
     - name: Copy env
-      run: cp .env.example .env
+      run: cp .env.testnet .env
     - name: Build Production
       run: yarn build
       env:
