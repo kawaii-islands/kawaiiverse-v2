@@ -9,54 +9,57 @@ $mobile: 576px;
     border-radius: 4px;
     margin-bottom: 5px;
 
-    .first-row {
-        padding: 12px 20px;
-        align-items: center;
-        border-bottom: 1px solid rgba(202, 186, 245, 0.5);
+    // .first-row {
+    //     padding: 12px 20px;
+    //     align-items: center;
+    //     border-bottom: 1px solid rgba(202, 186, 245, 0.5);
 
-        .preview {
-            color: #2cd7ff;
-        }
+    //     .preview {
+    //         color: #2cd7ff;
+    //     }
 
-        .delete-icon {
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 50%;
-            color: #7000ff;
-            transition-duration: 0.35s;
-            font-size: 32px;
+	// 	.delete-icon {
+	// 		cursor: pointer;
+	// 		padding: 6px;
+	// 		border-radius: 50%;
+	// 		color: #7000ff;
+	// 		transition-duration: 0.5s;
+	// 		font-size: 38px;
+	// 		background: #d9cce9;
 
-            &:hover {
-                color: #4f00b6;
-            }
+	// 		&:hover {
+	// 			background: #d5c0f0;
+	// 			transition-duration: 0.5s;
+	// 		}
 
-            &:active {
-                color: #7d1cfc;
-            }
-        }
+	// 		&:active {
+	// 			background: #e6d5fb;
+	// 			transition-duration: 0.5s;
+	// 		}
+	// 	}
 
-        .expand-icon {
-            cursor: pointer;
-            transition-duration: 0.35s;
-            font-size: 28px;
-            color: #14142b;
-        }
+    //     .expand-icon {
+    //         cursor: pointer;
+    //         transition-duration: 0.35s;
+    //         font-size: 28px;
+    //         color: #14142b;
+    //     }
 
-        .input {
-            @extend .input;
-            width: 80%;
-        }
+    //     .input {
+    //         @extend .input;
+    //         width: 80%;
+    //     }
 
-        .one-field {
-            @extend .one-field;
-        }
-    }
+    //     .one-field {
+    //         @extend .one-field;
+    //     }
+    // }
 
     .main-box {
         padding: 30px 40px;
         box-sizing: border-box;
-        border-radius: 6px;
-        margin: 16px 30px;
+		border-top: 1px solid rgba(202, 186, 245, 0.5);
+       
         @media (max-width: $mobile) {
             margin: 8px 12px;
             padding: 12px;
