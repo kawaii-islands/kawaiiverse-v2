@@ -23,70 +23,92 @@ $mobile: 576px;
 
         .table-body {
             position: relative;
+
             .table-row {
-                padding: 12px 20px;
                 background: #ebe3ff;
-                border: 1px solid rgba(202, 186, 245, 0.3);
                 box-sizing: border-box;
                 backdrop-filter: blur(50px);
-                border-radius: 4px;
                 margin-bottom: 5px;
+				border-radius: 4px;
 
-                .input {
-                    color: #402a7d;
-                    background: none;
-                    border: none;
-                    margin: 0 auto;
-                    width: 80%;
-                    padding: 4px;
+                .main-row {
+					padding: 10px 20px;
+					color: #402a7d;
 
-                    &:focus {
-                        outline: none !important;
+					.image-upload {
+						input {
+							display: none;
+						}
+				
+						.upload-img-icon {
+							cursor: pointer !important;
+							padding-left: 5px;
+						}
+					}
+
+                    .input {
+                        color: #402a7d;
+                        background: none;
                         border: none;
-                        border-bottom: 1px solid #402a7d;
+                        margin: 0 auto;
+                        width: 80%;
+                        padding: 4px;
+
+                        &:focus {
+                            outline: none !important;
+                            border: none;
+                            border-bottom: 1px solid #402a7d;
+                        }
+                    }
+
+                    .invalid {
+                        border: 1px solid #9e494d;
+                        border-radius: 4px;
+
+                        &:focus {
+                            border-radius: 0px;
+                        }
+                    }
+
+                    .error-mes {
+                        color: #b11b23;
+                    }
+
+                    .preview {
+                        color: #2cd7ff;
+                    }
+
+                    .delete-icon {
+                        cursor: pointer;
+                        padding: 6px;
+                        border-radius: 50%;
+                        color: #7000ff;
+                        transition-duration: 0.5s;
+                        font-size: 38px;
+                        background: #d9cce9;
+
+                        &:hover {
+                            background: #d5c0f0;
+                            transition-duration: 0.5s;
+                        }
+
+                        &:active {
+                            background: #e6d5fb;
+                            transition-duration: 0.5s;
+                        }
+                    }
+
+                    .expand-icon {
+                        cursor: pointer;
+                        transition-duration: 0.35s;
+                        font-size: 28px;
+                        color: #14142b;
                     }
                 }
 
-                .invalid {
-                    border: 1px solid #9e494d;
-                    border-radius: 4px;
-
-                    &:focus {
-                        border-radius: 0px;
-                    }
-                }
-
-                .error-mes {
-                    color: #b11b23;
-                }
-
-                .preview {
-                    color: #2cd7ff;
-                }
-
-                .delete-icon {
-                    cursor: pointer;
-                    padding: 5px;
-                    border-radius: 50%;
-                    color: #7000FF;
-                    transition-duration: 0.35s;
-                    font-size: 32px;
-
-                    &:hover {
-						color: #4f00b6;
-                    }
-
-                    &:active {
-						color: #7d1cfc;
-                    }
-                }
-
-                .expand-icon {
-                    cursor: pointer;
-                    transition-duration: 0.35s;
-                    font-size: 28px;
-                    color: #14142b;
-                }
+				.expand-row {
+					border-top: 1px solid rgba(202, 186, 245, 0.5);
+				}
             }
 
             .add-nft {

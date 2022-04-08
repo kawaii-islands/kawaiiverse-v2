@@ -71,19 +71,23 @@ const ViewNFT = ({ gameSelected }) => {
                 {loading ? (
                     <ListSkeleton />
                 ) : listNftByContract.length > 0 ? (
-                    listNftByContract.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) => (
-                        <NFTItem
-                            key={index}
-                            data={item}
-                            isStore={false}
-                            handleNavigation={() =>
-                                history.push({
-                                    pathname: `/profile/manage-nft/view-nft/${gameSelected}/${item.tokenId}`,
-                                    state: { gameSelected },
-                                })
-                            }
-                        />
-                    ))
+                    <div className={cx("list-nft")}>
+                        {listNftByContract
+                            .slice((currentPage - 1) * pageSize, currentPage * pageSize)
+                            .map((item, index) => (
+                                <NFTItem
+                                    key={index}
+                                    data={item}
+                                    isStore={false}
+                                    handleNavigation={() =>
+                                        history.push({
+                                            pathname: `/profile/manage-nft/view-nft/${gameSelected}/${item.tokenId}`,
+                                            state: { gameSelected },
+                                        })
+                                    }
+                                />
+                            ))}
+                    </div>
                 ) : (
                     <div style={{ margin: "0 auto" }}>
                         <Empty />

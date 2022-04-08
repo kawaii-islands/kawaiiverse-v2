@@ -27,31 +27,34 @@ $mobile: 576px;
 
     .data {
         align-items: center;
-        background: #E3DAFF;
+        background: #e3daff;
         border-radius: 4px;
-		margin-top: 3px;
-		
-		.delete-icon {
-			cursor: pointer;
-			padding: 5px;
-			border-radius: 50%;
-			color: #7000FF;
-			transition-duration: 0.35s;
-			font-size: 32px;
+        margin-top: 3px;
 
-			&:hover {
-				color: #4f00b6;
-			}
+        .delete-icon {
+            cursor: pointer;
+            padding: 3px;
+            border-radius: 50%;
+            color: #7000ff;
+            transition-duration: 0.5s;
+            font-size: 28px;
+            background: #d9cce9;
 
-			&:active {
-				color: #7d1cfc;
-			}
-		}
+            &:hover {
+                background: #d5c0f0;
+                transition-duration: 0.5s;
+            }
 
+            &:active {
+                background: #e6d5fb;
+                transition-duration: 0.5s;
+            }
+        }
         &-cell {
             padding: 8px 20px;
             display: flex;
             align-items: center;
+			color: #402a7d;
 
             @media (max-width: $break-point-1) {
                 min-height: 56px;
@@ -88,14 +91,13 @@ $mobile: 576px;
 }
 
 .input {
-    color: #ffffff;
+	color: #402a7d;
     background: none;
     border: none;
-    margin: 0 auto;
 
     &:focus {
         outline: none !important;
         border: none;
-        border-bottom: 1px solid #ffffff;
+        border-bottom: 1px solid #402a7d;
     }
 }

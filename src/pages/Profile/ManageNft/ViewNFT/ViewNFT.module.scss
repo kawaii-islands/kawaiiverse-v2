@@ -3,7 +3,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-		margin-bottom: 30px;
+        margin-bottom: 30px;
 
         .title {
             font-weight: 700;
@@ -26,6 +26,17 @@
                 color: #ffffff;
             }
         }
+    }
+
+    .list-nft {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-between;
+		
+		&::after {
+			content: "";
+			flex: auto;
+		}
     }
 }
 

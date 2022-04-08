@@ -18,9 +18,12 @@ import { read, createNetworkOrSwitch, write } from "src/services/web3";
 import KAWAIIVERSE_NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
 import { BSC_CHAIN_ID, BSC_rpcUrls } from "src/consts/blockchain";
 import LoadingModal from "src/components/LoadingModal/LoadingModal";
+import uploadImageIcon from "src/assets/icons/uploadImage.svg";
+import { create } from "ipfs-http-client";
 
 const web3 = new Web3(BSC_rpcUrls);
 const cx = cn.bind(styles);
+const client = create("https://ipfs.infura.io:5001/api/v0");
 
 const MintNFT = ({ setIsMintNFT, gameSelected }) => {
     let oneNft = {
@@ -48,13 +51,14 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 
     const { account, chainId, library } = useWeb3React();
     const [loading, setLoading] = useState(true);
-    const [openMintNFTBox, setOpenMintNFTBox] = useState();
+    const [openMintNFTBox, setOpenMintNFTBox] = useState(0);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
     const [open, setOpen] = useState(false);
     const [listNft, setListNft] = useState([oneNft]);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [listInvalidToken, setListInvalidToken] = useState({});
     const [checkedTokenId, setCheckedTokenId] = useState(false);
+    const [loadingUploadImg, setLoadingUploadImg] = useState(false);
 
     useEffect(() => {
         setTimeout(() => {
@@ -203,6 +207,22 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         );
     };
 
+    const handleUploadImage = async e => {
+        setLoadingUploadImg(true);
+        const file = e.target.files[0];
+
+        try {
+            const added = await client.add(file);
+            const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+
+            setStateForNftData("imageUrl", url);
+        } catch (error) {
+            console.log("Error uploading file: ", error);
+        }
+
+        setLoadingUploadImg(false);
+    };
+
     const submit = async () => {
         setIsSubmitted(true);
 
@@ -258,20 +278,10 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                 </Row>
 
                 <div className={cx("table-body")}>
-                    {listNft.map((item, index) =>
-                        openMintNFTBox === index ? (
-                            <MintNFTBox
-                                key={index}
-                                data={item}
-                                setStateForNftData={setStateForNftData}
-                                openMintNFTBox={openMintNFTBox}
-                                setOpenMintNFTBox={setOpenMintNFTBox}
-                                listNft={listNft}
-                                setListNft={setListNft}
-                            />
-                        ) : (
+                    {listNft.map((item, index) => (
+                        <div className={cx("table-row")}>
                             <Row
-                                className={cx("table-row")}
+                                className={cx("main-row")}
                                 style={{ alignItems: isSubmitted ? "flex-start" : "center" }}
                                 key={index}
                             >
@@ -294,13 +304,14 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                             if (!item.tokenId) {
                                                 return <div style={{ color: "#9e494d" }}>Please enter tokenId!</div>;
                                             }
-                                            if (isNaN(item.tokenId)) {
+                                            if (isNaN(item.tokenId) || item.tokenId < 0) {
                                                 return (
-                                                    <div style={{ color: "#9e494d" }}>TokenId must be a number!</div>
+                                                    <div style={{ color: "#9e494d" }}>
+                                                        TokenId must be a positive number!
+                                                    </div>
                                                 );
                                             }
                                             if (checkedTokenId && listInvalidToken[index] > 0) {
-                                                console.log("listInvalidToken[idx] :>> ", listInvalidToken[index]);
                                                 return <div style={{ color: "#9e494d" }}>TokenId existed!</div>;
                                             }
                                         })()}
@@ -331,24 +342,52 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                     )}
                                 </Col>
                                 <Col span={8}>
-                                    <img
-                                        src={
-                                            item?.imageUrl
-                                                ? item?.imageUrl
-                                                : `https://images.kawaii.global/kawaii-marketplace-image/items/201003.png`
-                                        }
-                                        alt="nft-icon"
-                                        width={36}
-                                        height={36}
-                                    />{" "}
-                                    &nbsp;
-                                    <input
-                                        placeholder="https://images..."
-                                        value={item?.imageUrl}
-                                        className={cx("input", isSubmitted && !item.imageUrl && "invalid")}
-                                        onChange={e => setStateForNftData("imageUrl", e.target.value, index)}
-                                        style={{ width: "60%" }}
-                                    />
+                                    <Row style={{ alignItems: "center" }}>
+                                        <Col span={4}>
+                                            {loadingUploadImg ? (
+                                                <Spin />
+                                            ) : (
+                                                <img
+                                                    src={
+                                                        item?.imageUrl
+                                                            ? item?.imageUrl
+                                                            : `https://images.kawaii.global/kawaii-marketplace-image/items/201003.png`
+                                                    }
+                                                    alt="nft-icon"
+                                                    width={36}
+                                                    height={36}
+                                                />
+                                            )}
+                                        </Col>
+                                        <Col span={12}>
+                                            <input
+                                                placeholder="https://images..."
+                                                value={item?.imageUrl}
+                                                className={cx("input", isSubmitted && !item.imageUrl && "invalid")}
+                                                onChange={e => setStateForNftData("imageUrl", e.target.value, index)}
+                                                style={{ width: "80%" }}
+                                            />
+                                        </Col>
+                                        <Col span={8}>
+                                            <span>or: </span>
+                                            <span className={cx("image-upload")}>
+                                                <label htmlFor="file-input">
+                                                    <img
+                                                        src={uploadImageIcon}
+                                                        alt="upload-img"
+                                                        className={cx("upload-img-icon")}
+                                                    />
+                                                </label>
+                                                <input
+                                                    placeholder="String"
+                                                    id="file-input"
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={e => handleUploadImage(e)}
+                                                />
+                                            </span>
+                                        </Col>
+                                    </Row>
                                     {isSubmitted && !item.imageUrl && (
                                         <div style={{ color: "#9e494d" }}>Please enter image url!</div>
                                     )}
@@ -372,8 +411,19 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                     />
                                 </Col>
                             </Row>
-                        ),
-                    )}
+                            {openMintNFTBox === index && (
+                                <MintNFTBox
+                                    key={index}
+                                    data={item}
+                                    setStateForNftData={setStateForNftData}
+                                    openMintNFTBox={openMintNFTBox}
+                                    setOpenMintNFTBox={setOpenMintNFTBox}
+                                    listNft={listNft}
+                                    setListNft={setListNft}
+                                />
+                            )}
+                        </div>
+                    ))}
 
                     <img
                         src={addNftIcon}
@@ -396,7 +446,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                 </div>
             </div>
 
-			<LoadingModal open={loadingSubmit} />
+            <LoadingModal open={loadingSubmit} />
 
             <PreviewModal open={open} onHide={() => setOpen(!open)} listNft={listNft} />
         </div>
