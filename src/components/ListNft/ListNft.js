@@ -10,14 +10,14 @@ const ListNft = ({ gameItemList, gameSelected }) => {
     const history = useHistory();
     return (
         <>
-            {gameItemList.length > 0 ? (
+            {gameItemList.length > 0  ? (
                 gameItemList.map((item, index) => (
                     <Col xs={24} sm={12} lg={8} xxl={6} key={`nft-item-${index}`}>
                         <NFTItem
                             data={item}
                             handleNavigation={() =>
                                 history.push({
-                                    pathname: `/profile/manage-nft/${gameSelected}/${item.tokenId}`,
+                                    pathname: `/profile/manage-nft/view-nft/${gameSelected}/${item.tokenId}`,
                                     state: { gameSelected },
                                 })
                             }
@@ -26,6 +26,7 @@ const ListNft = ({ gameItemList, gameSelected }) => {
                 ))
             ) : (
                 <>
+                
                     <Empty style={{ margin: "20px auto" }} />
                 </>
             )}

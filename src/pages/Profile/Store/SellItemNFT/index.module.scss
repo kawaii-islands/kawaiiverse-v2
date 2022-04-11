@@ -5,19 +5,13 @@ $mobile-3: 400px;
 .table{
     font-family: 'Montserrat';
     position: relative;
-    @media(max-width: $tablet){
-      width: calc(100% - 40px);
-
-    }
-    @media(max-width: $mobile-2){
-      width: calc(100% - 25px);
-    }
+    
     &-header{
         height: 40px;
         padding: 9px 0px;
         border-radius: 4px 4px 0px 0px;
         background: #FAF0FF;
-        color: #181818;
+        color: #4200FF;
         font-size: 14px;
         line-height: 21px;
         font-weight: bold;
@@ -28,11 +22,11 @@ $mobile-3: 400px;
         
     }
     &-body{
-        padding: 10px 8px;
+        // padding: 10px 0px;
         color: #402A7D;
         border-radius: 0px 0px 4px 4px;
-        border: 1px solid #CFA4EA;
-        background: #EBE3FF;
+        // border: 1px solid #CFA4EA;
+        // background: #EBE3FF;
         backdrop-filter: blur(50px);
         position: relative;
         .add-icon {
@@ -61,11 +55,16 @@ $mobile-3: 400px;
       color: white;
       &--sell {
         padding: 5px 24px;
-      width: fit-content;
-        color: white;
+        width: fit-content;
+        color:  rgba(255, 255, 255, 0.5);;
         
-      background: linear-gradient(90deg, #D35FF0 0%, #9B2EDE 100%);
+        background: rgba(223, 1, 255, 0.2);
+      // background: linear-gradient(90deg, #D35FF0 0%, #9B2EDE 100%);
       border-radius: 4px;
+      &--active{
+        background: linear-gradient(90deg, #D35FF0 0%, #9B2EDE 100%);
+        color: white;
+      }
      }
      &--add {
       padding: 5px 24px;

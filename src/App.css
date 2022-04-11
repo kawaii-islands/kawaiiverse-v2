@@ -132,3 +132,8 @@ body > iframe {pointer-events: none;}
 /* input:focus{
     outline: none !important;
 } */
+.container{
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: unset !important;
+}

@@ -46,10 +46,11 @@ const NFTDetail = () => {
                         <Button
                             className={cx("back")}
                             onClick={() =>
-                                history.push({
-                                    pathname: `/profile/manage-nft/${address}`,
-                                    state: { isMintNft: false },
-                                })
+                                // history.push({
+                                //     pathname: `/profile/manage-nft/${address}`,
+                                //     state: { isMintNft: false },
+                                // })
+                                history.goBack()
                             }
                         >
                             <LeftOutlined />

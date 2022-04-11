@@ -36,30 +36,32 @@ const menu = (
 );
 const cx = cn.bind(styles);
 
-const ViewItemNFT = ({  }) => {
+const ViewItemNFT = ({ isSellNFT }) => {
     const { account } = useWeb3React();
     const [gameList, setGameList] = useState([]);
     const [gameItemList, setGameItemList] = useState([]);
     const [listSearch, setListSearch] = useState([]);
-    const [loadingListNFT, setLoadingListNFT] = useState(false);
+    const [loadingListNFT, setLoadingListNFT] = useState(true);
     const [allItemFromGame, setAllItemFromGame] = useState([]);
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     let { address } = useParams();
     useEffect(() => {
-        logGameList();
-    }, [account]);
+        getGameList();
+    }, [account,isSellNFT]);
 
     useEffect(() => {
         getListNft();
-    }, [address]);
+    }, [address,isSellNFT]);
 
     useEffect(() => {
-        if (gameList.length && allItemFromGame.length) {
-            logItemList();
-        } else {
-            setGameItemList([]);
-        }
+        getNftList();
+        // if (gameList.length && allItemFromGame.length) {
+        //     console.log("run get nft list")
+            
+        // } else {
+        //     setGameItemList([]);
+        // }
     }, [gameList, allItemFromGame]);
     
     const itemRender = (current, type, originalElement) => {
@@ -97,10 +99,11 @@ const ViewItemNFT = ({  }) => {
             console.log(error);
             toast.error(error);
         }
-    };
+    };  
 
-    const logGameList = async () => {
+    const getGameList = async () => {
         if (account) {
+
             try {
                 const totalGame = await read(
                     "lengthListNFT1155",
@@ -109,9 +112,7 @@ const ViewItemNFT = ({  }) => {
                     KAWAII_STORE_ABI,
                     [],
                 );
-                // setGameList([]);
                 const tmpArray = Array.from({ length: totalGame }, (v, i) => i);
-                let lists = [];
                 const gameListData = Promise.all(
                     tmpArray.map(async (nftId, index) => {
                         let gameAddress = await read(
@@ -122,11 +123,11 @@ const ViewItemNFT = ({  }) => {
                             [index],
                         );
                         let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
-                        // return { gameAddress, gameName };
-                        lists.push({ gameAddress, gameName });
+                        return({gameAddress, gameName});
+
                     }),
-                ).then(() => {
-                    setGameList(lists);
+                ).then((value) => {
+                    setGameList(value);
                 });
             } catch (error) {
                 console.log(error);
@@ -135,15 +136,12 @@ const ViewItemNFT = ({  }) => {
         }
     };
 
-    const logItemList = async () => {
+    const getNftList = () => {
         setLoadingListNFT(true);
-        // setGameItemList([]);
-        let list = [];
         const tmpGameArray = [...Array(address ? 1 : gameList.length).keys()];
-        // const tmpGameArray = [...Array(gameList.length).keys()];
-
         try {
-            const gameListData = await Promise.all(
+
+            const gameListData =  Promise.all(
                 tmpGameArray.map(async (nftId, idx) => {
                     let gameItemLength = await read(
                         "lengthSellNFT1155",
@@ -151,8 +149,7 @@ const ViewItemNFT = ({  }) => {
                         KAWAIIVERSE_STORE_ADDRESS,
                         KAWAII_STORE_ABI,
                         [address ? address : gameList[idx].gameAddress],
-                        // ["0x227cD23002900A412644bE16ECE9D9C3A4B44c65"]
-                        // [gameList[idx].gameAddress],
+                       
                     );
                     const tmpItemArray = Array.from({ length: gameItemLength }, (v, i) => i);
                     const gameItemData = await Promise.all(
@@ -165,32 +162,35 @@ const ViewItemNFT = ({  }) => {
                                 [address ? address : gameList[idx].gameAddress, index],
                                
                             );
-                            // console.log(gameItem);
                             let itemInfo = getItemInfo(gameItem.tokenId);
-                            
-                            list.push(Object.assign({}, gameItem, itemInfo[0]));
+                            return(Object.assign({}, gameItem, itemInfo[0]));
                         }),
-                    );
-                    let myNftList = [];
-                    if (list?.length) {
-                        myNftList = list.filter(nft => nft.owner === account);
-                    }
-                    console.log(myNftList);
-                    setGameItemList(myNftList);
+                    ).then(value => {
+                        let myNftList = [];
+                        if (value?.length) {
+                            myNftList = value.filter(nft => nft.owner === account);
+                        }
+                        setLoadingListNFT(false);
+                        setGameItemList(myNftList.reverse());
+                        
+                    })
+                    
                 }),
             );
         } catch (error) {
+            setLoadingListNFT(false);
             console.log(error);
             toast.error(error.message || "An error occurred!");
         }
-
-        setLoadingListNFT(false);
+        
+        
     };
 
     const getItemInfo = tokenId => {
         return allItemFromGame.filter(item => Number(item.tokenId) === Number(tokenId));
     };
-    const displayList = listSearch.length > 0 || search !== "" ? listSearch : gameItemList;
+    const displayList = (listSearch.length > 0 || search !== "") ? listSearch : gameItemList;
+   
     return (
         <div className={cx("right-main")}>
             <div className={cx("right-top")}>
@@ -214,19 +214,18 @@ const ViewItemNFT = ({  }) => {
                                 <span>Sort by</span> <DownOutlined />
                             </div>
                         </Dropdown>
-                        {/* <div className={cx("button-filter")}>
-                            <img src={filter} alt="filter" />
-                            <span style={{ paddingLeft: "8px" }}>Filter</span>
-                        </div> */}
+                      
                     </div>
                 </div>
             </div>
             <Row gutter={[20, 20]} className={cx("list")}>
-                {/* <ListNft gameItemList={gameItemList} /> */}
                 {loadingListNFT ? (
                     <ListSkeleton page={"store"} />
                 ) : (
-                    <ListNft gameItemList={displayList.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)} gameSelected={address} />
+                    <ListNft 
+                    
+                    gameItemList={displayList.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)} gameSelected={address} 
+                    />
                 )}
             </Row>
             {gameItemList?.length > 0 && (
