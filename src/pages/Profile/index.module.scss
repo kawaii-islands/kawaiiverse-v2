@@ -13,8 +13,22 @@ $mobile: 576px;
         }
 
         .right {
-            padding: 80px 48px 30px 48px;
+            padding: 60px 48px 30px 48px;
             width: 100%;
+            .breadcrums{
+                :global{
+                    .MuiTypography-root{
+                        color: #BC88FF !important;
+                        font-size: 14px;
+                        text-transform: capitalize;
+                        
+                    }
+                }
+                padding-bottom: 18px;
+                margin-bottom: 40px;
+                border-bottom: 1px solid rgba(64, 42, 125, 0.5);
+                cursor: pointer;
+            }
             @media(max-width: $break-point-1){
                 padding: 40px 8px;
             }

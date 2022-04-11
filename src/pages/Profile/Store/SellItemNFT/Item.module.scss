@@ -11,7 +11,8 @@ $w-input: 100px;
     font-weight: bold;
     color: #402A7D;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    // align-items: center;
     position: relative;
     background: #EBE3FF;
     margin-top: 5px !important;
@@ -69,15 +70,20 @@ $w-input: 100px;
         }
     }
     .input-wrapper{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        .error{
-            color:red;
-            margin-top: 8px;
-            font-size: 11px;
-        }
+        // display: flex;
+        // flex-direction: column;
+        // align-items: center;
+        // justify-content: flex-start;
+        
+    }
+    .row-error{
+        flex-flow: unset !important; 
+        height: 40px;
+    }
+    .error{
+        color:red;
+        margin-top: 8px;
+        font-size: 11px;
     }
     .price-input {
         text-align: center;

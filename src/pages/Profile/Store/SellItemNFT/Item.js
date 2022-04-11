@@ -44,9 +44,8 @@ const Item = ({
         let newList = [...list];
         newList = newList.filter(item => item._id !== nft._id);
         setList(newList);
-        setSubmitted(false)
+        setSubmitted(false);
         setRowItem(rowItem + 1);
-        
     };
 
     useEffect(() => {
@@ -130,7 +129,7 @@ const Item = ({
         // if(pattern.test(e.target.value)){
         //     console.log(Number(e.target.value).toString());
         // }
-        setShowError({...showError, [e.target.name]: false});
+        setShowError({ ...showError, [e.target.name]: false });
         // setSubmitted(false);
         if (e.target.name === "quantity") {
             if (Number(e.target.value) > nft.supply) return;
@@ -160,7 +159,7 @@ const Item = ({
             return;
         }
         // setShowError(false);
-        setShowError({...showError, quantity: false})
+        setShowError({ ...showError, quantity: false });
         // setSubmitted(false);
 
         let index;
@@ -220,7 +219,7 @@ const Item = ({
                     </div>
                 ) : (
                     <>
-                        <>
+                        <Row>
                             <Col span={3} style={{ textAlign: "center" }} className={cx("search")}>
                                 <img alt="nft" src={nft.imageUrl} className={cx("nft-image")} />
                             </Col>
@@ -243,9 +242,6 @@ const Item = ({
                                     name="price"
                                     pattern="^[1-9][0-9]*$"
                                 />
-                                {showError.price && (
-                                    <div className={cx("error")}>Please set price greater than 0</div>
-                                )}
                             </Col>
                             <Col span={5} style={{ textAlign: "center" }} className={cx("input-wrapper")}>
                                 <div className={cx("quantity")}>
@@ -274,9 +270,6 @@ const Item = ({
                                         +
                                     </div>
                                 </div>
-                                {showError.quantity && (
-                                    <div className={cx("error")}>Please set quantity greater than 0</div>
-                                )}
                             </Col>
                             <Col span={3} style={{ textAlign: "center", color: "#402A7D", fontWeight: "bold" }}>
                                 {nft.supply || 0}
@@ -287,10 +280,26 @@ const Item = ({
                                     <DeleteOutlinedIcon />
                                 </div>
                             </Col>
-                        </>
+                        </Row>
+                        <Row className={cx("row-error")}>
+                            <Col span={3} style={{ textAlign: "center" }}></Col>
+                            <Col span={3} style={{ textAlign: "center" }}></Col>
+                            <Col span={3} style={{ textAlign: "center" }}></Col>
+                            <Col span={3} style={{ textAlign: "center" }}>
+                                {showError.price && <div className={cx("error")}>Please set price greater than 0</div>}
+                            </Col>
+                            <Col span={5} style={{ textAlign: "center" }}>
+                                {showError.quantity && (
+                                    <div className={cx("error")}>Please set quantity greater than 0</div>
+                                )}
+                            </Col>
+                            <Col span={3} style={{ textAlign: "center" }}></Col>
+                            <Col span={3} style={{ textAlign: "center" }}></Col>
+                        </Row>
                     </>
                 )}
             </Row>
+
             <ListModal
                 open={showModal}
                 onHide={() => setShowModal(false)}
@@ -300,104 +309,6 @@ const Item = ({
                 selectNft={selectNft}
             />
         </>
-        // <>
-        //     <Row className={cx("table-body")}>
-        //         {/* <img src={addRowItem} alt="add-icon" className={cx("add-icon")} onClick={addItem} /> */}
-        //         <Col span={4} style={{ textAlign: "center" }} className={cx("search")}>
-        //             <input
-        //                 type="string"
-        //                 placeholder="Search ID"
-        //                 className={cx("search-input")}
-        //                 name="tokenId"
-        //                 autoComplete="off"
-        //                 value={search.tokenId}
-        //                 onChange={handleSearch}
-        //             />
-        //             <div className={cx("dropdown")}>
-        //                 {listSearch.length > 0 &&
-        //                     search.tokenId &&
-        //                     listSearch.map((i, idx) => {
-        //                         return (
-        //                             <div onClick={() => addNft(i._id)} key={`search-tokenId-${idx}`}>
-        //                                 {i.tokenId}
-        //                             </div>
-        //                         );
-        //                     })}
-        //             </div>
-        //         </Col>
-        //         <Col span={4} style={{ textAlign: "center" }} className={cx("search")}>
-        //             <input
-        //                 type="string"
-        //                 placeholder="Search name"
-        //                 name="name"
-        //                 autoComplete="off"
-        //                 className={cx("search-input")}
-        //                 value={search.name}
-        //                 onChange={handleSearch}
-        //             />
-        //             <div className={cx("dropdown")}>
-        //                 {listSearch.length > 0 &&
-        //                     search.name &&
-        //                     listSearch.map((i, idx) => {
-        //                         return (
-        //                             <div onClick={() => addNft(i._id)} key={`search-name-${idx}`}>
-        //                                 {i.name}
-        //                             </div>
-        //                         );
-        //                     })}
-        //             </div>
-        //         </Col>
-
-        //         <Col span={4} style={{ textAlign: "center" }}>
-        //             <input
-        //                 className={cx("price-input")}
-        //                 value={info.price}
-        //                 min={0}
-        //                 // disabled={nft._id ? true : false}
-        //                 // disabled={true}
-        //                 type="number"
-        //                 onChange={handleInput}
-        //                 name="price"
-        //                 pattern="^[1-9][0-9]*$"
-        //             />
-        //         </Col>
-        //         <Col span={4} style={{ textAlign: "center" }}>
-        //             <div className={cx("quantity")}>
-        //                 <div className={cx("quantity-btn", "quantity-minus")} onClick={() => changeQuantity("minus")}>
-        //                     -
-        //                 </div>
-        //                 <input
-        //                     value={info.quantity}
-        //                     min={0}
-        //                     max={nft.supply || 0}
-        //                     name="quantity"
-        //                     onChange={handleInput}
-        //                     className={cx("price-input")}
-        //                     // disabled={nft._id ? true : false}
-        //                     // disabled={true}
-        //                     pattern="^[1-9][0-9]*$"
-        //                 />
-        //                 <div
-        //                     className={cx("quantity-btn", "quantity-plus")}
-        //                     name="plus"
-        //                     onClick={() => changeQuantity("plus")}
-        //                 >
-        //                     +
-        //                 </div>
-        //             </div>
-        //         </Col>
-        //         <Col span={4} style={{ textAlign: "center", color: "#402A7D", fontWeight: "bold" }}>
-        //             {nft.supply || 0}
-        //         </Col>
-        //         <Col span={4} style={{ textAlign: "center" }}>
-        //             {/* <input type="checkbox" style={{background: "#A4B8EA"}} /> */}
-        //             <div onClick={() => deleteRow(nft._id)}>X</div>
-        //         </Col>
-        //     </Row>
-        //     {submitted && showError && (nft.quantity <= 0 || nft.price <= 0) && (
-        //         <div style={{ color: "red", padding: 20 }}>Please set price and quantity greater than 0</div>
-        //     )}
-        // </>
     );
 };
 export default Item;

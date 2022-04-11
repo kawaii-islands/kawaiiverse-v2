@@ -310,6 +310,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             console.log(err);
             setStepLoading(3);
             toast.error(err);
+            setSubmitted(false)
         } finally {
             setLoading(false);
         }
