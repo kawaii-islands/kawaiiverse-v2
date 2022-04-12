@@ -22,15 +22,20 @@
         }
 
         .sub-title {
+			text-align: center;
             font-weight: 500;
             font-size: 16px;
             line-height: 150%;
-            color: #402a7d;
+            color: #BE008E;
+			padding: 12px 77px;
+			width: fit-content;
+			margin: 20px auto;
+			background: linear-gradient(90deg, rgba(217, 171, 255, 0) 0%, #DAADFF 49.48%, rgba(210, 155, 255, 0) 100%);
         }
     }
 
     .list-nft {
-        padding: 30px 35px;
+        padding: 0px 35px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -48,8 +53,7 @@
             border-radius: 6px;
             height: fit-content;
             cursor: pointer;
-            margin-right: 20px;
-            margin-bottom: 20px;
+            margin: 10px;
 
             .top {
                 border-bottom: 1px solid #ad99e7;

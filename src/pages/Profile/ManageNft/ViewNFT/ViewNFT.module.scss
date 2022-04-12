@@ -12,31 +12,47 @@
             color: #ffffff;
         }
 
-        .search {
-            width: 340px;
-            border-bottom: 2px solid #ffffff;
-            color: #ffffff !important;
+        .group-search {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            font-family: "Mali-Regular", sans-serif;
 
-            .icon {
-                cursor: pointer;
-                color: #ffffff;
+            .search {
+                width: 240px;
+                border-bottom: 2px solid #ffffff;
+                color: #ffffff !important;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+				font-family: "Montserrat", sans-serif;
+
+                .icon {
+                    cursor: pointer;
+                    color: #ffffff;
+                }
+            }
+
+            .button {
+				margin-left: 20px;
+                background: linear-gradient(94.08deg, #7f00ff -1.88%, #e100ff 100%);
+                border-radius: 6px;
+                color: #f6f7fb;
+                font-weight: 700;
+                font-size: 16px;
+                line-height: 150%;
+                padding: 10px 24px;
             }
         }
     }
 
     .list-nft {
-		display: flex;
-		flex-flow: row wrap;
-		justify-content: space-between;
-		
-		&::after {
-			content: "";
-			flex: auto;
-		}
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+
+        &::after {
+            content: "";
+            flex: auto;
+        }
     }
 }
 

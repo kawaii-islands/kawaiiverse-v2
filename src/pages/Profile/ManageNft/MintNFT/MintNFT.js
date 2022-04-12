@@ -20,6 +20,8 @@ import { BSC_CHAIN_ID, BSC_rpcUrls } from "src/consts/blockchain";
 import LoadingModal from "src/components/LoadingModal/LoadingModal";
 import uploadImageIcon from "src/assets/icons/uploadImage.svg";
 import { create } from "ipfs-http-client";
+import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
+import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 
 const web3 = new Web3(BSC_rpcUrls);
 const cx = cn.bind(styles);
@@ -59,6 +61,8 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
     const [listInvalidToken, setListInvalidToken] = useState({});
     const [checkedTokenId, setCheckedTokenId] = useState(false);
     const [loadingUploadImg, setLoadingUploadImg] = useState(false);
+    const [imageIdx, setImageIdx] = useState();
+	const [stepLoading, setStepLoading] = useState(0);
 
     useEffect(() => {
         setTimeout(() => {
@@ -166,7 +170,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                 ]);
 
                 list[ind] = itemSupply;
-                console.log("itemSupply :>> ", itemSupply);
 
                 if (itemSupply != 0) {
                     check = true;
@@ -182,11 +185,10 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
     };
 
     const createToken = async data => {
+		setStepLoading(1);
         let listTokenId = data.map(token => token.tokenId);
         let listTokenSupply = data.map(token => token.supply);
         let listTokenAccount = Array(listTokenId.length).fill(account);
-
-        console.log(listTokenId, listTokenSupply, listTokenAccount);
 
         if (chainId !== BSC_CHAIN_ID) {
             const error = await createNetworkOrSwitch(library.provider);
@@ -205,17 +207,20 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                 console.log(hash);
             },
         );
+		setStepLoading(0);
     };
 
-    const handleUploadImage = async e => {
+    const handleUploadImage = async (e, index) => {
+        setImageIdx(index);
         setLoadingUploadImg(true);
+
         const file = e.target.files[0];
 
         try {
             const added = await client.add(file);
             const url = `https://ipfs.infura.io/ipfs/${added.path}`;
 
-            setStateForNftData("imageUrl", url);
+            setStateForNftData("imageUrl", url, index);
         } catch (error) {
             console.log("Error uploading file: ", error);
         }
@@ -233,7 +238,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
             if (checkData || checkToken) return;
 
             setLoadingSubmit(true);
-            console.log("gameSelected :>> ", gameSelected);
             await createToken(listNft);
 
             const signature = await getSignature();
@@ -259,6 +263,10 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 
     return (
         <div className={cx("mint-nft")}>
+            <div className={cx("back")} onClick={() => setIsMintNFT(false)}>
+                <ArrowBackIosNewRoundedIcon style={{ fontSize: "16px" }} /> &nbsp;
+                <span>Mint NFT</span>
+            </div>
             <div className={cx("table")}>
                 <Row className={cx("table-header")}>
                     <Col span={5}>
@@ -279,11 +287,10 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 
                 <div className={cx("table-body")}>
                     {listNft.map((item, index) => (
-                        <div className={cx("table-row")}>
+                        <div className={cx("table-row")} key={`main-${index}`}>
                             <Row
                                 className={cx("main-row")}
                                 style={{ alignItems: isSubmitted ? "flex-start" : "center" }}
-                                key={index}
                             >
                                 <Col span={5}>
                                     <input
@@ -344,7 +351,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                 <Col span={8}>
                                     <Row style={{ alignItems: "center" }}>
                                         <Col span={4}>
-                                            {loadingUploadImg ? (
+                                            {loadingUploadImg && imageIdx === index ? (
                                                 <Spin />
                                             ) : (
                                                 <img
@@ -364,14 +371,17 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                                 placeholder="https://images..."
                                                 value={item?.imageUrl}
                                                 className={cx("input", isSubmitted && !item.imageUrl && "invalid")}
-                                                onChange={e => setStateForNftData("imageUrl", e.target.value, index)}
+                                                onChange={e => {
+                                                    setImageIdx(index);
+                                                    setStateForNftData("imageUrl", e.target.value, index);
+                                                }}
                                                 style={{ width: "80%" }}
                                             />
                                         </Col>
                                         <Col span={8}>
                                             <span>or: </span>
                                             <span className={cx("image-upload")}>
-                                                <label htmlFor="file-input">
+                                                <label htmlFor={`image-${index}`}>
                                                     <img
                                                         src={uploadImageIcon}
                                                         alt="upload-img"
@@ -380,10 +390,10 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                                 </label>
                                                 <input
                                                     placeholder="String"
-                                                    id="file-input"
+                                                    id={`image-${index}`}
                                                     type="file"
                                                     accept="image/*"
-                                                    onChange={e => handleUploadImage(e)}
+                                                    onChange={e => handleUploadImage(e, index)}
                                                 />
                                             </span>
                                         </Col>
@@ -396,11 +406,9 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                     <DeleteOutlinedIcon
                                         className={cx("delete-icon")}
                                         onClick={() => {
-                                            if (listNft.length > 1) {
-                                                let arr = [...listNft];
-                                                arr.splice(index, 1);
-                                                setListNft(arr);
-                                            }
+                                            let arr = [...listNft];
+                                            arr.splice(index, 1);
+                                            setListNft(arr);
                                         }}
                                     />
                                 </Col>
@@ -413,7 +421,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                             </Row>
                             {openMintNFTBox === index && (
                                 <MintNFTBox
-                                    key={index}
                                     data={item}
                                     setStateForNftData={setStateForNftData}
                                     openMintNFTBox={openMintNFTBox}
@@ -425,7 +432,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                         </div>
                     ))}
 
-                    <img
+                    {/* <img
                         src={addNftIcon}
                         alt="add-nft-icon"
                         className={cx("add-nft")}
@@ -433,7 +440,18 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                             setListNft([...listNft, oneNft]);
                             setOpenMintNFTBox(listNft.length);
                         }}
-                    />
+                    /> */}
+                </div>
+
+                <div
+                    className={cx("add-nft")}
+                    onClick={() => {
+                        setListNft([...listNft, oneNft]);
+                        setOpenMintNFTBox(listNft.length);
+                    }}
+                >
+                    <AddCircleOutlineRoundedIcon /> &nbsp;
+                    <span>Add NFT</span>
                 </div>
 
                 <div className={cx("group-button")}>

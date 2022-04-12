@@ -33,28 +33,22 @@ $mobile: 576px;
 
         .delete-icon {
             cursor: pointer;
-            padding: 3px;
+            padding: 6px;
             border-radius: 50%;
-            color: #7000ff;
+            color: #c190ff;
             transition-duration: 0.5s;
-            font-size: 28px;
-            background: #d9cce9;
+            font-size: 38px;
 
             &:hover {
-                background: #d5c0f0;
-                transition-duration: 0.5s;
-            }
-
-            &:active {
-                background: #e6d5fb;
-                transition-duration: 0.5s;
+                transform: scale(1.15);
             }
         }
+
         &-cell {
             padding: 8px 20px;
             display: flex;
             align-items: center;
-			color: #402a7d;
+            color: #402a7d;
 
             @media (max-width: $break-point-1) {
                 min-height: 56px;
@@ -91,7 +85,7 @@ $mobile: 576px;
 }
 
 .input {
-	color: #402a7d;
+    color: #402a7d;
     background: none;
     border: none;
 
