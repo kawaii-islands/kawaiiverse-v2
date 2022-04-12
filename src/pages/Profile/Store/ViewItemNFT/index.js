@@ -24,16 +24,7 @@ import { DownOutlined } from "@ant-design/icons";
 import filter from "src/assets/icons/filter.svg";
 import { Search as SearchIcon } from "@material-ui/icons";
 const PAGE_SIZE = 15;
-const menu = (
-    <Menu>
-        <Menu.Item key="low-high">
-            <div>Price: Low to High</div>
-        </Menu.Item>
-        <Menu.Item key="high-low">
-            <div>Price: High to Low</div>
-        </Menu.Item>
-    </Menu>
-);
+
 const cx = cn.bind(styles);
 
 const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
@@ -63,7 +54,16 @@ const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
         //     setGameItemList([]);
         // }
     }, [gameList, allItemFromGame]);
-
+    const menu = (
+        <Menu className={cx("menu-dropdown")}>
+            <Menu.Item key="low-high">
+                <div>Price: Low to High</div>
+            </Menu.Item>
+            <Menu.Item key="high-low">
+                <div>Price: High to Low</div>
+            </Menu.Item>
+        </Menu>
+    );
     const itemRender = (current, type, originalElement) => {
         if (type === "prev") {
             return <span style={{ color: "#FFFFFF" }}>Prev</span>;
@@ -165,8 +165,9 @@ const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
                         if (value?.length) {
                             myNftList = value.filter(nft => nft.owner === account);
                         }
-                        setLoadingListNFT(false);
+                        
                         setGameItemList(myNftList.reverse());
+                        
                     });
                 }),
             );
@@ -175,18 +176,18 @@ const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
             console.log(error);
             toast.error(error.message || "An error occurred!");
         }
+        setLoadingListNFT(false);
     };
 
     const getItemInfo = tokenId => {
         return allItemFromGame.filter(item => Number(item.tokenId) === Number(tokenId));
     };
     const displayList = listSearch.length > 0 || search !== "" ? listSearch : gameItemList;
-
     return (
         <div className={cx("right-main")}>
             <div className={cx("right-top")}>
                 <div className={cx("right-top-title")}>{displayList?.length} items</div>
-                <div className={cx("group-search")}>
+                
                     <Input
                         disableUnderline
                         placeholder="Search for NFT"
@@ -206,10 +207,10 @@ const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
                             </div>
                         </Dropdown>
                     </div>
-                    <Button className={cx("button")} onClick={() => setIsSellNFT(true)}>
+                    <Button className={cx("button-sell")} onClick={() => setIsSellNFT(true)}>
                         Sell NFT
                     </Button>
-                </div>
+                
             </div>
             <Row gutter={[20, 20]} className={cx("list")}>
                 {loadingListNFT ? (

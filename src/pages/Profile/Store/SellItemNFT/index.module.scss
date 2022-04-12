@@ -2,11 +2,36 @@ $tablet: 814px;
 $mobile: 600px;
 $mobile-2: 500px;
 $mobile-3: 400px;
+.main-title{
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 150%;
+  display: flex;
+  align-items: center;
+  position: relative;
+  
+  svg{
+    position: absolute;
+    line-height: 150%;
+    font-weight: 600;
+    font-size: 20px;
+    left: -26px;
+    top: 50%;
+    transform: translate(0, -50%);
+    // top: 0;
+    cursor: pointer;
+    &:hover{
+      color: #9254C8;
+    }
+  }
+}
 .table{
-    font-family: 'Montserrat';
+    
     position: relative;
     
     &-header{
+      margin-top: 28px;
         height: 40px;
         padding: 9px 0px;
         border-radius: 4px 4px 0px 0px;
@@ -29,6 +54,11 @@ $mobile-3: 400px;
         // background: #EBE3FF;
         backdrop-filter: blur(50px);
         position: relative;
+        .spin{
+          width: 100%;
+          padding-top: 20px;
+          text-align: center;
+        }
         .add-icon {
           position: absolute;
           right: -48px;

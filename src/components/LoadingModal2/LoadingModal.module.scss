@@ -6,21 +6,21 @@
 
     :global(.modal-content) {
         width: 370px;
-        background: #fdf5e8;
+        background: #EBE3FF;
         border-radius: 8px;
     }
 
     .modal-body {
-        background: #fdf5e8;
+        background: #EBE3FF;
         border-radius: 8px;
         padding: 10px;
-        background: #fdf5e8;
+        
 
         .top-body {
             text-align: right;
 
             .icon-cancel {
-                color: #f3574f;
+                color: #9254C8;
                 cursor: pointer;
             }
         }
@@ -87,15 +87,15 @@
                 font-size: 16px;
                 line-height: 150%;
                 text-align: center;
-                color: #cb8b91;
+                color: #4200FF;
                 margin-top: 5px;
                 margin-bottom: 10px;
             }
 
             .MuiButton-root {
                 text-transform: none !important;
-                background-color: #F25858;
-                color: #fafafa;
+                background-color: red;
+                color: white;
                 width: 70%;
             }
         }

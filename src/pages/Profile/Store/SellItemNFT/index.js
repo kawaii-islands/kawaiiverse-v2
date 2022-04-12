@@ -20,6 +20,8 @@ import LoadingModal from "src/components/LoadingModal2/LoadingModal";
 import { URL } from "src/consts/constant";
 import NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
 import { useHistory, useParams } from "react-router";
+import {LeftOutlined} from '@ant-design/icons';
+import { Spin } from 'antd';
 const cx = cn.bind(styles);
 const web3 = new Web3(BSC_rpcUrls);
 
@@ -40,6 +42,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
     const [showModalLoading, setShowModalLoading] = useState(false);
     const [loadingTitle, setLoadingTitle] = useState("");
     const [loading, setLoading] = useState(false);
+    const [loadingGetList, setLoadingGetList] = useState(true);
     useEffect(() => {
         getListNft();
         getAllowance();
@@ -47,13 +50,20 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
 
     const getListNft = async () => {
         try {
+            setLoadingGetList(true)
             const res = await axios.get(`${URL}/v1/nft/${gameSelected}`);
+            console.log(res);
+            
             const gameList = await getGameList();
             const nftSaleList = await getNftList(gameList);
+            console.log(nftSaleList);
+            console.log(res.data.data);
+            // return;
             if (res.status === 200) {
                 let allList = res.data.data;
                 for (let i = 0; i < allList.length; i++) {
                     for (let j = 0; j < nftSaleList.length; j++) {
+                        
                         if (Number(allList[i].tokenId) === Number(nftSaleList[j].tokenId)) {
                             allList[i].supply = Number(allList[i].supply) - Number(nftSaleList[j].amount);
                         }
@@ -62,7 +72,10 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 allList = allList.filter(nft => {
                     return nft.supply > 0;
                 });
+                console.log(allList)
+                // return;
                 setList([...allList]);
+                setLoadingGetList(false);
             } else {
                 toast.error("Cannot get list Nft");
             }
@@ -162,6 +175,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
 
     const sellNft = async () => {
         console.log(listSell);
+        // return;
         if (listSell?.length === 0) return;
         setSubmitted(true);
         let pass = true;
@@ -202,67 +216,8 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             const tokenIds = listSell.map(nft => nft.tokenId);
             const amounts = listSell.map(nft => nft.quantity);
             const prices = listSell.map(nft => web3.utils.toWei(nft.price));
-
-            // const _data = web3.eth.abi.encodeFunctionCall(
-            //     {
-            //         inputs: [
-            //             {
-            //                 internalType: "address",
-            //                 name: "sender",
-            //                 type: "address",
-            //             },
-            //             {
-            //                 internalType: "address",
-            //                 name: "_nftAddress",
-            //                 type: "address",
-            //             },
-            //             {
-            //                 internalType: "uint256",
-            //                 name: "_tokenId",
-            //                 type: "uint256",
-            //             },
-            //             {
-            //                 internalType: "uint256",
-            //                 name: "_amount",
-            //                 type: "uint256",
-            //             },
-            //             {
-            //                 internalType: "uint256",
-            //                 name: "_price",
-            //                 type: "uint256",
-            //             },
-            //             {
-            //                 internalType: "uint8",
-            //                 name: "v",
-            //                 type: "uint8",
-            //             },
-            //             {
-            //                 internalType: "bytes32",
-            //                 name: "r",
-            //                 type: "bytes32",
-            //             },
-            //             {
-            //                 internalType: "bytes32",
-            //                 name: "s",
-            //                 type: "bytes32",
-            //             },
-            //         ],
-            //         name: "saleNFT1155",
-            //         outputs: [],
-            //         stateMutability: "nonpayable",
-            //         type: "function",
-            //     },
-            //     [
-            //         account,
-            //         gameSelected,
-            //         listSell[0].tokenId,
-            //         listSell[0].quantity,
-            //         web3.utils.toWei(listSell[0].price),
-            //         v,
-            //         r,
-            //         s,
-            //     ],
-            // );
+            console.log(tokenIds, amounts, prices);
+            
             const _data = web3.eth.abi.encodeFunctionCall(
                 {
                     inputs: [
@@ -297,6 +252,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 },
             );
             setStepLoading(2);
+            setSubmitted(false);
         } catch (err) {
             console.log(err);
             setStepLoading(3);
@@ -304,28 +260,25 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             setSubmitted(false);
         } finally {
             setLoading(false);
+            setSubmitted(false);
         }
     };
     const getSignature = async () => {
         try {
             const nonce = await read("nonces", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, [account]);
-            // console.log(nonce);
             const name = await read("NAME", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, []);
-            // const name = await read("NAME", 97, "0xa1aeb7fdc1068707e635caeff44086c4551e7869", KAWAII_STORE_ABI, []);
             const EIP712Domain = [
                 { name: "name", type: "string" },
                 { name: "version", type: "string" },
                 { name: "chainId", type: "uint256" },
                 { name: "verifyingContract", type: "address" },
             ];
-            // console.log("name", name)
             const domain = {
                 name,
                 version: "1",
                 chainId: BSC_CHAIN_ID,
                 verifyingContract: KAWAIIVERSE_STORE_ADDRESS,
             };
-            // console.log(domain)
             const Data = [
                 { name: "sender", type: "address" },
                 { name: "_nftAddress", type: "address" },
@@ -337,7 +290,6 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 _nftAddress: gameSelected,
                 nonce,
             };
-            // console.log(message)
             const data = JSON.stringify({
                 types: {
                     EIP712Domain,
@@ -375,7 +327,10 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                     setIsSellNFT={setIsSellNFT}
                 />
             )}
-
+            <div className={cx("main-title")}>
+            <LeftOutlined onClick={() => setIsSellNFT(false)}/>
+            SELL NFT
+            </div>
             <Row className={cx("table-header")}>
                 <Col span={3} style={{ textAlign: "center" }} className={cx("search")}>
                     NFT
@@ -401,7 +356,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 </Col>
             </Row>
             <div className={cx("table-body")}>
-                {new Array(rowItem).fill().map((i, idx) => (
+                {loadingGetList ? <Spin className={cx("spin")}/> : new Array(rowItem).fill().map((i, idx) => (
                     <Item
                         setList={setList}
                         setCanAdd={setCanAdd}
@@ -417,7 +372,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                         index={idx}
                     />
                 ))}
-                {/* <img src={addRowItem} alt="add-icon" className={cx("add-icon")} onClick={addItem} /> */}
+                
             </div>
             <div className={cx("wrapper-btn")}>
                 <Button

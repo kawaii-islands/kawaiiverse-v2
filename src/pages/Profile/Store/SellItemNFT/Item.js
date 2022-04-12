@@ -6,6 +6,7 @@ import styles from "./Item.module.scss";
 import addRowItem from "src/assets/icons/addRowItem.svg";
 import ListModal from "src/components/ListModal/ListModal";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+
 const cx = cn.bind(styles);
 const Item = ({
     setList,
