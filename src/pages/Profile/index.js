@@ -3,9 +3,7 @@ import LoadingPage from "src/components/LoadingPage/LoadingPage";
 import MainLayout from "src/components/MainLayout";
 import styles from "./index.module.scss";
 import cn from "classnames/bind";
-import { Col, Row } from "antd";
 import Filter from "src/components/Filter/Filter";
-import { Button } from "@mui/material";
 import { read } from "src/services/web3";
 import { BSC_CHAIN_ID } from "src/consts/blockchain";
 import FACTORY_ABI from "src/utils/abi/factory.json";
@@ -19,6 +17,11 @@ import { URL } from "src/consts/constant";
 import FilterMobile from "src/components/FilterMobile/FilterMobile";
 import { useParams } from "react-router-dom";
 import { KAWAII1155_ADDRESS } from "src/consts/constant";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
+import { useHistory, useLocation } from "react-router-dom";
 import axios from "axios";
 
 const cx = cn.bind(styles);
@@ -30,6 +33,8 @@ const tabObject = {
 };
 
 const Profile = () => {
+    const history = useHistory();
+    const { pathname } = useLocation();
     const { account } = useWeb3React();
     const [loading, setLoading] = useState(true);
     const [isGameTab, setIsGameTab] = useState(false);
@@ -43,7 +48,7 @@ const Profile = () => {
         gameName: "",
         gameUrl: "",
     });
-
+    const pathnames = pathname.split("/").filter(Boolean);
     useEffect(() => {
         setLoading(true);
         if (tabParam.tab) {
@@ -73,7 +78,6 @@ const Profile = () => {
 
             console.log("gameName :>> ", gameName);
             console.log("gameUrl :>> ", gameUrl);
-			
         } catch (error) {
             console.log(error);
         }
@@ -109,7 +113,8 @@ const Profile = () => {
             }
         }
     };
-
+    
+    
     return loading ? (
         <LoadingPage />
     ) : (
@@ -139,7 +144,31 @@ const Profile = () => {
                         />
                     </div>
 
-                    <div className={cx("right")}>{getActiveTab(activeTab)}</div>
+                    <div className={cx("right")}>
+                        <div className={cx("breadcrums")}>
+                            {" "}
+                           
+                            <Breadcrumbs separator={<NavigateNextIcon />} aria-label="breadcrumb">
+                                {pathnames.length ? (
+                                    <span onClick={() => history.push("/")}>Home</span>
+                                ) : (
+                                    <span> Home </span>
+                                )}
+                                {pathnames.map((name, index) => {
+                                    const routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
+                                    const isLast = index === pathnames.length - 1;
+                                    return isLast ? (
+                                        <span key={name}>{name}</span>
+                                    ) : (
+                                        <span key={name} onClick={() => history.push(routeTo)}>
+                                            {name}
+                                        </span>
+                                    );
+                                })}
+                            </Breadcrumbs>
+                        </div>
+                        {getActiveTab(activeTab)}
+                    </div>
                 </div>
             </div>
         </MainLayout>

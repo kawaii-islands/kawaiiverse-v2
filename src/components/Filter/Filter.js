@@ -27,6 +27,7 @@ const tab = [
 const Filter = ({ gameList, setGameSelected, gameSelected, activeTab, setActiveTab, gameInfo }) => {
     const history = useHistory();
     let { address } = useParams();
+    console.log("Address", address);
     const handleGameClick = (address, idx) => {
         console.log(address);
         setGameSelected(address);
@@ -48,7 +49,6 @@ const Filter = ({ gameList, setGameSelected, gameSelected, activeTab, setActiveT
                             className={cx("menu-item", activeTab === tab.key && "active")}
                             key={id}
                             onClick={() => {
-                                console.log("tab.key :>> ", tab.key);
                                 setActiveTab(tab.key);
                                 history.push(`/profile/${tab.path}/${address}`);
                             }}

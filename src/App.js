@@ -22,6 +22,7 @@ const Profile = React.lazy(() => import("src/pages/Profile/index"));
 const MintNFTDetail = React.lazy(() => import("src/pages/Profile/ManageNft/NFTDetail/NFTDetail"));
 
 function App() {
+    
     return (
         <Provider store={store}>
             <ThemeProvider theme={light}>
