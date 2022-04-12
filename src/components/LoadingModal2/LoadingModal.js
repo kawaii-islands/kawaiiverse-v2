@@ -7,8 +7,8 @@ import upload from "src/assets/icons/upload.svg";
 import loadingProcess from "src/assets/images/loading1.png";
 // import warning from "src/assets/icons/warning.svg";
 import { Button } from "@material-ui/core";
-import logoSuccess from "src/assets/images/success.png"
-import warning from "src/assets/images/error1.png"
+import logoSuccess from "src/assets/images/success.png";
+import warning from "src/assets/images/error1.png";
 
 const cx = cn.bind(styles);
 const EXPLORER = {
@@ -16,7 +16,18 @@ const EXPLORER = {
     BscScan: "https://testnet.bscscan.com",
 };
 
-const LoadingModal = ({ setIsSellNFT,show, network, loading, title, stepLoading, onHide, hash, hideParent, notClose }) => {
+const LoadingModal = ({
+    setIsSellNFT,
+    show,
+    network,
+    loading,
+    title,
+    stepLoading,
+    onHide,
+    hash,
+    hideParent,
+    notClose,
+}) => {
     return (
         <Modal
             show={show}
@@ -26,12 +37,12 @@ const LoadingModal = ({ setIsSellNFT,show, network, loading, title, stepLoading,
                 if (notClose) {
                     if (stepLoading < 2) return;
                 }
-                
+
                 if (!loading || stepLoading === 1) {
                     if ((stepLoading === 2 || stepLoading === 1) && hideParent) {
                         hideParent();
                     }
-                    
+
                     onHide();
                 }
             }}
@@ -53,7 +64,7 @@ const LoadingModal = ({ setIsSellNFT,show, network, loading, title, stepLoading,
                                 if ((stepLoading === 2 || stepLoading === 1) && hideParent) {
                                     hideParent();
                                 }
-                                
+
                                 onHide();
                             }
                         }}
@@ -62,7 +73,7 @@ const LoadingModal = ({ setIsSellNFT,show, network, loading, title, stepLoading,
                 {stepLoading === 2 ? (
                     <div>
                         <div className={cx("center-body")}>
-                            <img src={upload} alt="upload-icon" />
+                            <img src={logoSuccess} alt="upload-icon" />
                         </div>
                         <div className={cx("bottom-body")}>
                             <div className={cx("title")}>
@@ -70,14 +81,24 @@ const LoadingModal = ({ setIsSellNFT,show, network, loading, title, stepLoading,
                             </div>
                             <br />
                             {hash && (
-                                <a href={`${EXPLORER[network]}/tx/${hash}`} target="_blank" style={{ color: "#fff" }}>
+                                <a
+                                    href={`${EXPLORER[network]}/tx/${hash}`}
+                                    target="_blank"
+                                    style={{ color: "#fff", textDecoration: "none" }}
+                                >
                                     <Button className={cx("MuiButton-root")} size="large">
                                         View on {network}
                                     </Button>
                                 </a>
                             )}
                             <br />
-                            <Button onClick={() => setIsSellNFT(false)} size="medium" style={{background: "#FFF56D", marginTop: 10, width: '70%'}}>View NFT</Button>
+                            <Button
+                                onClick={() => setIsSellNFT(false)}
+                                size="medium"
+                                style={{ background: "#A863FF", color: "#FFFFFF", marginTop: 10, width: "70%" }}
+                            >
+                                View NFT
+                            </Button>
                         </div>
                     </div>
                 ) : stepLoading === 1 ? (
@@ -92,7 +113,11 @@ const LoadingModal = ({ setIsSellNFT,show, network, loading, title, stepLoading,
                             <div className={cx("content")}>Waiting for confirmation</div>
                             <br />
                             {hash && (
-                                <a href={`${EXPLORER[network]}/tx/${hash}`} target="_blank" style={{ color: "#fff" }}>
+                                <a
+                                    href={`${EXPLORER[network]}/tx/${hash}`}
+                                    target="_blank"
+                                    style={{ color: "#fff", textDecoration: "none" }}
+                                >
                                     <Button className={cx("MuiButton-root")} size="large">
                                         View on {network}
                                     </Button>

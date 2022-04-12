@@ -75,7 +75,7 @@ $mobile: 576px;
                     }
 
                     .invalid {
-                        border: 1px solid #9e494d;
+                        border: 1px solid rgba(240, 134, 134, 0.99);
                         border-radius: 4px;
 
                         &:focus {
@@ -84,7 +84,7 @@ $mobile: 576px;
                     }
 
                     .error-mes {
-                        color: #b11b23;
+                        color: #DC615D;
                     }
 
                     .preview {

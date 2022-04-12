@@ -32,8 +32,9 @@ const ViewNFT = ({ gameSelected, setIsMintNFT }) => {
             const res = await axios.get(`${URL}/v1/nft/${gameSelected}`);
 
             if (res.status === 200) {
-                setListNftByContract(res.data.data.reverse());
-                setDisplayList(res.data.data.reverse());
+                let data = res.data.data.reverse();
+                setListNftByContract(data);
+                setDisplayList(data);
                 setLoading(false);
             }
         } catch (err) {
@@ -52,21 +53,18 @@ const ViewNFT = ({ gameSelected, setIsMintNFT }) => {
     };
 
     const handleSearch = e => {
-        let arr = [...listNftByContract];
-        let result = arr.filter((nft, idx) => {
-            if (nft.name) {
-                return nft?.name.toUpperCase().includes(e.target.value.toUpperCase());
-            }
-
-            let condition1 = nft?.tokenId.toString().includes(e.target.value);
-            let condition2 = nft?.name.toUpperCase().includes(e.target.value.toUpperCase());
-            let condition3 = nft?.author.toUpperCase().includes(e.target.value.toUpperCase());
-
-            return condition1 || condition2 || condition3;
-        });
-
-        console.log("result :>> ", result);
-        setDisplayList([...result]);
+        // let arr = [...listNftByContract];
+        // let result = arr.filter((nft, idx) => {
+        //     if (nft.name) {
+        //         return nft?.name.toUpperCase().includes(e.target.value.toUpperCase());
+        //     }
+        //     let condition1 = nft?.tokenId.toString().includes(e.target.value);
+        //     let condition2 = nft?.name.toUpperCase().includes(e.target.value.toUpperCase());
+        //     let condition3 = nft?.author.toUpperCase().includes(e.target.value.toUpperCase());
+        //     return condition1 || condition2 || condition3;
+        // });
+        // console.log("result :>> ", result);
+        // setDisplayList([...result]);
     };
 
     return (

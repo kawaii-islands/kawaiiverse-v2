@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 import { read, createNetworkOrSwitch, write } from "src/services/web3";
 import KAWAIIVERSE_NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
 import { BSC_CHAIN_ID, BSC_rpcUrls } from "src/consts/blockchain";
-import LoadingModal from "src/components/LoadingModal/LoadingModal";
+import LoadingModal from "src/components/LoadingModal2/LoadingModal";
 import uploadImageIcon from "src/assets/icons/uploadImage.svg";
 import { create } from "ipfs-http-client";
 import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
@@ -62,13 +62,9 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
     const [checkedTokenId, setCheckedTokenId] = useState(false);
     const [loadingUploadImg, setLoadingUploadImg] = useState(false);
     const [imageIdx, setImageIdx] = useState();
-	const [stepLoading, setStepLoading] = useState(0);
-
-    useEffect(() => {
-        setTimeout(() => {
-            setLoading(false);
-        }, 1500);
-    }, []);
+    const [stepLoading, setStepLoading] = useState(0);
+    const [loadingTitle, setLoadingTitle] = useState("");
+    const [hash, setHash] = useState();
 
     const setStateForNftData = (key, value, id = openMintNFTBox) => {
         if (key === "tokenId") {
@@ -185,7 +181,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
     };
 
     const createToken = async data => {
-		setStepLoading(1);
         let listTokenId = data.map(token => token.tokenId);
         let listTokenSupply = data.map(token => token.supply);
         let listTokenAccount = Array(listTokenId.length).fill(account);
@@ -196,6 +191,10 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                 throw new Error("Please change network to Testnet Binance smart chain.");
             }
         }
+
+        setLoading(true);
+        setStepLoading(0);
+
         await write(
             "createBatchItem",
             library.provider,
@@ -205,9 +204,10 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
             { from: account },
             hash => {
                 console.log(hash);
+                setHash(hash);
+                setStepLoading(1);
             },
         );
-		setStepLoading(0);
     };
 
     const handleUploadImage = async (e, index) => {
@@ -240,6 +240,9 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
             setLoadingSubmit(true);
             await createToken(listNft);
 
+			setStepLoading(null);
+			setLoadingTitle("Sign in your wallet!");
+
             const signature = await getSignature();
             let bodyParams = {
                 nft1155: gameSelected,
@@ -251,14 +254,15 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
             const res = await axios.post(`${URL}/v1/nft`, bodyParams);
             if (res.status === 200) {
                 console.log(res);
-                setLoadingSubmit(false);
-                setIsMintNFT(false);
+				setStepLoading(2);
             }
         } catch (err) {
             console.log(err.response);
+            setStepLoading(3);
+        } finally {
+            setLoading(false);
         }
 
-        setLoadingSubmit(false);
     };
 
     return (
@@ -431,16 +435,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                             )}
                         </div>
                     ))}
-
-                    {/* <img
-                        src={addNftIcon}
-                        alt="add-nft-icon"
-                        className={cx("add-nft")}
-                        onClick={() => {
-                            setListNft([...listNft, oneNft]);
-                            setOpenMintNFTBox(listNft.length);
-                        }}
-                    /> */}
                 </div>
 
                 <div
@@ -464,7 +458,23 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                 </div>
             </div>
 
-            <LoadingModal open={loadingSubmit} />
+            {loadingSubmit && (
+                <LoadingModal
+                    show={loadingSubmit}
+                    network={"BscScan"}
+                    loading={loading}
+                    title={loadingTitle}
+                    stepLoading={stepLoading}
+                    onHide={() => {
+                        setLoadingSubmit(false);
+                        setHash(undefined);
+                        setStepLoading(0);
+                    }}
+                    hash={hash}
+                    hideParent={() => {}}
+                    setIsSellNFT={setIsMintNFT}
+                />
+            )}
 
             <PreviewModal open={open} onHide={() => setOpen(!open)} listNft={listNft} />
         </div>
