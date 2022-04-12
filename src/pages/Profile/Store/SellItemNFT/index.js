@@ -60,8 +60,8 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                     }
                 }
                 allList = allList.filter(nft => {
-                    return nft.supply > 0
-                })
+                    return nft.supply > 0;
+                });
                 setList([...allList]);
             } else {
                 toast.error("Cannot get list Nft");
@@ -203,77 +203,49 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             const amounts = listSell.map(nft => nft.quantity);
             const prices = listSell.map(nft => web3.utils.toWei(nft.price));
 
-            const _data = web3.eth.abi.encodeFunctionCall(
-                {
-                    inputs: [
-                        {
-                            internalType: "address",
-                            name: "sender",
-                            type: "address",
-                        },
-                        {
-                            internalType: "address",
-                            name: "_nftAddress",
-                            type: "address",
-                        },
-                        {
-                            internalType: "uint256",
-                            name: "_tokenId",
-                            type: "uint256",
-                        },
-                        {
-                            internalType: "uint256",
-                            name: "_amount",
-                            type: "uint256",
-                        },
-                        {
-                            internalType: "uint256",
-                            name: "_price",
-                            type: "uint256",
-                        },
-                        {
-                            internalType: "uint8",
-                            name: "v",
-                            type: "uint8",
-                        },
-                        {
-                            internalType: "bytes32",
-                            name: "r",
-                            type: "bytes32",
-                        },
-                        {
-                            internalType: "bytes32",
-                            name: "s",
-                            type: "bytes32",
-                        },
-                    ],
-                    name: "saleNFT1155",
-                    outputs: [],
-                    stateMutability: "nonpayable",
-                    type: "function",
-                },
-                [
-                    account,
-                    gameSelected,
-                    listSell[0].tokenId,
-                    listSell[0].quantity,
-                    web3.utils.toWei(listSell[0].price),
-                    v,
-                    r,
-                    s,
-                ],
-            );
             // const _data = web3.eth.abi.encodeFunctionCall(
             //     {
             //         inputs: [
-            //             { internalType: "address", name: "sender", type: "address" },
-            //             { internalType: "address", name: "_nftAddress", type: "address" },
-            //             { internalType: "uint256[]", name: "_tokenIds", type: "uint256[]" },
-            //             { internalType: "uint256[]", name: "_amounts", type: "uint256[]" },
-            //             { internalType: "uint256[]", name: "_prices", type: "uint256[]" },
-            //             { internalType: "uint8", name: "v", type: "uint8" },
-            //             { internalType: "bytes32", name: "r", type: "bytes32" },
-            //             { internalType: "bytes32", name: "s", type: "bytes32" },
+            //             {
+            //                 internalType: "address",
+            //                 name: "sender",
+            //                 type: "address",
+            //             },
+            //             {
+            //                 internalType: "address",
+            //                 name: "_nftAddress",
+            //                 type: "address",
+            //             },
+            //             {
+            //                 internalType: "uint256",
+            //                 name: "_tokenId",
+            //                 type: "uint256",
+            //             },
+            //             {
+            //                 internalType: "uint256",
+            //                 name: "_amount",
+            //                 type: "uint256",
+            //             },
+            //             {
+            //                 internalType: "uint256",
+            //                 name: "_price",
+            //                 type: "uint256",
+            //             },
+            //             {
+            //                 internalType: "uint8",
+            //                 name: "v",
+            //                 type: "uint8",
+            //             },
+            //             {
+            //                 internalType: "bytes32",
+            //                 name: "r",
+            //                 type: "bytes32",
+            //             },
+            //             {
+            //                 internalType: "bytes32",
+            //                 name: "s",
+            //                 type: "bytes32",
+            //             },
             //         ],
             //         name: "saleNFT1155",
             //         outputs: [],
@@ -283,14 +255,33 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             //     [
             //         account,
             //         gameSelected,
-            //         tokenIds,
-            //         amounts,
-            //         prices,
+            //         listSell[0].tokenId,
+            //         listSell[0].quantity,
+            //         web3.utils.toWei(listSell[0].price),
             //         v,
             //         r,
             //         s,
             //     ],
             // );
+            const _data = web3.eth.abi.encodeFunctionCall(
+                {
+                    inputs: [
+                        { internalType: "address", name: "sender", type: "address" },
+                        { internalType: "address", name: "_nftAddress", type: "address" },
+                        { internalType: "uint256[]", name: "_tokenIds", type: "uint256[]" },
+                        { internalType: "uint256[]", name: "_amounts", type: "uint256[]" },
+                        { internalType: "uint256[]", name: "_prices", type: "uint256[]" },
+                        { internalType: "uint8", name: "v", type: "uint8" },
+                        { internalType: "bytes32", name: "r", type: "bytes32" },
+                        { internalType: "bytes32", name: "s", type: "bytes32" },
+                    ],
+                    name: "saleNFT1155",
+                    outputs: [],
+                    stateMutability: "nonpayable",
+                    type: "function",
+                },
+                [account, gameSelected, tokenIds, amounts, prices, v, r, s],
+            );
 
             await write(
                 "execute",
@@ -310,7 +301,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             console.log(err);
             setStepLoading(3);
             toast.error(err);
-            setSubmitted(false)
+            setSubmitted(false);
         } finally {
             setLoading(false);
         }

@@ -92,6 +92,22 @@ $break-point-3: 767px;
             display: flex;
           }
         }
+        .button {
+          width: fit-content;
+          padding: 8px 18px;
+          font-weight: 600;
+          font-size: 16px;
+          line-height: 150%;
+          font-family: 'Montserrat';
+          border-radius: 0px;
+          color: white;
+          @media (max-width: $mobile) {
+            font-size: 14px;
+            padding: 6px 12px;
+          }
+          background: linear-gradient(94.08deg, #7F00FF -1.88%, #E100FF 100%);
+          border-radius: 6px;
+        }
       }
     }
   }
