@@ -42,10 +42,10 @@ $w-input: 100px;
     }
     // .add:hover {
     //     .add-icon {
-    //         transform: scale(1.2);
+    //         color: #E78EA9 !important;
     //     }
     //     .add-title {
-    //         font-size: 16px;
+    //         color: #E78EA9;
     //     }
         
     // }
@@ -78,7 +78,7 @@ $w-input: 100px;
     }
     .row-error{
         flex-flow: unset !important; 
-        height: 40px;
+        max-height: 40px;
     }
     .error{
         color:red;

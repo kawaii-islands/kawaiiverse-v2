@@ -17,29 +17,26 @@ $break-point-3: 767px;
     .group-button {
       width: fit-content;
       border-radius: 4px;
-      background: #ffffff;
+      // background: #ffffff;
       margin-left: auto;
       margin-right: 0px;
 
       .button {
-        padding: 8px 16px;
+        padding: 8px 18px;
         font-weight: 600;
         font-size: 16px;
         line-height: 150%;
         font-family: 'Montserrat';
         border-radius: 0px;
+        color: white;
         @media (max-width: $mobile) {
           font-size: 14px;
           padding: 6px 12px;
         }
+        background: linear-gradient(94.08deg, #7F00FF -1.88%, #E100FF 100%);
+        border-radius: 6px;
       }
-      .button:first-of-type{
-        border-radius: 4px 0px 0px 4px !important;
-      }
-      .button:last-of-type{
-        border-radius: 0px 4px 4px 0px !important;
-
-      }
+      
       .text {
         background: linear-gradient(270.09deg, #6441A5 0.1%, #2A0845 99.94%);
         color: #fff;

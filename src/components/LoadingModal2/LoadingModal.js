@@ -5,8 +5,10 @@ import cn from "classnames/bind";
 import styles from "./LoadingModal.module.scss";
 import upload from "src/assets/icons/upload.svg";
 import loadingProcess from "src/assets/images/loading1.png";
-import warning from "src/assets/icons/warning.svg";
+// import warning from "src/assets/icons/warning.svg";
 import { Button } from "@material-ui/core";
+import logoSuccess from "src/assets/images/success.png"
+import warning from "src/assets/images/error1.png"
 
 const cx = cn.bind(styles);
 const EXPLORER = {
@@ -75,7 +77,7 @@ const LoadingModal = ({ setIsSellNFT,show, network, loading, title, stepLoading,
                                 </a>
                             )}
                             <br />
-                            <Button onClick={() => setIsSellNFT(false)} size="medium" style={{background: "orange"}}>View NFT</Button>
+                            <Button onClick={() => setIsSellNFT(false)} size="medium" style={{background: "#FFF56D", marginTop: 10, width: '70%'}}>View NFT</Button>
                         </div>
                     </div>
                 ) : stepLoading === 1 ? (

@@ -19,15 +19,22 @@ $mobile: 576px;
                 :global{
                     .MuiTypography-root{
                         color: #BC88FF !important;
-                        font-size: 14px;
+                        font-size: 16px;
                         text-transform: capitalize;
                         
+                    }
+                    .MuiBreadcrumbs-li{
+                        cursor: pointer;
+                    }
+                    .MuiSvgIcon-fontSizeMedium{
+                        color: #625D83 !important;
+                        // background-color: #625D83 !important;
                     }
                 }
                 padding-bottom: 18px;
                 margin-bottom: 40px;
                 border-bottom: 1px solid rgba(64, 42, 125, 0.5);
-                cursor: pointer;
+                
             }
             @media(max-width: $break-point-1){
                 padding: 40px 8px;

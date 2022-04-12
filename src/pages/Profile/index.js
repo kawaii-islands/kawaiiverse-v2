@@ -49,6 +49,8 @@ const Profile = () => {
         gameUrl: "",
     });
     const pathnames = pathname.split("/").filter(Boolean);
+    [pathnames[1], pathnames[2]] = [pathnames[2], pathnames[1]];
+    pathnames[1] = gameInfo.gameName;
     useEffect(() => {
         setLoading(true);
         if (tabParam.tab) {
@@ -147,18 +149,13 @@ const Profile = () => {
                             {" "}
                            
                             <Breadcrumbs separator={<NavigateNextIcon />} aria-label="breadcrumb">
-                                {pathnames.length ? (
-                                    <span onClick={() => history.push("/")}>Home</span>
-                                ) : (
-                                    <span> Home </span>
-                                )}
                                 {pathnames.map((name, index) => {
                                     const routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
                                     const isLast = index === pathnames.length - 1;
                                     return isLast ? (
                                         <span key={name}>{name}</span>
                                     ) : (
-                                        <span key={name} onClick={() => history.push(routeTo)}>
+                                        <span key={name} onClick={() => {if(index === 0){history.push(routeTo)}}}>
                                             {name}
                                         </span>
                                     );
