@@ -4,4 +4,33 @@
     border: 1px solid 
     #AD99E7;
     padding: 0px 4px;
+    width: 240px;
+  }
+  .nft-skeleton{
+    width: 20%;
+    margin-bottom: 20px;
+    padding: 0 10px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+
+    @media (max-width: 1626px) {
+        width: 25%;
+    }
+    @media (max-width: 1378px) {
+        width: 33.33%;
+    }
+
+    @media (max-width: 1120px) {
+        width: 50%;
+    }
+    @media (max-width: 860px) {
+        width: 100%;
+    }
+    @media (max-width: 768px) {
+        width: 50%;
+    }
+    @media (max-width: 600px) {
+        width: 100%;
+    } 
   }
