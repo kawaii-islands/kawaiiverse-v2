@@ -69,7 +69,59 @@ $break-point-3: 767px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        font-weight: 600;
+		font-family: 'Montserrat', sans-serif;
+
+        @media (max-width: $break-point-3) {
+          margin: 20px 0px;
+        }
+
+        .icon {
+          cursor: pointer;
+          color: #ffffff;
+        }
+      }
+
+      .group-button-filter {
+        display: flex;
+        align-items: center;
+
+        .drop-down {
+          background: #56428F;
+          border-radius: 6px;
+          padding: 12px;
+          width: 172px;
+          margin-left: 36px;
+          font-size: 14px;
+
+          @media (max-width: $break-point-3) {
+            margin-left: 0px;
+          }
+
+          &-label {
+            cursor: default;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          }
+        }
+
+        .button-filter {
+          display: none;
+          align-items: center;
+          margin-left: 12px;
+          background: #101a3f;
+          border-radius: 6px;
+          padding: 11px;
+          font-size: 14px;
+
+          &:active {
+            background-color: rgb(17, 31, 87);
+          }
+
+          @media (max-width: $break-point-2) {
+            display: flex;
+          }
+        }
       }
     }
 

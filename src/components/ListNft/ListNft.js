@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
 import cn from "classnames/bind";
 import { useHistory } from "react-router";
-import { Col, Empty } from "antd";
+import { Empty, Row } from "antd";
 import styles from "./ListNft.module.scss";
-import NFTItem from "src/components/NFTItemStore/NFTItem";
+import NFTItem from "src/components/NFTItem/NFTItem";
 
 const cx = cn.bind(styles);
 const ListNft = ({ gameItemList, gameSelected,loading }) => {
     const history = useHistory();
     return (
         <>
-            {gameItemList.length > 0  ? (
-                gameItemList.map((item, index) => (
-                    <Col xs={24} sm={12} lg={8} xxl={6} key={`nft-item-${index}`}>
+            {gameItemList.length > 0 ? (
+                <div className={cx("list-nft")}>
+                    {gameItemList.map((item, index) => (
                         <NFTItem
+                            key={`nft-item-${index}`}
+                            isStore={true}
                             data={item}
                             handleNavigation={() =>{
                                 // localStorage.setItem("nft", JSON.stringify(item));
@@ -25,8 +27,8 @@ const ListNft = ({ gameItemList, gameSelected,loading }) => {
                                 
                             }
                         />
-                    </Col>
-                ))
+                    ))}
+                </div>
             ) : (
                 <>
                     <Empty style={{ margin: "20px auto" }} /> 

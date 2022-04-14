@@ -19,10 +19,11 @@ import { useParams } from "react-router-dom";
 
 const cx = cn.bind(styles);
 
-const Game = ({gameSelected}) => {
+const Game = ({ gameSelected }) => {
     const { account } = useWeb3React();
     const [loading, setLoading] = useState(true);
-    const [isMintNFT, setIsMintNFT] = useState(false);
+    const urlParams = new URLSearchParams(window.location.search);
+    const [isMintNFT, setIsMintNFT] = useState();
 
     useEffect(() => {
         setTimeout(() => {
@@ -30,10 +31,20 @@ const Game = ({gameSelected}) => {
         }, 1500);
     }, []);
 
+    useEffect(() => {
+        if (urlParams.get("view") === "true") {
+            setIsMintNFT(false);
+        }
+
+        if (urlParams.get("view") === "false") {
+            setIsMintNFT(true);
+        }
+    }, [urlParams]);
+
     return (
         <div className={cx("profile")}>
             <div className={cx("right")}>
-                <div className={cx("group-button")}>
+                {/* <div className={cx("group-button")}>
                     <Button
                         className={cx("button", !isMintNFT ? "active" : "text")}
                         onClick={() => setIsMintNFT(false)}
@@ -43,14 +54,14 @@ const Game = ({gameSelected}) => {
                     <Button className={cx("button", isMintNFT ? "active" : "text")} onClick={() => setIsMintNFT(true)}>
                         Mint NFT
                     </Button>
-                </div>
+                </div> */}
                 <div className={cx("content")}>
                     {isMintNFT ? (
-                        <div style={{ width: "96%" }}>
+                        <div>
                             <MintNFT setIsMintNFT={setIsMintNFT} gameSelected={gameSelected} />
                         </div>
                     ) : (
-                        <ViewNFT gameSelected={gameSelected} />
+                        <ViewNFT setIsMintNFT={setIsMintNFT} gameSelected={gameSelected} />
                     )}
                 </div>
             </div>

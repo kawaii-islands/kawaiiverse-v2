@@ -65,7 +65,7 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
 
     return (
         <div className={cx("mintNFT-box")}>
-            <Row className={cx("first-row")}>
+            {/* <Row className={cx("first-row")}>
                 <Col span={5}>
                     <input
                         placeholder="Token ID"
@@ -124,15 +124,6 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
                     </div>
                 </Col>
 
-                {/* <Col span={5} className={cx("preview")}>
-					<input
-						placeholder="https://abc"
-						value={data.imagePreviewUrl}
-						className={cx("input")}
-						onChange={(e) => setStateForNftData("imagePreviewUrl", e.target.value)}
-					/>
-				</Col> */}
-
                 <Col span={1} style={{ cursor: "pointer" }}>
                     <DeleteOutlinedIcon
                         className={cx("delete-icon")}
@@ -149,7 +140,7 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
                 <Col span={1} style={{ cursor: "pointer", textAlign: "right" }} onClick={() => setOpenMintNFTBox(null)}>
                     <ExpandLessIcon className={cx("expand-icon")} />
                 </Col>
-            </Row>
+            </Row> */}
 
             <div className={cx("main-box")}>
                 <Row className={cx("one-field")}>
@@ -166,7 +157,7 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
                     </Col>
                 </Row>
 
-                <Row className={cx("one-field")}>
+                {/* <Row className={cx("one-field")}>
                     <Col span={4} className={cx("title")}>
                         Author:
                     </Col>
@@ -178,7 +169,7 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
                             onChange={e => setStateForNftData("author", e.target.value)}
                         />
                     </Col>
-                </Row>
+                </Row> */}
 
                 <Row className={cx("one-field")}>
                     <Col span={4} className={cx("title")}>

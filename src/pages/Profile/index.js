@@ -78,9 +78,7 @@ const Profile = () => {
                 gameUrl = res.data.data[0].logoUrl;
             }
             setGameInfo({ gameName, gameUrl });
-
-            console.log("gameName :>> ", gameName);
-            console.log("gameUrl :>> ", gameUrl);
+			
         } catch (error) {
             console.log(error);
         }
