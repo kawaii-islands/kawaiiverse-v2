@@ -9,6 +9,7 @@ import loadingProcess from "src/assets/images/loading1.png";
 import { Button } from "@material-ui/core";
 import logoSuccess from "src/assets/images/success.png";
 import warning from "src/assets/images/error1.png";
+import { useHistory } from "react-router-dom";
 
 const cx = cn.bind(styles);
 const EXPLORER = {
@@ -28,6 +29,9 @@ const LoadingModal = ({
     hideParent,
     notClose,
 }) => {
+
+    const history = useHistory();
+
     return (
         <Modal
             show={show}
@@ -93,7 +97,10 @@ const LoadingModal = ({
                             )}
                             <br />
                             <Button
-                                onClick={() => setIsSellNFT(false)}
+                                onClick={() => {
+                                    history.push({ search: "?view=true" });
+                                    setIsSellNFT(false);
+                                }}
                                 size="medium"
                                 style={{ background: "#A863FF", color: "#FFFFFF", marginTop: 10, width: "70%" }}
                             >

@@ -82,6 +82,12 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         }
     }, []);
 
+    useEffect(() => {
+        if (stepLoading === 3 && listPending.length > 0) {
+            setShowPendingModal(true);
+        }
+    }, [stepLoading]);
+
     const setStateForNftData = (key, value, id = openMintNFTBox) => {
         if (key === "tokenId") {
             setCheckedTokenId(false);
@@ -282,8 +288,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
             toast.error(err.message || "An error occurred!");
 
             setStepLoading(3);
-
-            if (listPending.length) setShowPendingModal(true);
         } finally {
             setLoading(false);
         }
