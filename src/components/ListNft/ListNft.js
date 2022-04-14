@@ -6,7 +6,7 @@ import styles from "./ListNft.module.scss";
 import NFTItem from "src/components/NFTItemStore/NFTItem";
 
 const cx = cn.bind(styles);
-const ListNft = ({ gameItemList, gameSelected }) => {
+const ListNft = ({ gameItemList, gameSelected,loading }) => {
     const history = useHistory();
     return (
         <>
@@ -15,19 +15,21 @@ const ListNft = ({ gameItemList, gameSelected }) => {
                     <Col xs={24} sm={12} lg={8} xxl={6} key={`nft-item-${index}`}>
                         <NFTItem
                             data={item}
-                            handleNavigation={() =>
+                            handleNavigation={() =>{
+                                // localStorage.setItem("nft", JSON.stringify(item));
                                 history.push({
-                                    pathname: `/profile/manage-nft/view-nft/${gameSelected}/${item.tokenId}`,
+                                    pathname: `/profile/store/view-nft/${gameSelected}/${item._id}/${item.tokenId}`,
                                     state: { gameSelected },
                                 })
+                            }
+                                
                             }
                         />
                     </Col>
                 ))
             ) : (
                 <>
-                
-                    <Empty style={{ margin: "20px auto" }} />
+                    <Empty style={{ margin: "20px auto" }} /> 
                 </>
             )}
         </>

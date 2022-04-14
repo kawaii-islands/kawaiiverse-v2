@@ -20,12 +20,10 @@ const Item = ({
     setSubmitted,
     rowItem,
     setRowItem,
+    success,
+    setSuccess
 }) => {
-    // const [search, setSearch] = useState({
-    //     name: "",
-    //     tokenId: "",
-    // });
-    // const [listSearch, setListSearch] = useState([]);
+    
     const [nft, setNft] = useState({});
     const [info, setInfo] = useState({
         price: 0,
@@ -47,6 +45,7 @@ const Item = ({
         setList(newList);
         setSubmitted(false);
         setRowItem(rowItem + 1);
+        // setSuccess(false);
     };
 
     useEffect(() => {
@@ -59,67 +58,16 @@ const Item = ({
         }
         setShowError(newError);
     }, [submitted]);
-    // const handleSearch = e => {
-    //     const { name, value } = e.target;
-
-    //     setSearch({
-    //         ...search,
-    //         [name]: value,
-    //     });
-    //     if (name === "tokenId") {
-    //         let array = list;
-    //         let newListSearch = array.filter(nft => {
-    //             return nft.tokenId.toString().indexOf(value) > -1;
-    //         });
-
-    //         let newListSearch2 = newListSearch.filter(nft => {
-    //             return listSell.indexOf(nft) === -1;
-    //         });
-
-    //         setListSearch(newListSearch2);
-    //     }
-    //     if (name === "name") {
-    //         let array = list;
-    //         let newListSearch = array.filter(nft => {
-    //             return nft.name.indexOf(value) > -1;
-    //         });
-
-    //         let newListSearch2 = newListSearch.filter(nft => {
-    //             return listSell.indexOf(nft) === -1;
-    //         });
-
-    //         setListSearch(newListSearch2);
-    //     }
-    // };
-    // const addNft = id => {
-    //     const newNft = list.filter(nft => nft._id === id)[0];
-    //     setSubmitted(false);
-    //     setShowError(false);
-    //     setInfo({
-    //         price: 0,
-    //         quantity: 1,
-    //     });
-    //     setSearch({
-    //         name: newNft.name,
-    //         tokenId: newNft.tokenId,
-    //     });
-    //     let newList = [...listSell];
-    //     newList = newList.filter((item, idx) => {
-    //         return item._id !== nft._id;
-    //     });
-    //     setListSearch([]);
-    //     setListSell([...newList]);
-    //     setInfo({ price: 0, quantity: 0 });
-    //     setListSell([...newList, { ...newNft, quantity: newNft.supply || 0, price: 0 }]);
-
-    //     setNft({
-    //         ...newNft,
-    //         quantity: newNft.supply,
-    //         price: 0,
-    //     });
-
-    //     setCanAdd(true);
-    // };
+    useEffect(() => {
+        if(success){
+            setInfo({price: 0, quantity: 0});
+            setSubmitted(false);
+            setRowItem(1);
+            setDeleted(false);
+            setNft({})
+        }
+    }, [success])
+    
 
     const handleInput = e => {
         if (!nft._id) {
@@ -212,7 +160,7 @@ const Item = ({
     };
     return (
         <>
-            <Row className={cx("container", deleted && "container-hide")}>
+            <Row className={cx("container", (deleted && !success) && "container-hide")}>
                 {!nft._id ? (
                     <div className={cx("add")} onClick={() => setShowModal(true)}>
                         <img src={addRowItem} alt="add" className={cx("add-icon")} />{" "}
@@ -231,9 +179,9 @@ const Item = ({
                                 {nft.name}
                             </Col>
 
-                            <Col span={3} style={{ textAlign: "center" }} className={cx("input-wrapper")}>
+                            <Col span={4} style={{ textAlign: "center" }} className={cx("input-wrapper")}>
                                 <input
-                                    className={cx("price-input")}
+                                    className={cx("price-input", showError.price && "error-input")}
                                     value={info.price}
                                     min={0}
                                     // disabled={nft._id ? true : false}
@@ -258,7 +206,7 @@ const Item = ({
                                         max={nft.supply || 0}
                                         name="quantity"
                                         onChange={handleInput}
-                                        className={cx("price-input")}
+                                        className={cx("price-input", showError.quantity && "error-input")}
                                         // disabled={nft._id ? true : false}
                                         // disabled={true}
                                         pattern="^[1-9][0-9]*$"
@@ -286,12 +234,12 @@ const Item = ({
                             <Col span={3} style={{ textAlign: "center" }}></Col>
                             <Col span={3} style={{ textAlign: "center" }}></Col>
                             <Col span={3} style={{ textAlign: "center" }}></Col>
-                            <Col span={3} style={{ textAlign: "center" }}>
-                                {showError.price && <div className={cx("error")}>Please set price greater than 0</div>}
+                            <Col span={4} style={{ textAlign: "center" }}>
+                                {showError.price && <div className={cx("error")}>Price greater than 0</div>}
                             </Col>
                             <Col span={5} style={{ textAlign: "center" }}>
                                 {showError.quantity && (
-                                    <div className={cx("error")}>Please set quantity greater than 0</div>
+                                    <div className={cx("error")}>Quantity greater than 0</div>
                                 )}
                             </Col>
                             <Col span={3} style={{ textAlign: "center" }}></Col>

@@ -10,7 +10,6 @@ const web3 = new Web3(BSC_rpcUrls);
 
 const NFTItem = ({ onClick, data, handleNavigation, isStore }) => {
 	// console.log(data);
-
 	return (
 		<div className={cx("nft-item")} onClick={handleNavigation}>
 			<div
