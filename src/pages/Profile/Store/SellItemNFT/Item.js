@@ -45,6 +45,7 @@ const Item = ({
         setList(newList);
         setSubmitted(false);
         setRowItem(rowItem + 1);
+        setShowError({price: false, quantity: false})
         // setSuccess(false);
     };
 
