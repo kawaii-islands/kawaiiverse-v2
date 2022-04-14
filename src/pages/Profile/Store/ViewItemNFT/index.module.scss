@@ -198,7 +198,7 @@ $break-point-3: 767px;
 }
 .menu-dropdown{
   background-color: #56428F !important;
-  
+  padding: 0px;
   li{
     color: #fff !important;
     // font-weight: 600;
@@ -206,6 +206,9 @@ $break-point-3: 767px;
   li:hover{
     background-color: #56428F !important;
 
+  }
+  &--active{
+    background: linear-gradient(94.08deg, #7F00FF -1.88%, #E100FF 100%);
   }
   :global{
     .ant-dropdown{

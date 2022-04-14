@@ -8,7 +8,7 @@ const cx = cn.bind(styles);
 const CardSkeleton = ({page}) => {
   return (
       <SkeletonTheme baseColor="#3D1C6C" highlightColor="#402A7D" duration={2}>
-        <Col xs={24} sm={12} md={8}>
+        <div className={cx("nft-skeleton")}>
           <section className={cx("skeleton")}>
             <Skeleton width={"100%"} height={270} />
             <div style={{ padding: "16px 12px" }}>
@@ -21,7 +21,7 @@ const CardSkeleton = ({page}) => {
               <Skeleton height={32} width={"100%"} style={{background: "#3D1C6C"}} /></>}
             </div>
           </section>
-        </Col>
+        </div>
       </SkeletonTheme>
   );
 };

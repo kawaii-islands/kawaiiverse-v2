@@ -84,6 +84,10 @@ $w-input: 100px;
         color:red;
         margin-top: 8px;
         font-size: 11px;
+        font-weight: 600;
+    }
+    .error-input{
+        border: 1px solid #F08686 !important;
     }
     .price-input {
         text-align: center;
@@ -112,6 +116,11 @@ $w-input: 100px;
     }
     .delete-icon:hover{
         transform: scale(1.15);
+        :global{
+            .MuiSvgIcon-root {
+                color: #FD5D5D !important;
+            }
+        }
     }
     .quantity {
         display: flex;
@@ -158,11 +167,11 @@ $w-input: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 28px;
             color: #be8aff;
             font-weight: bold;
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             padding: 4px;
             font-weight: bold;
             user-select: none;

@@ -20,6 +20,7 @@ const Store = React.lazy(() => import("src/pages/Store/index.js"));
 const NFTDetail = React.lazy(() => import("src/pages/NFTDetail/index.js"));
 const Profile = React.lazy(() => import("src/pages/Profile/index"));
 const MintNFTDetail = React.lazy(() => import("src/pages/Profile/ManageNft/NFTDetail/NFTDetail"));
+const SellNFTDetail = React.lazy(() => import("src/pages/Profile/Store/NFTDetail/NFTDetail"));
 
 function App() {
     
@@ -42,6 +43,11 @@ function App() {
                                 exact
                                 path="/profile/manage-nft/view-nft/:address/:nftId"
                                 component={props => <MintNFTDetail {...props} />}
+                            />
+                            <Route
+                                exact
+                                path="/profile/store/view-nft/:address/:nftId/:tokenId"
+                                component={props => <SellNFTDetail {...props} />}
                             />
                         </Suspense>
                     </CacheSwitch>

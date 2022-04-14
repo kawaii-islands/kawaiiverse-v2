@@ -1,0 +1,96 @@
+.mint-nft-detail {
+    max-width: 1180px;
+	margin: 0 auto;
+	padding-top: 60px;
+
+    .left {
+        display: flex;
+        align-items: flex-start;
+
+        .back {
+			background: #56428F;
+            border-radius: 4px;
+            padding: 20px 22px;
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 700;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .image-box {
+			border: 3px solid #AD99E7;
+            box-sizing: border-box;
+            border-radius: 8px;
+			background: #56428F;
+            width: 440px;
+            height: 440px;
+            padding: 40px;
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+
+    .right {
+		background: #402A7D;
+        backdrop-filter: blur(50px);
+        border-radius: 4px;
+        padding: 32px;
+
+        .title {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 8px;
+
+            .first {
+                font-weight: 700;
+                font-size: 36px;
+                line-height: 150%;
+                color: #ffffff;
+                margin-right: 10px;
+            }
+
+            .second {
+                font-weight: 500;
+                font-size: 24px;
+                line-height: 150%;
+				color: #BE74FF;
+                margin-right: 10px;
+            }
+        }
+
+		.third {
+			background: #AD99E7;
+			border-radius: 4px;
+			padding: 2px 11px;
+			font-weight: 700;
+			font-size: 14px;
+			line-height: 150%;
+			color: #402A7D;
+			width: fit-content;
+		}
+
+        .content {
+            display: flex;
+            align-items: baseline;
+            margin-top: 16px;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 150%;
+
+            .title {
+                color: #D9ADFF;
+                padding-right: 10px;
+            }
+
+            .value {
+                color: #ffffff;
+                text-align: justify;
+            }
+        }
+    }
+
+}

@@ -20,12 +20,13 @@ import LoadingModal from "src/components/LoadingModal2/LoadingModal";
 import { URL } from "src/consts/constant";
 import NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
 import { useHistory, useParams } from "react-router";
-import {LeftOutlined} from '@ant-design/icons';
-import { Spin } from 'antd';
+import { LeftOutlined } from "@ant-design/icons";
+import { Spin } from "antd";
 const cx = cn.bind(styles);
 const web3 = new Web3(BSC_rpcUrls);
 
 const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
+    const history = useHistory();
     const [list, setList] = useState([]);
     const [listSell, setListSell] = useState([]);
     const [rowItem, setRowItem] = useState(1);
@@ -41,29 +42,29 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
     const [hash, setHash] = useState();
     const [showModalLoading, setShowModalLoading] = useState(false);
     const [loadingTitle, setLoadingTitle] = useState("");
+
     const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
     const [loadingGetList, setLoadingGetList] = useState(true);
+
     useEffect(() => {
         getListNft();
         getAllowance();
-    }, [gameSelected, account, isSellNFT]);
+    }, [gameSelected, account, isSellNFT, success]);
 
     const getListNft = async () => {
         try {
-            setLoadingGetList(true)
+            setLoadingGetList(true);
             const res = await axios.get(`${URL}/v1/nft/${gameSelected}`);
             console.log(res);
-            
+
             const gameList = await getGameList();
             const nftSaleList = await getNftList(gameList);
-            console.log(nftSaleList);
-            console.log(res.data.data);
             // return;
             if (res.status === 200) {
                 let allList = res.data.data;
                 for (let i = 0; i < allList.length; i++) {
                     for (let j = 0; j < nftSaleList.length; j++) {
-                        
                         if (Number(allList[i].tokenId) === Number(nftSaleList[j].tokenId)) {
                             allList[i].supply = Number(allList[i].supply) - Number(nftSaleList[j].amount);
                         }
@@ -72,7 +73,6 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 allList = allList.filter(nft => {
                     return nft.supply > 0;
                 });
-                console.log(allList)
                 // return;
                 setList([...allList]);
                 setLoadingGetList(false);
@@ -175,7 +175,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
 
     const sellNft = async () => {
         console.log(listSell);
-        // return;
+
         if (listSell?.length === 0) return;
         setSubmitted(true);
         let pass = true;
@@ -186,6 +186,22 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
         if (!pass) {
             return;
         }
+    //     "tokenId": 5448,
+            // "amount": 5,
+            // "price": 1,
+            // "tokenUnit": "0x6fe3d0f096fc932a905accd1eb1783f6e4cec717",
+            // "supply": 100
+        // let bodyParams = {
+        //     contract: address,
+        //     tokenId: listSell[0].tokenId,
+        //     price: listSell[0].price,
+        //     supply: listSell[0].supply,
+        //     tokenUnit: "0x6fe3d0f096fc932a905accd1eb1783f6e4cec717"
+        // }
+        // const res = await axios.post(`${URL}/v1/sale`, bodyParams);
+        // console.log(res)
+        // return;
+        // 
         try {
             if (chainId !== BSC_CHAIN_ID) {
                 const error = await createNetworkOrSwitch(library.provider);
@@ -216,8 +232,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             const tokenIds = listSell.map(nft => nft.tokenId);
             const amounts = listSell.map(nft => nft.quantity);
             const prices = listSell.map(nft => web3.utils.toWei(nft.price));
-            console.log(tokenIds, amounts, prices);
-            
+
             const _data = web3.eth.abi.encodeFunctionCall(
                 {
                     inputs: [
@@ -253,6 +268,9 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             );
             setStepLoading(2);
             setSubmitted(false);
+            setListSell([]);
+            setRowItem(1);
+            setSuccess(true);
         } catch (err) {
             console.log(err);
             setStepLoading(3);
@@ -260,6 +278,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             setSubmitted(false);
         } finally {
             setLoading(false);
+
             setSubmitted(false);
         }
     };
@@ -328,8 +347,13 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 />
             )}
             <div className={cx("main-title")}>
-            <LeftOutlined onClick={() => setIsSellNFT(false)}/>
-            SELL NFT
+                <LeftOutlined
+                    onClick={() => {
+                        history.push({ search: "?view=true" });
+                        setIsSellNFT(false);
+                    }}
+                />
+                SELL NFT
             </div>
             <Row className={cx("table-header")}>
                 <Col span={3} style={{ textAlign: "center" }} className={cx("search")}>
@@ -342,7 +366,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                     Name
                 </Col>
 
-                <Col span={3} style={{ textAlign: "center" }}>
+                <Col span={4} style={{ textAlign: "center" }}>
                     KWT/NFT
                 </Col>
                 <Col span={5} style={{ textAlign: "center" }}>
@@ -356,23 +380,30 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 </Col>
             </Row>
             <div className={cx("table-body")}>
-                {loadingGetList ? <Spin className={cx("spin")}/> : new Array(rowItem).fill().map((i, idx) => (
-                    <Item
-                        setList={setList}
-                        setCanAdd={setCanAdd}
-                        setRowItem={setRowItem}
-                        rowItem={rowItem}
-                        addItem={addItem}
-                        submitted={submitted}
-                        setSubmitted={setSubmitted}
-                        list={list}
-                        listSell={listSell}
-                        setListSell={setListSell}
-                        key={`row-item-${idx}`}
-                        index={idx}
-                    />
-                ))}
-                
+                {loadingGetList ? (
+                    <Spin className={cx("spin")} />
+                ) : (
+                    new Array(rowItem)
+                        .fill()
+                        .map((i, idx) => (
+                            <Item
+                                setList={setList}
+                                setCanAdd={setCanAdd}
+                                setRowItem={setRowItem}
+                                rowItem={rowItem}
+                                addItem={addItem}
+                                submitted={submitted}
+                                setSubmitted={setSubmitted}
+                                list={list}
+                                listSell={listSell}
+                                setListSell={setListSell}
+                                key={`row-item-${idx}`}
+                                index={idx}
+                                success={success}
+                                setSuccess={setSuccess}
+                            />
+                        ))
+                )}
             </div>
             <div className={cx("wrapper-btn")}>
                 <Button
