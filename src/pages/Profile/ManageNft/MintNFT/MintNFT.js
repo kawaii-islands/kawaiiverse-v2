@@ -25,6 +25,7 @@ import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRou
 import { Modal } from "react-bootstrap";
 import ListAltRoundedIcon from "@mui/icons-material/ListAltRounded";
 import CancelIcon from "@material-ui/icons/Cancel";
+import { useHistory } from "react-router-dom";
 
 const web3 = new Web3(BSC_rpcUrls);
 const cx = cn.bind(styles);
@@ -55,6 +56,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
     };
 
     const { account, chainId, library } = useWeb3React();
+    const history = useHistory();
     const [loading, setLoading] = useState(true);
     const [openMintNFTBox, setOpenMintNFTBox] = useState(0);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -289,7 +291,13 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 
     return (
         <div className={cx("mint-nft")}>
-            <div className={cx("back")} onClick={() => setIsMintNFT(false)}>
+            <div
+                className={cx("back")}
+                onClick={() => {
+                    history.push({ search: "?view=true" });
+                    setIsMintNFT(false);
+                }}
+            >
                 <ArrowBackIosNewRoundedIcon style={{ fontSize: "16px" }} /> &nbsp;
                 <span>Mint NFT</span>
             </div>

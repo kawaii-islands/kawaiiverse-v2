@@ -22,13 +22,24 @@ const cx = cn.bind(styles);
 const Game = ({ gameSelected }) => {
     const { account } = useWeb3React();
     const [loading, setLoading] = useState(true);
-    const [isMintNFT, setIsMintNFT] = useState(false);
+    const urlParams = new URLSearchParams(window.location.search);
+    const [isMintNFT, setIsMintNFT] = useState();
 
     useEffect(() => {
         setTimeout(() => {
             setLoading(false);
         }, 1500);
     }, []);
+
+    useEffect(() => {
+        if (urlParams.get("view") === "true") {
+            setIsMintNFT(false);
+        }
+
+        if (urlParams.get("view") === "false") {
+            setIsMintNFT(true);
+        }
+    }, [urlParams]);
 
     return (
         <div className={cx("profile")}>

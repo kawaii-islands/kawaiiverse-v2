@@ -83,7 +83,13 @@ const ViewNFT = ({ gameSelected, setIsMintNFT }) => {
                         }
                         onChange={e => handleSearch(e)}
                     />
-                    <Button className={cx("button")} onClick={() => setIsMintNFT(true)}>
+                    <Button
+                        className={cx("button")}
+                        onClick={() => {
+                            history.push({ search: "?view=false" });
+                            setIsMintNFT(true);
+                        }}
+                    >
                         Mint NFT
                     </Button>
                 </div>
