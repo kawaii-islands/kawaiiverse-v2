@@ -44,7 +44,7 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
             </Row>
 
             {listAttribute.map((item, idx) => (
-                <Row className={cx("data")} key={idx}>
+                <Row className={cx("data")} key={`attr-${idx}`}>
                     <Col xs={5} className={cx("data-cell")}>
                         <input
                             placeholder="Name"
@@ -59,13 +59,13 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                         ) : (
                             <img
                                 src={
-                                    item?.imageUrl
-                                        ? item?.imageUrl
+                                    item?.image
+                                        ? item?.image
                                         : `https://images.kawaii.global/kawaii-marketplace-image/items/201003.png`
                                 }
                                 alt="nft-icon"
-                                width={36}
-                                height={36}
+                                width={28}
+                                height={28}
                             />
                         )}
 
@@ -76,16 +76,16 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                             onChange={e => {
                                 setDetailAttribute("image", e.target.value, idx);
                             }}
-                            style={{ width: "60%" }}
+                            style={{ width: "50%" }}
                         />
 
-                        <span>&nbsp; &nbsp; or:</span>
+                        <span>&nbsp; or:</span>
                         <span className={cx("image-upload")}>
-                            <label htmlFor={idx}>
+                            <label htmlFor={`attr-image-${idx}`}>
                                 <img src={uploadImageIcon} alt="upload-img" className={cx("upload-img-icon")} />
                             </label>
                             <input
-                                id={idx}
+                                id={`attr-image-${idx}`}
                                 type="file"
                                 accept="image/*"
                                 onChange={e => {
@@ -107,11 +107,9 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                         <DeleteOutlinedIcon
                             className={cx("delete-icon")}
                             onClick={() => {
-                                if (listAttribute.length > 1) {
-                                    let arr = [...listAttribute];
-                                    arr.splice(idx, 1);
-                                    setListAttribute(arr);
-                                }
+                                let arr = [...listAttribute];
+                                arr.splice(idx, 1);
+                                setListAttribute(arr);
                             }}
                         />
                     </Col>

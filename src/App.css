@@ -63,7 +63,7 @@
 html,
 body,
 #root {
-    font-family: "Mali-Regular", sans-serif;
+    font-family: "Montserrat", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     /* overflow-x: hidden; */
@@ -132,3 +132,8 @@ body > iframe {pointer-events: none;}
 /* input:focus{
     outline: none !important;
 } */
+.container{
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: unset !important;
+}

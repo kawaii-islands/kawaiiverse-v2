@@ -17,9 +17,15 @@ import { toast } from "react-toastify";
 import { read, createNetworkOrSwitch, write } from "src/services/web3";
 import KAWAIIVERSE_NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
 import { BSC_CHAIN_ID, BSC_rpcUrls } from "src/consts/blockchain";
-import LoadingModal from "src/components/LoadingModal/LoadingModal";
+import LoadingModal from "src/components/LoadingModal2/LoadingModal";
 import uploadImageIcon from "src/assets/icons/uploadImage.svg";
 import { create } from "ipfs-http-client";
+import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
+import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
+import { Modal } from "react-bootstrap";
+import ListAltRoundedIcon from "@mui/icons-material/ListAltRounded";
+import CancelIcon from "@material-ui/icons/Cancel";
+import { useHistory } from "react-router-dom";
 
 const web3 = new Web3(BSC_rpcUrls);
 const cx = cn.bind(styles);
@@ -50,6 +56,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
     };
 
     const { account, chainId, library } = useWeb3React();
+    const history = useHistory();
     const [loading, setLoading] = useState(true);
     const [openMintNFTBox, setOpenMintNFTBox] = useState(0);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -59,12 +66,27 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
     const [listInvalidToken, setListInvalidToken] = useState({});
     const [checkedTokenId, setCheckedTokenId] = useState(false);
     const [loadingUploadImg, setLoadingUploadImg] = useState(false);
+    const [imageIdx, setImageIdx] = useState();
+    const [stepLoading, setStepLoading] = useState(0);
+    const [loadingTitle, setLoadingTitle] = useState("");
+    const [hash, setHash] = useState();
+    const listPending = window.localStorage.getItem("listNftPending")
+        ? JSON.parse(window.localStorage.getItem("listNftPending"))
+        : [];
+    const [showPendingModal, setShowPendingModal] = useState(listPending.length);
 
     useEffect(() => {
-        setTimeout(() => {
-            setLoading(false);
-        }, 1500);
+        if (listPending.length > 0) {
+            console.log("listPending :>> ", listPending);
+            setListNft(listPending);
+        }
     }, []);
+
+    useEffect(() => {
+        if (stepLoading === 3 && listPending.length > 0) {
+            setShowPendingModal(true);
+        }
+    }, [stepLoading]);
 
     const setStateForNftData = (key, value, id = openMintNFTBox) => {
         if (key === "tokenId") {
@@ -166,7 +188,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                 ]);
 
                 list[ind] = itemSupply;
-                console.log("itemSupply :>> ", itemSupply);
 
                 if (itemSupply != 0) {
                     check = true;
@@ -186,14 +207,16 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         let listTokenSupply = data.map(token => token.supply);
         let listTokenAccount = Array(listTokenId.length).fill(account);
 
-        console.log(listTokenId, listTokenSupply, listTokenAccount);
-
         if (chainId !== BSC_CHAIN_ID) {
             const error = await createNetworkOrSwitch(library.provider);
             if (error) {
                 throw new Error("Please change network to Testnet Binance smart chain.");
             }
         }
+
+        setLoading(true);
+        setStepLoading(0);
+
         await write(
             "createBatchItem",
             library.provider,
@@ -203,19 +226,23 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
             { from: account },
             hash => {
                 console.log(hash);
+                setHash(hash);
+                setStepLoading(1);
             },
         );
     };
 
-    const handleUploadImage = async e => {
+    const handleUploadImage = async (e, index) => {
+        setImageIdx(index);
         setLoadingUploadImg(true);
+
         const file = e.target.files[0];
 
         try {
             const added = await client.add(file);
             const url = `https://ipfs.infura.io/ipfs/${added.path}`;
 
-            setStateForNftData("imageUrl", url);
+            setStateForNftData("imageUrl", url, index);
         } catch (error) {
             console.log("Error uploading file: ", error);
         }
@@ -227,14 +254,20 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         setIsSubmitted(true);
 
         try {
-            const checkData = await checkInvalidData(listNft);
-            const checkToken = await checkInValidTokenId(listNft);
-            console.log("checkToken :>> ", checkToken);
-            if (checkData || checkToken) return;
+            if (!listPending.length) {
+                const checkData = await checkInvalidData(listNft);
+                const checkToken = await checkInValidTokenId(listNft);
+                if (checkData || checkToken) return;
+
+                setLoadingSubmit(true);
+                await createToken(listNft);
+
+                window.localStorage.setItem("listNftPending", JSON.stringify(listNft));
+            }
 
             setLoadingSubmit(true);
-            console.log("gameSelected :>> ", gameSelected);
-            await createToken(listNft);
+            setStepLoading(null);
+            setLoadingTitle("Sign in your wallet!");
 
             const signature = await getSignature();
             let bodyParams = {
@@ -247,18 +280,31 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
             const res = await axios.post(`${URL}/v1/nft`, bodyParams);
             if (res.status === 200) {
                 console.log(res);
-                setLoadingSubmit(false);
-                setIsMintNFT(false);
+                setStepLoading(2);
+                window.localStorage.setItem("listNftPending", []);
             }
         } catch (err) {
             console.log(err.response);
-        }
+            toast.error(err.message || "An error occurred!");
 
-        setLoadingSubmit(false);
+            setStepLoading(3);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className={cx("mint-nft")}>
+            <div
+                className={cx("back")}
+                onClick={() => {
+                    history.push({ search: "?view=true" });
+                    setIsMintNFT(false);
+                }}
+            >
+                <ArrowBackIosNewRoundedIcon style={{ fontSize: "16px" }} /> &nbsp;
+                <span>Mint NFT</span>
+            </div>
             <div className={cx("table")}>
                 <Row className={cx("table-header")}>
                     <Col span={5}>
@@ -279,11 +325,10 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 
                 <div className={cx("table-body")}>
                     {listNft.map((item, index) => (
-                        <div className={cx("table-row")}>
+                        <div className={cx("table-row")} key={`main-${index}`}>
                             <Row
                                 className={cx("main-row")}
                                 style={{ alignItems: isSubmitted ? "flex-start" : "center" }}
-                                key={index}
                             >
                                 <Col span={5}>
                                     <input
@@ -344,7 +389,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                 <Col span={8}>
                                     <Row style={{ alignItems: "center" }}>
                                         <Col span={4}>
-                                            {loadingUploadImg ? (
+                                            {loadingUploadImg && imageIdx === index ? (
                                                 <Spin />
                                             ) : (
                                                 <img
@@ -364,14 +409,17 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                                 placeholder="https://images..."
                                                 value={item?.imageUrl}
                                                 className={cx("input", isSubmitted && !item.imageUrl && "invalid")}
-                                                onChange={e => setStateForNftData("imageUrl", e.target.value, index)}
+                                                onChange={e => {
+                                                    setImageIdx(index);
+                                                    setStateForNftData("imageUrl", e.target.value, index);
+                                                }}
                                                 style={{ width: "80%" }}
                                             />
                                         </Col>
                                         <Col span={8}>
                                             <span>or: </span>
                                             <span className={cx("image-upload")}>
-                                                <label htmlFor="file-input">
+                                                <label htmlFor={`image-${index}`}>
                                                     <img
                                                         src={uploadImageIcon}
                                                         alt="upload-img"
@@ -380,10 +428,10 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                                 </label>
                                                 <input
                                                     placeholder="String"
-                                                    id="file-input"
+                                                    id={`image-${index}`}
                                                     type="file"
                                                     accept="image/*"
-                                                    onChange={e => handleUploadImage(e)}
+                                                    onChange={e => handleUploadImage(e, index)}
                                                 />
                                             </span>
                                         </Col>
@@ -396,11 +444,9 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                     <DeleteOutlinedIcon
                                         className={cx("delete-icon")}
                                         onClick={() => {
-                                            if (listNft.length > 1) {
-                                                let arr = [...listNft];
-                                                arr.splice(index, 1);
-                                                setListNft(arr);
-                                            }
+                                            let arr = [...listNft];
+                                            arr.splice(index, 1);
+                                            setListNft(arr);
                                         }}
                                     />
                                 </Col>
@@ -413,7 +459,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                             </Row>
                             {openMintNFTBox === index && (
                                 <MintNFTBox
-                                    key={index}
                                     data={item}
                                     setStateForNftData={setStateForNftData}
                                     openMintNFTBox={openMintNFTBox}
@@ -424,16 +469,17 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                             )}
                         </div>
                     ))}
+                </div>
 
-                    <img
-                        src={addNftIcon}
-                        alt="add-nft-icon"
-                        className={cx("add-nft")}
-                        onClick={() => {
-                            setListNft([...listNft, oneNft]);
-                            setOpenMintNFTBox(listNft.length);
-                        }}
-                    />
+                <div
+                    className={cx("add-nft")}
+                    onClick={() => {
+                        setListNft([...listNft, oneNft]);
+                        setOpenMintNFTBox(listNft.length);
+                    }}
+                >
+                    <AddCircleOutlineRoundedIcon /> &nbsp;
+                    <span>Add NFT</span>
                 </div>
 
                 <div className={cx("group-button")}>
@@ -446,7 +492,52 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                 </div>
             </div>
 
-            <LoadingModal open={loadingSubmit} />
+            {loadingSubmit && (
+                <LoadingModal
+                    show={loadingSubmit}
+                    network={"BscScan"}
+                    loading={loading}
+                    title={loadingTitle}
+                    stepLoading={stepLoading}
+                    onHide={() => {
+                        setLoadingSubmit(false);
+                        setHash(undefined);
+                        setStepLoading(0);
+                    }}
+                    hash={hash}
+                    hideParent={() => {}}
+                    setIsSellNFT={setIsMintNFT}
+                />
+            )}
+
+            <Modal
+                show={showPendingModal}
+                dialogClassName={cx("loading-modal")}
+                centered
+                onHide={() => setShowPendingModal(true)}
+            >
+                <Modal.Body className={cx("modal-body")}>
+                    {/* <div className={cx("top-body")}>
+                        <CancelIcon className={cx("icon-cancel")} onClick={() => setShowPendingModal(false)} />
+                    </div> */}
+                    <div className={cx("center-body")}>
+                        <ListAltRoundedIcon className={cx("icon-list")} />
+                    </div>
+                    <div className={cx("bottom-body")}>
+                        <div className={cx("title")}>Please mint NFTs in pending list!</div>
+                        <Button
+                            className={cx("MuiButton-root")}
+                            size="large"
+                            onClick={() => {
+                                setShowPendingModal(false);
+                                submit();
+                            }}
+                        >
+                            Mint NFTs
+                        </Button>
+                    </div>
+                </Modal.Body>
+            </Modal>
 
             <PreviewModal open={open} onHide={() => setOpen(!open)} listNft={listNft} />
         </div>

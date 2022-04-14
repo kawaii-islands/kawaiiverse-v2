@@ -1,0 +1,103 @@
+.loading-modal {
+    border-radius: 8px;
+    padding: 10px;
+    max-width: 370px;
+    z-index: 9999;
+
+    :global(.modal-content) {
+        width: 370px;
+        background: #ebe3ff;
+        border-radius: 8px;
+    }
+
+    .modal-body {
+        background: #ebe3ff;
+        border-radius: 8px;
+        padding: 10px;
+
+        .top-body {
+            text-align: right;
+
+            .icon-cancel {
+                color: #9254c8;
+                cursor: pointer;
+            }
+        }
+
+        .center-body {
+            margin: 20px;
+            text-align: center;
+
+            .icn-spinner {
+                -webkit-transform: translateZ(0);
+                -ms-transform: translateZ(0);
+                transform: translateZ(0);
+                -webkit-animation: spin-animation 1.6s infinite linear;
+                animation: spin-animation 1.6s infinite linear;
+                display: inline-block;
+                width: 120px;
+                height: 120px;
+                img {
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+
+            @keyframes spin-animation {
+                0% {
+                    -webkit-transform: rotate(0deg);
+                    transform: rotate(0deg);
+                }
+                100% {
+                    -webkit-transform: rotate(360deg);
+                    transform: rotate(360deg);
+                }
+            }
+
+            @-webkit-keyframes spin-animation {
+                0% {
+                    -webkit-transform: rotate(0deg);
+                    transform: rotate(0deg);
+                }
+                100% {
+                    -webkit-transform: rotate(360deg);
+                    transform: rotate(360deg);
+                }
+            }
+        }
+
+        .bottom-body {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 30px;
+
+            .title {
+                font-style: normal;
+                font-weight: 700;
+                font-size: 18px;
+                line-height: 150%;
+                text-align: center;
+                color: #402a7d;
+            }
+
+            .content {
+                font-style: normal;
+                font-weight: 400;
+                font-size: 16px;
+                line-height: 150%;
+                text-align: center;
+                color: #4200ff;
+                margin-top: 5px;
+                margin-bottom: 10px;
+            }
+
+            .MuiButton-root {
+                text-transform: none !important;
+                background: linear-gradient(180deg, #6441a5 0%, #2a0845 100%);
+                border-radius: 4px;
+                color: white;
+                width: 70%;
+            }
+        }
+    }
+}

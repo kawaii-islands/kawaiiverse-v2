@@ -1,5 +1,18 @@
 $mobile: 576px;
 .mint-nft {
+    .back {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 150%;
+        color: #ffffff;
+        text-transform: uppercase;
+        margin-bottom: 28px;
+        cursor: pointer;
+        width: fit-content;
+    }
+
     .table {
         font-size: 14px;
         line-height: 150%;
@@ -11,7 +24,7 @@ $mobile: 576px;
             padding: 10px 20px;
             background: #faf0ff;
             border-radius: 4px;
-            color: #402a7d;
+            color: #4200ff;
             font-weight: 600;
             margin-bottom: 5px;
 
@@ -29,22 +42,22 @@ $mobile: 576px;
                 box-sizing: border-box;
                 backdrop-filter: blur(50px);
                 margin-bottom: 5px;
-				border-radius: 4px;
+                border-radius: 4px;
 
                 .main-row {
-					padding: 10px 20px;
-					color: #402a7d;
+                    padding: 10px 20px;
+                    color: #402a7d;
 
-					.image-upload {
-						input {
-							display: none;
-						}
-				
-						.upload-img-icon {
-							cursor: pointer !important;
-							padding-left: 5px;
-						}
-					}
+                    .image-upload {
+                        input {
+                            display: none;
+                        }
+
+                        .upload-img-icon {
+                            cursor: pointer !important;
+                            padding-left: 5px;
+                        }
+                    }
 
                     .input {
                         color: #402a7d;
@@ -62,7 +75,7 @@ $mobile: 576px;
                     }
 
                     .invalid {
-                        border: 1px solid #9e494d;
+                        border: 1px solid rgba(240, 134, 134, 0.99);
                         border-radius: 4px;
 
                         &:focus {
@@ -71,7 +84,7 @@ $mobile: 576px;
                     }
 
                     .error-mes {
-                        color: #b11b23;
+                        color: #dc615d;
                     }
 
                     .preview {
@@ -82,19 +95,12 @@ $mobile: 576px;
                         cursor: pointer;
                         padding: 6px;
                         border-radius: 50%;
-                        color: #7000ff;
+                        color: #c190ff;
                         transition-duration: 0.5s;
                         font-size: 38px;
-                        background: #d9cce9;
 
                         &:hover {
-                            background: #d5c0f0;
-                            transition-duration: 0.5s;
-                        }
-
-                        &:active {
-                            background: #e6d5fb;
-                            transition-duration: 0.5s;
+                            transform: scale(1.15);
                         }
                     }
 
@@ -106,16 +112,9 @@ $mobile: 576px;
                     }
                 }
 
-				.expand-row {
-					border-top: 1px solid rgba(202, 186, 245, 0.5);
-				}
-            }
-
-            .add-nft {
-                position: absolute;
-                right: -50px;
-                bottom: 8px;
-                cursor: pointer;
+                .expand-row {
+                    border-top: 1px solid rgba(202, 186, 245, 0.5);
+                }
             }
 
             .add-nft-open {
@@ -124,6 +123,22 @@ $mobile: 576px;
                 bottom: 455px;
                 cursor: pointer;
             }
+        }
+
+        .add-nft {
+            background: #ebe3ff;
+            border: 1px solid rgba(202, 186, 245, 0.3);
+            box-sizing: border-box;
+            backdrop-filter: blur(50px);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 20px;
+            color: #c190ff;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
         }
     }
 
@@ -135,7 +150,7 @@ $mobile: 576px;
 
         .submit {
             padding: 8px 25px;
-            background: #7000ff;
+            background: #df01ff;
             border-radius: 4px;
             font-weight: 500;
             font-size: 16px;
@@ -145,13 +160,86 @@ $mobile: 576px;
         }
 
         .preview {
-            background: #d785fe;
+            background: #8301ff;
             border-radius: 4px;
             padding: 8px 25px;
             font-weight: 500;
             font-size: 16px;
             line-height: 150%;
             color: #ffffff;
+        }
+    }
+}
+
+.loading-modal {
+    border-radius: 8px;
+    padding: 10px;
+    max-width: 370px;
+    z-index: 9999;
+
+    :global(.modal-content) {
+        width: 370px;
+        background: #ebe3ff;
+        border-radius: 8px;
+    }
+
+    .modal-body {
+        background: #ebe3ff;
+        border-radius: 8px;
+        // padding: 10px;
+
+        .top-body {
+            text-align: right;
+
+            .icon-cancel {
+                color: #9254c8;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .center-body {
+        margin: 20px;
+        text-align: center;
+
+        .icon-list {
+            color: #9254c8;
+            font-size: 120px;
+        }
+    }
+
+    .bottom-body {
+        text-align: center;
+        margin-top: 30px;
+        margin-bottom: 30px;
+
+        .title {
+            font-style: normal;
+            font-weight: 700;
+            font-size: 18px;
+            line-height: 150%;
+            text-align: center;
+            color: #402a7d;
+        }
+
+        .content {
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 150%;
+            text-align: center;
+            color: #4200ff;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+
+        .MuiButton-root {
+            text-transform: none !important;
+            background: linear-gradient(180deg, #6441a5 0%, #2a0845 100%);
+            border-radius: 4px;
+            color: white;
+            width: 88%;
+			margin-top: 10px;
         }
     }
 }

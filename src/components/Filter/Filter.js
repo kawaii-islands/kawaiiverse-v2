@@ -27,6 +27,7 @@ const tab = [
 const Filter = ({ gameList, setGameSelected, gameSelected, activeTab, setActiveTab, gameInfo }) => {
     const history = useHistory();
     let { address } = useParams();
+
     const handleGameClick = (address, idx) => {
         console.log(address);
         setGameSelected(address);
@@ -39,7 +40,13 @@ const Filter = ({ gameList, setGameSelected, gameSelected, activeTab, setActiveT
                     <div className={cx("image-box")}>
                         <img src={gameInfo.gameUrl || logoKawaii} alt="game" className={cx("game-image")} />
                     </div>
-                    <div className={cx("game-name")}>{gameInfo.gameName || "Kawaii Islands"}</div>
+
+                    <div className={cx("game-name")}>
+                        <div>{gameInfo.gameName || "Kawaii Islands"}</div>
+                        <div style={{ fontSize: "12px", fontWeight: "400" }}>
+                            {address.slice(0, 6) + "..." + address.slice(-6)}
+                        </div>
+                    </div>
                 </div>
 
                 <div className={cx("menu")}>
@@ -48,7 +55,6 @@ const Filter = ({ gameList, setGameSelected, gameSelected, activeTab, setActiveT
                             className={cx("menu-item", activeTab === tab.key && "active")}
                             key={id}
                             onClick={() => {
-                                console.log("tab.key :>> ", tab.key);
                                 setActiveTab(tab.key);
                                 history.push(`/profile/${tab.path}/${address}`);
                             }}
