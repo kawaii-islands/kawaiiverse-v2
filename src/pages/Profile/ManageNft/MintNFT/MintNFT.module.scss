@@ -84,7 +84,7 @@ $mobile: 576px;
                     }
 
                     .error-mes {
-                        color: #DC615D;
+                        color: #dc615d;
                     }
 
                     .preview {
@@ -100,7 +100,7 @@ $mobile: 576px;
                         font-size: 38px;
 
                         &:hover {
-							transform: scale(1.15);
+                            transform: scale(1.15);
                         }
                     }
 
@@ -167,6 +167,79 @@ $mobile: 576px;
             font-size: 16px;
             line-height: 150%;
             color: #ffffff;
+        }
+    }
+}
+
+.loading-modal {
+    border-radius: 8px;
+    padding: 10px;
+    max-width: 370px;
+    z-index: 9999;
+
+    :global(.modal-content) {
+        width: 370px;
+        background: #ebe3ff;
+        border-radius: 8px;
+    }
+
+    .modal-body {
+        background: #ebe3ff;
+        border-radius: 8px;
+        // padding: 10px;
+
+        .top-body {
+            text-align: right;
+
+            .icon-cancel {
+                color: #9254c8;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .center-body {
+        margin: 20px;
+        text-align: center;
+
+        .icon-list {
+            color: #9254c8;
+            font-size: 120px;
+        }
+    }
+
+    .bottom-body {
+        text-align: center;
+        margin-top: 30px;
+        margin-bottom: 30px;
+
+        .title {
+            font-style: normal;
+            font-weight: 700;
+            font-size: 18px;
+            line-height: 150%;
+            text-align: center;
+            color: #402a7d;
+        }
+
+        .content {
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 150%;
+            text-align: center;
+            color: #4200ff;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+
+        .MuiButton-root {
+            text-transform: none !important;
+            background: linear-gradient(180deg, #6441a5 0%, #2a0845 100%);
+            border-radius: 4px;
+            color: white;
+            width: 88%;
+			margin-top: 10px;
         }
     }
 }

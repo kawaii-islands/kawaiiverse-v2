@@ -22,6 +22,9 @@ import uploadImageIcon from "src/assets/icons/uploadImage.svg";
 import { create } from "ipfs-http-client";
 import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
+import { Modal } from "react-bootstrap";
+import ListAltRoundedIcon from "@mui/icons-material/ListAltRounded";
+import CancelIcon from "@material-ui/icons/Cancel";
 
 const web3 = new Web3(BSC_rpcUrls);
 const cx = cn.bind(styles);
@@ -65,6 +68,17 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
     const [stepLoading, setStepLoading] = useState(0);
     const [loadingTitle, setLoadingTitle] = useState("");
     const [hash, setHash] = useState();
+    const listPending = window.localStorage.getItem("listNftPending")
+        ? JSON.parse(window.localStorage.getItem("listNftPending"))
+        : [];
+    const [showPendingModal, setShowPendingModal] = useState(listPending.length);
+
+    useEffect(() => {
+        if (listPending.length > 0) {
+            console.log("listPending :>> ", listPending);
+            setListNft(listPending);
+        }
+    }, []);
 
     const setStateForNftData = (key, value, id = openMintNFTBox) => {
         if (key === "tokenId") {
@@ -232,16 +246,20 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         setIsSubmitted(true);
 
         try {
-            const checkData = await checkInvalidData(listNft);
-            const checkToken = await checkInValidTokenId(listNft);
-            console.log("checkToken :>> ", checkToken);
-            if (checkData || checkToken) return;
+            if (!listPending.length) {
+                const checkData = await checkInvalidData(listNft);
+                const checkToken = await checkInValidTokenId(listNft);
+                if (checkData || checkToken) return;
+
+                setLoadingSubmit(true);
+                await createToken(listNft);
+
+                window.localStorage.setItem("listNftPending", JSON.stringify(listNft));
+            }
 
             setLoadingSubmit(true);
-            await createToken(listNft);
-
-			setStepLoading(null);
-			setLoadingTitle("Sign in your wallet!");
+            setStepLoading(null);
+            setLoadingTitle("Sign in your wallet!");
 
             const signature = await getSignature();
             let bodyParams = {
@@ -254,15 +272,19 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
             const res = await axios.post(`${URL}/v1/nft`, bodyParams);
             if (res.status === 200) {
                 console.log(res);
-				setStepLoading(2);
+                setStepLoading(2);
+                window.localStorage.setItem("listNftPending", []);
             }
         } catch (err) {
             console.log(err.response);
+            toast.error(err.message || "An error occurred!");
+
             setStepLoading(3);
+
+            if (listPending.length) setShowPendingModal(true);
         } finally {
             setLoading(false);
         }
-
     };
 
     return (
@@ -475,6 +497,35 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                     setIsSellNFT={setIsMintNFT}
                 />
             )}
+
+            <Modal
+                show={showPendingModal}
+                dialogClassName={cx("loading-modal")}
+                centered
+                onHide={() => setShowPendingModal(true)}
+            >
+                <Modal.Body className={cx("modal-body")}>
+                    {/* <div className={cx("top-body")}>
+                        <CancelIcon className={cx("icon-cancel")} onClick={() => setShowPendingModal(false)} />
+                    </div> */}
+                    <div className={cx("center-body")}>
+                        <ListAltRoundedIcon className={cx("icon-list")} />
+                    </div>
+                    <div className={cx("bottom-body")}>
+                        <div className={cx("title")}>Please mint NFTs in pending list!</div>
+                        <Button
+                            className={cx("MuiButton-root")}
+                            size="large"
+                            onClick={() => {
+                                setShowPendingModal(false);
+                                submit();
+                            }}
+                        >
+                            Mint NFTs
+                        </Button>
+                    </div>
+                </Modal.Body>
+            </Modal>
 
             <PreviewModal open={open} onHide={() => setOpen(!open)} listNft={listNft} />
         </div>
