@@ -15,7 +15,6 @@ import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
 import RELAY_ABI from "src/utils/abi/relay.json";
 import { BSC_CHAIN_ID, BSC_rpcUrls } from "src/consts/blockchain";
 import "react-toastify/dist/ReactToastify.css";
-import addRowItem from "src/assets/icons/addRowItem.svg";
 import LoadingModal from "src/components/LoadingModal2/LoadingModal";
 import { URL } from "src/consts/constant";
 import NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
@@ -73,6 +72,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 allList = allList.filter(nft => {
                     return nft.supply > 0;
                 });
+               
                 // return;
                 setList([...allList]);
                 setLoadingGetList(false);
@@ -175,33 +175,16 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
 
     const sellNft = async () => {
         console.log(listSell);
-
+        // return;
         if (listSell?.length === 0) return;
         setSubmitted(true);
         let pass = true;
         listSell.forEach(item => {
             if (!item.price || !item.quantity || Number(item.price) <= 0 || Number(item.quantity) <= 0) pass = false;
         });
-        // return;
         if (!pass) {
             return;
         }
-    //     "tokenId": 5448,
-            // "amount": 5,
-            // "price": 1,
-            // "tokenUnit": "0x6fe3d0f096fc932a905accd1eb1783f6e4cec717",
-            // "supply": 100
-        // let bodyParams = {
-        //     contract: address,
-        //     tokenId: listSell[0].tokenId,
-        //     price: listSell[0].price,
-        //     supply: listSell[0].supply,
-        //     tokenUnit: "0x6fe3d0f096fc932a905accd1eb1783f6e4cec717"
-        // }
-        // const res = await axios.post(`${URL}/v1/sale`, bodyParams);
-        // console.log(res)
-        // return;
-        // 
         try {
             if (chainId !== BSC_CHAIN_ID) {
                 const error = await createNetworkOrSwitch(library.provider);
@@ -228,7 +211,8 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             }
 
             const { r, s, v } = await getSignature();
-
+            const sign = await getSignature2();
+            console.log(sign);
             const tokenIds = listSell.map(nft => nft.tokenId);
             const amounts = listSell.map(nft => nft.quantity);
             const prices = listSell.map(nft => web3.utils.toWei(nft.price));
@@ -252,7 +236,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 },
                 [account, gameSelected, tokenIds, amounts, prices, v, r, s],
             );
-
+            
             await write(
                 "execute",
                 library.provider,
@@ -266,6 +250,30 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                     setStepLoading(1);
                 },
             );
+            // {
+            //     "contract": "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
+            //     "tokenId": 5448,
+            //     "amount": 5,
+            //     "price": 1,
+            //     "tokenUnit": "0x6fe3d0f096fc932a905accd1eb1783f6e4cec717",
+            //     "supply": 100,
+            //     "owner": "0xce2fd7544e0b2cc94692d4a704debef7bcb61328",
+            //     "sign": "asdfajj32h4j23jwklfjklsdjfklajlskdfjlaksdjflkasjdlfkjdaskl"
+            // }
+            let bodyParams = {
+                contract: address,
+                amount: Number(listSell[0].quantity),
+                tokenId: Number(listSell[0].tokenId),
+                price: Number(listSell[0].price),
+                supply: Number(listSell[0].supply),
+                tokenUnit: "0x6fe3d0f096fc932a905accd1eb1783f6e4cec717",
+                owner: account,
+                sign: sign,
+            };
+            console.log(JSON.stringify(bodyParams))
+            
+            const res = await axios.post(`${URL}/v1/sale`, bodyParams);
+            console.log(res);
             setStepLoading(2);
             setSubmitted(false);
             setListSell([]);
@@ -281,6 +289,10 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
 
             setSubmitted(false);
         }
+    };
+    const sign2 = async (account, data, provider) => {
+        let res = await provider.send("eth_signTypedData_v4", [account, data]);
+        return res.result;
     };
     const getSignature = async () => {
         try {
@@ -320,13 +332,55 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             });
 
             const signature = await sign(account, data, library.provider);
-
-            return signature;
+            // const signature2 = await sign2(account, data, library.provider);
+            return signature
         } catch (err) {
             console.log(err);
         }
     };
+    const getSignature2 = async () => {
+        try {
+            const nonce = await read("nonces", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, [account]);
+            const name = await read("NAME", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, []);
+            const EIP712Domain = [
+                { name: "name", type: "string" },
+                { name: "version", type: "string" },
+                { name: "chainId", type: "uint256" },
+                { name: "verifyingContract", type: "address" },
+            ];
+            const domain = {
+                name,
+                version: "1",
+                chainId: BSC_CHAIN_ID,
+                verifyingContract: KAWAIIVERSE_STORE_ADDRESS,
+            };
+            const Data = [
+                { name: "sender", type: "address" },
+                { name: "_nftAddress", type: "address" },
+                { name: "nonce", type: "uint256" },
+            ];
 
+            const message = {
+                sender: account,
+                _nftAddress: gameSelected,
+                nonce,
+            };
+            const data = JSON.stringify({
+                types: {
+                    EIP712Domain,
+                    Data,
+                },
+                domain,
+                primaryType: "Data",
+                message,
+            });
+
+            const signature = await sign2(account, data, library.provider);
+            return signature
+        } catch (err) {
+            console.log(err);
+        }
+    };
     return (
         <div className={cx("table")}>
             {showModalLoading && (

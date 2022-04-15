@@ -11,7 +11,8 @@ import { URL } from "src/consts/constant";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import LoadingPage from "src/components/LoadingPage/LoadingPage";
-
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 const cx = cn.bind(styles);
 
 const NFTDetail = () => {
@@ -19,11 +20,13 @@ const NFTDetail = () => {
     const { nftId, address } = useParams();
     const [nftInfo, setNftInfo] = useState();
     const [loading, setLoading] = useState(true);
-
+    const { pathname } = useLocation();
     useEffect(() => {
         getNftInfo();
     }, []);
-
+    let pathnames = pathname.split("/").filter(Boolean);
+    pathnames.splice(5, 1);
+    pathnames.splice(2, 1);
     const getNftInfo = async () => {
         setLoading(true);
         try {
@@ -41,6 +44,31 @@ const NFTDetail = () => {
     ) : (
         <MainLayout>
             <div className={cx("mint-nft-detail")}>
+            <div className={cx("breadcrums")}>
+                    {" "}
+                    <Breadcrumbs separator={<NavigateNextIcon />} aria-label="breadcrumb">
+                        {pathnames.map((name, index) => {
+                            if (index === 3) return;
+                            let routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
+                            if (index === 1) {
+                                routeTo = routeTo + `/${pathnames[2]}?view=true`;
+                            }
+                            return (
+                                <span
+                                    key={name}
+                                    onClick={() => {
+                                        if (index === 2) {
+                                            return;
+                                        }
+                                        history.push(routeTo);
+                                    }}
+                                >
+                                    {name}
+                                </span>
+                            );
+                        })}
+                    </Breadcrumbs>
+                </div>
                 <Row>
                     <Col span={10} className={cx("left")}>
                         <Button

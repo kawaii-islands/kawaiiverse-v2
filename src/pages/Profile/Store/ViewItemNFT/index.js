@@ -73,10 +73,23 @@ const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
         if (sort === sort1) {
             setSort("");
             setGameItemList(originalList);
+            if(search !== ""){
+                let listSearch = gameItemList.filter(nft => {
+                    if (nft.name) {
+                        return (
+                            nft?.name.toUpperCase().includes(search.toUpperCase()) ||
+                            nft?.tokenId.toString().includes(search)
+                        );
+                    }
+                    return false;
+                });
+                setListSearch([...listSearch]);
+            }
             return;
         }
         setSort(sort);
-        let newList = [...gameItemList];
+        let newList = search !== "" ? [...listSearch] : [...gameItemList];
+
         if (sort === "low") {
             newList = newList.sort(function (a, b) {
                 return Number(a.price) - Number(b.price);
@@ -86,6 +99,10 @@ const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
             newList = newList.sort(function (a, b) {
                 return Number(b.price) - Number(a.price);
             });
+        }
+        if(search !== ""){
+            setListSearch(newList);
+            return;
         }
         setGameItemList(newList);
     };

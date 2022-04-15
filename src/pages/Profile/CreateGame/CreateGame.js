@@ -29,6 +29,7 @@ import Item from "./Item";
 import "react-loading-skeleton/dist/skeleton.css";
 import axios from "axios";
 import { Spin,Pagination } from "antd";
+
 const cx = cn.bind(styles);
 const web3 = new Web3(BSC_rpcUrls);
 const KAWAII1155_ADDRESS = "0xD6eb653866F629e372151f6b5a12762D16E192f5";
@@ -69,28 +70,53 @@ const CreateGame = () => {
     };
     const skeletonArray = Array.from(Array(8).keys());
 
-    const logInfo = async () => {
+    const logInfo = async (type) => {
         if (!account) return;
         setGameList([]);
         setLoadingGameList(true);
         try {
             let lists = [];
             const totalGame = await read("nftOfUserLength", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account]);
-            for (let index = 0; index < totalGame; index++) {
-                let gameAddress = await read("nftOfUser", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account, index]);
-                let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
-                const res = await axios.get(`${URL}/v1/game/logo?contract=${gameAddress}`);
-                let gameUrl = "";
-                if (res.data.data[0]) {
-                    gameUrl = res.data.data[0].logoUrl;
+            if(type === "revert"){
+                for (let index = totalGame - 1; index >= 0; index--) {
+                    let gameAddress = await read("nftOfUser", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account, index]);
+                    let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
+                    const res = await axios.get(`${URL}/v1/game/logo?contract=${gameAddress}`);
+                    let gameUrl = "";
+                    if (res.data.data[0]) {
+                        gameUrl = res.data.data[0].logoUrl;
+                    }
+                    
+                    lists.push({ gameAddress, gameName, gameUrl });
+                    if((lists.length % 8 === 0) || index === 0){
+                        setLoadingGameList(false);
+                        setGameList([...lists])
+                    }
                 }
-                lists.push({ gameAddress, gameName, gameUrl });
+            }else{
+                for (let index = 0; index < totalGame; index++) {
+                    console.log(index)
+                    let gameAddress = await read("nftOfUser", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account, index]);
+                    let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
+                    const res = await axios.get(`${URL}/v1/game/logo?contract=${gameAddress}`);
+                    let gameUrl = "";
+                    if (res.data.data[0]) {
+                        gameUrl = res.data.data[0].logoUrl;
+                    }
+                    
+                    lists.push({ gameAddress, gameName, gameUrl });
+                    if(index === totalGame - 1 || (index % 7 === 0 && index > 0)){
+                        setLoadingGameList(false);
+                        setGameList([...lists])
+                    }
+                }
             }
-            setGameList(lists);
+            
         } catch (err) {
             console.log(err);
-        } finally {
             setLoadingGameList(false);
+        } finally {
+            // setLoadingGameList(false);
         }
     };
 
@@ -278,7 +304,7 @@ const CreateGame = () => {
                 };
 
                 const res = await axios.post(`${URL}/v1/game/logo`, bodyParams);
-                if (res.data.message == "success") {
+                if (res.data.message === "success") {
                     console.log(res);
                     setgameInfo({});
                     setFileName();
@@ -292,7 +318,7 @@ const CreateGame = () => {
                     setUploadGameLoading(false);
                     setFailed(true);
                 }
-                logInfo();
+                logInfo("revert");
             } catch (err) {
                 setUploadGameLoading(false);
                 setFailed(true);
@@ -438,7 +464,7 @@ const CreateGame = () => {
                         onChange={handleChangeSymbol}
                     />
                     {componentErrorSymbol}
-                    <div className={cx("input_container")}>
+                    <div className={cx("input_container", "input_container--image")}>
                         <input
                             placeholder="Avatar"
                             value={fileName || ""}
@@ -456,6 +482,7 @@ const CreateGame = () => {
                             style={{ display: "none" }}
                             onChange={e => handleUploadImage(e)}
                         />
+                        {gameInfo.avatar && <img src={gameInfo.avatar || ""} alt="preview" className={cx("preview-img")}/>}
                         {componentErrorImage}
                     </div>
 
@@ -468,7 +495,7 @@ const CreateGame = () => {
     return (
         <div className={cx("container")}>
             <div className={cx("content")}>
-                <Grid container spacing={2} className={cx("grid-parent")}>
+                <Grid container spacing={4} className={cx("grid-parent")}>
                     <Grid item md={4} sm={6} xs={12}>
                         <Card className={cx("create-card", "card")} onClick={handleOpen}>
                             <CardContent>

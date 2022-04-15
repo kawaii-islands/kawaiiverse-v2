@@ -18,36 +18,40 @@ import { BSC_CHAIN_ID } from "src/consts/blockchain";
 import { KAWAIIVERSE_STORE_ADDRESS } from "src/consts/address";
 import { read } from "src/services/web3";
 import { useWeb3React } from "@web3-react/core";
-import * as web3 from "web3"
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import * as web3 from "web3";
 const cx = cn.bind(styles);
 
 const NFTDetail = () => {
     const history = useHistory();
-    const { nftId, address,tokenId } = useParams();
+    const { nftId, address, tokenId } = useParams();
     const [nftInfo, setNftInfo] = useState();
     const [loading, setLoading] = useState(true);
     const { account } = useWeb3React();
-    
+    const { pathname } = useLocation();
     useEffect(() => {
         getNftInfo();
     }, [account, address]);
-
+    let pathnames = pathname.split("/").filter(Boolean);
+    pathnames.splice(5, 1);
+    pathnames.splice(2, 1);
     const getNftInfo = async () => {
         setLoading(true);
         try {
             const res = await axios.get(`${URL}/v1/nft/${address}/${tokenId}`);
-            console.log(nftId)
+            console.log(nftId);
             const allNftSell = await getNftList(address);
-            console.log(allNftSell)
+            console.log(allNftSell);
             let nfts = allNftSell.filter(nft => Number(nft.tokenId) === Number(tokenId));
-            console.log(nfts)
+            console.log(nfts);
             // let nft = nfts.filter(nft => nft._id === nftId);
             let nft = nfts[0];
-            nft = {...nft,...res.data.data}
-            
+            nft = { ...nft, ...res.data.data };
+
             // console.log(allNftSell);
             setNftInfo(nft);
-            console.log(nft)
+            console.log(nft);
         } catch (error) {
             console.log(error);
         }
@@ -104,6 +108,31 @@ const NFTDetail = () => {
     ) : (
         <MainLayout>
             <div className={cx("mint-nft-detail")}>
+                <div className={cx("breadcrums")}>
+                    {" "}
+                    <Breadcrumbs separator={<NavigateNextIcon />} aria-label="breadcrumb">
+                        {pathnames.map((name, index) => {
+                            if (index === 3) return;
+                            let routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
+                            if (index === 1) {
+                                routeTo = routeTo + `/${pathnames[2]}?view=true`;
+                            }
+                            return (
+                                <span
+                                    key={name}
+                                    onClick={() => {
+                                        if (index === 2) {
+                                            return;
+                                        }
+                                        history.push(routeTo);
+                                    }}
+                                >
+                                    {name}
+                                </span>
+                            );
+                        })}
+                    </Breadcrumbs>
+                </div>
                 <Row>
                     <Col span={10} className={cx("left")}>
                         <Button
