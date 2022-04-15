@@ -30,7 +30,7 @@ const NFTDetail = () => {
     const getNftInfo = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`${URL}/v1/nft/${address}/${nftId}`);
+            const res = await axios.get(`${URL}/v1/nft/${address.toLowerCase()}/${nftId}`);
             setNftInfo(res.data.data);
             console.log("res :>> ", res);
         } catch (error) {

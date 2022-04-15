@@ -13,7 +13,6 @@ import { useLocation } from "react-router-dom";
 import LoadingPage from "src/components/LoadingPage/LoadingPage";
 import { toast } from "react-toastify";
 import NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
-import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
 import { BSC_CHAIN_ID } from "src/consts/blockchain";
 import { KAWAIIVERSE_STORE_ADDRESS } from "src/consts/address";
 import { read } from "src/services/web3";
@@ -21,11 +20,12 @@ import { useWeb3React } from "@web3-react/core";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import * as web3 from "web3";
+import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
 const cx = cn.bind(styles);
 
 const NFTDetail = () => {
     const history = useHistory();
-    const { nftId, address, tokenId } = useParams();
+    const { nftId, address, tokenId, index } = useParams();
     const [nftInfo, setNftInfo] = useState();
     const [loading, setLoading] = useState(true);
     const { account } = useWeb3React();
@@ -39,19 +39,31 @@ const NFTDetail = () => {
     const getNftInfo = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`${URL}/v1/nft/${address}/${tokenId}`);
-            console.log(nftId);
-            const allNftSell = await getNftList(address);
-            console.log(allNftSell);
-            let nfts = allNftSell.filter(nft => Number(nft.tokenId) === Number(tokenId));
-            console.log(nfts);
-            // let nft = nfts.filter(nft => nft._id === nftId);
-            let nft = nfts[0];
-            nft = { ...nft, ...res.data.data };
-
+            const res = await axios.get(`${URL}/v1/nft/${address.toLowerCase()}/${tokenId}`);
+            // console.log(nftId);
+            // const allNftSell = await getNftList(address);
             // console.log(allNftSell);
-            setNftInfo(nft);
-            console.log(nft);
+            // let nfts = allNftSell.filter(nft => Number(nft.tokenId) === Number(tokenId));
+            // console.log(nfts);
+            // // let nft = nfts.filter(nft => nft._id === nftId);
+            // let nft = nfts[0];
+            // nft = { ...nft, ...res.data.data };
+            let gameItem = await read(
+                "dataNFT1155s",
+                BSC_CHAIN_ID,
+                KAWAIIVERSE_STORE_ADDRESS,
+                KAWAII_STORE_ABI,
+                [address, index],
+            );
+            // console.log(res)
+            if(res.status === 200){
+                gameItem = {...gameItem, ...res.data.data}
+            }
+            // console.log(allNftSell);
+            console.log(gameItem); 
+            // return;
+            setNftInfo(gameItem);
+            
         } catch (error) {
             console.log(error);
         }

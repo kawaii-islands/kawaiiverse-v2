@@ -52,7 +52,7 @@ const CreateGame = () => {
     const { account, chainId, library } = useWeb3React();
     const [currentPage, setCurrentPage] = useState(1);
     useEffect(() => {
-        logInfo();
+        logInfo("revert");
     }, [account]);
     const itemRender = (current, type, originalElement) => {
         if (type === "prev") {
@@ -99,6 +99,7 @@ const CreateGame = () => {
                     let gameAddress = await read("nftOfUser", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account, index]);
                     let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
                     const res = await axios.get(`${URL}/v1/game/logo?contract=${gameAddress}`);
+                    console.log(res)
                     let gameUrl = "";
                     if (res.data.data[0]) {
                         gameUrl = res.data.data[0].logoUrl;

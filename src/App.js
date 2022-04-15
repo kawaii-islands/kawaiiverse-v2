@@ -46,7 +46,7 @@ function App() {
                             />
                             <Route
                                 exact
-                                path="/profile/store/view-nft/:address/:nftId/:tokenId"
+                                path="/profile/store/view-nft/:address/:nftId/:tokenId/:index"
                                 component={props => <SellNFTDetail {...props} />}
                             />
                         </Suspense>

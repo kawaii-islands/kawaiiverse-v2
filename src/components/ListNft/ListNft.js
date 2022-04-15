@@ -20,7 +20,7 @@ const ListNft = ({ gameItemList, gameSelected,loading }) => {
                             handleNavigation={() =>{
                                 // localStorage.setItem("nft", JSON.stringify(item));
                                 history.push({
-                                    pathname: `/profile/store/view-nft/${gameSelected}/${item._id}/${item.tokenId}`,
+                                    pathname: `/profile/store/view-nft/${gameSelected}/${item._id}/${item.tokenId}/${item.index}`,
                                     state: { gameSelected },
                                 })
                             }

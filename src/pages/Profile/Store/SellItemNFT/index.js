@@ -54,7 +54,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
     const getListNft = async () => {
         try {
             setLoadingGetList(true);
-            const res = await axios.get(`${URL}/v1/nft/${gameSelected}`);
+            const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
             console.log(res);
 
             const gameList = await getGameList();
