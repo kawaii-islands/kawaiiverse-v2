@@ -5,13 +5,13 @@ import filter from "../../assets/icons/filter.svg";
 import { Collapse } from "antd";
 import logoKawaii from "../../assets/images/logo_kawaii.png";
 import { Button } from "@mui/material";
-
+import { useHistory } from "react-router-dom";
 const { Panel } = Collapse;
 const cx = cn.bind(styles);
 
-const FilterStore = ({ gameList, setGameSelected, gameSelected, checkGameIfIsSelected }) => {
+const FilterStore = ({ gameList, setGameSelected, gameSelected }) => {
   const handleGameClick = (address, name) => {
-    if (checkGameIfIsSelected(address) != -1) {
+    if (checkGameIfIsSelected(address) !== -1) {
       setGameSelected(gameSelected => {
         const copyGame = [...gameSelected];
         copyGame.splice(checkGameIfIsSelected(address), 1);
@@ -20,8 +20,20 @@ const FilterStore = ({ gameList, setGameSelected, gameSelected, checkGameIfIsSel
     } else {
       setGameSelected(gameSelected => [...gameSelected, { gameAddress: address, gameName: name }]);
     }
+    // let listGame = new Set(gameSelected);
+    // listGame.add(address);  
+    // listGame = [...listGame.values()];
+    // setGameSelected([...listGame]);
   };
-
+  const checkGameIfIsSelected = address => {
+		let count = -1;
+		gameSelected.map((game, idx) => {
+			if (game.gameAddress == address) {
+				count = idx;
+			}
+		});
+		return count;
+	};
   return (
     <div className={cx("filter")}>
       <div className={cx("card-header")}>
@@ -39,20 +51,18 @@ const FilterStore = ({ gameList, setGameSelected, gameSelected, checkGameIfIsSel
             <div className={cx("panel-content")}>
               {gameList?.map((gameName, idx) => (
                 <div
-                  className={gameName.gameAddress == gameSelected ? cx("name-selected") : cx("name")}
+                  className={gameName.gameAddress === gameSelected ? cx("name-selected") : cx("name")}
                   key={idx}
                   onClick={() => handleGameClick(gameName.gameAddress, gameName.gameName)}
                 >
-                  <img src={logoKawaii} className={cx("name-avatar")} />
-                  <span className={gameName.gameAddress == gameSelected ? cx("name-selected-text") : cx("name-text")}>
+                  <img src={logoKawaii} className={cx("name-avatar")} alt="" />
+                  <span className={gameName.gameAddress === gameSelected ? cx("name-selected-text") : cx("name-text")}>
                     {gameName.gameName}
                   </span>
                 </div>
               ))}
             </div>
           </Panel>
-          <Panel header="Type" key="2" className="site-collapse-custom-panel"></Panel>
-          <Panel header="Amount" key="3" className="site-collapse-custom-panel"></Panel>
         </Collapse>
       </div>
     </div>

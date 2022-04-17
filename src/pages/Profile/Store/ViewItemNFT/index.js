@@ -109,13 +109,17 @@ const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
     const getListNft = async () => {
         setLoadingListNFT(true);
         try {
-            const res = await axios.get(`${URL}/v1/sale/${address.toLowerCase()}`);
+            if(!account || !address) return;
+            const res = await axios.get(`${URL}/v1/nft/${address.toLowerCase()}`);
 
             if (res.status === 200) {
                 let allList = res.data.data;
                 // let nftSaleList = allList;
                 const gameList = await getGameList();
-                const nftSaleList = await getNftList(gameList);
+                let nftSaleList = await getNftList(gameList);
+                nftSaleList = nftSaleList.filter(nft => {
+                    return (nft.nftAddress === address && nft.owner === account)
+                })
                 // return;
                 for (let i = 0; i < nftSaleList?.length; i++) {
                     for (let j = 0; j < allList?.length; j++) {

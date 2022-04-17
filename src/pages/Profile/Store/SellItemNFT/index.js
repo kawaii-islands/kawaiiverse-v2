@@ -55,10 +55,11 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
         try {
             setLoadingGetList(true);
             const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
-            console.log(res);
-
             const gameList = await getGameList();
-            const nftSaleList = await getNftList(gameList);
+            let nftSaleList = await getNftList(gameList);
+            nftSaleList = nftSaleList.filter(nft => {
+                return (nft.nftAddress === address && nft.owner === account)
+            })
             // return;
             if (res.status === 200) {
                 let allList = res.data.data;
@@ -212,7 +213,6 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
 
             const { r, s, v } = await getSignature();
             const sign = await getSignature2();
-            console.log(sign);
             const tokenIds = listSell.map(nft => nft.tokenId);
             const amounts = listSell.map(nft => nft.quantity);
             const prices = listSell.map(nft => web3.utils.toWei(nft.price));

@@ -36,6 +36,7 @@ const NFTDetail = () => {
     let pathnames = pathname.split("/").filter(Boolean);
     pathnames.splice(5, 1);
     pathnames.splice(2, 1);
+    console.log(pathnames)
     const getNftInfo = async () => {
         setLoading(true);
         try {
@@ -133,7 +134,7 @@ const NFTDetail = () => {
                                 <span
                                     key={name}
                                     onClick={() => {
-                                        if (index === 2) {
+                                        if (index >= 2) {
                                             return;
                                         }
                                         history.push(routeTo);
