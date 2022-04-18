@@ -28,7 +28,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import Item from "./Item";
 import "react-loading-skeleton/dist/skeleton.css";
 import axios from "axios";
-import { Spin,Pagination } from "antd";
+import { Spin, Pagination } from "antd";
 const cx = cn.bind(styles);
 const web3 = new Web3(BSC_rpcUrls);
 const KAWAII1155_ADDRESS = "0xD6eb653866F629e372151f6b5a12762D16E192f5";
@@ -45,6 +45,7 @@ const CreateGame = () => {
     const [fileName, setFileName] = useState();
     const [fileSize, setFileSize] = useState();
     const [gameList, setGameList] = useState([]);
+    const [totalGame, setTotalGame] = useState();
     const [loadingGameList, setLoadingGameList] = useState(false);
     const [uploadImageLoading, setUploadImageLoading] = useState(false);
     const [uploadGameLoading, setUploadGameLoading] = useState(false);
@@ -52,7 +53,7 @@ const CreateGame = () => {
     const [currentPage, setCurrentPage] = useState(1);
     useEffect(() => {
         logInfo();
-    }, [account]);
+    }, [account, currentPage]);
     const itemRender = (current, type, originalElement) => {
         if (type === "prev") {
             return <span style={{ color: "#FFFFFF" }}>Prev</span>;
@@ -75,8 +76,16 @@ const CreateGame = () => {
         setLoadingGameList(true);
         try {
             let lists = [];
+            let upperBoundary;
             const totalGame = await read("nftOfUserLength", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account]);
-            for (let index = 0; index < totalGame; index++) {
+            if ((currentPage - 1) * PAGE_SIZE + PAGE_SIZE > totalGame) {
+                upperBoundary = totalGame;
+            } else {
+                upperBoundary = (currentPage - 1) * PAGE_SIZE + PAGE_SIZE;
+            }
+            setTotalGame(totalGame);
+            console.log((currentPage - 1) * PAGE_SIZE, upperBoundary);
+            for (let index = (currentPage - 1) * PAGE_SIZE; index < upperBoundary; index++) {
                 let gameAddress = await read("nftOfUser", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account, index]);
                 let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
                 const res = await axios.get(`${URL}/v1/game/logo?contract=${gameAddress}`);
@@ -346,9 +355,8 @@ const CreateGame = () => {
                 ))}
             </>
         );
-        
     } else {
-        componentGameList = gameList.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE).map((item, idx) => (
+        componentGameList = gameList.map((item, idx) => (
             <Grid item md={4} sm={6} xs={12} key={idx}>
                 <Item item={item} />
             </Grid>
@@ -484,15 +492,15 @@ const CreateGame = () => {
                     {componentGameList}
                 </Grid>
                 <div className={cx("pagination")}>
-                <Pagination
+                    <Pagination
                         pageSize={PAGE_SIZE}
                         showSizeChanger={false}
                         current={currentPage}
-                        total={gameList?.length}
+                        total={totalGame}
                         onChange={page => setCurrentPage(page)}
                         itemRender={itemRender}
                     />
-                    </div>
+                </div>
                 <Modal open={open} onClose={handleClose}>
                     <div className={cx("modal-style")}>{componentModal}</div>
                 </Modal>
