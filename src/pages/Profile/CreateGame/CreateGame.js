@@ -84,7 +84,6 @@ const CreateGame = () => {
                 upperBoundary = (currentPage - 1) * PAGE_SIZE + PAGE_SIZE;
             }
             setTotalGame(totalGame);
-            console.log((currentPage - 1) * PAGE_SIZE, upperBoundary);
             for (let index = (currentPage - 1) * PAGE_SIZE; index < upperBoundary; index++) {
                 let gameAddress = await read("nftOfUser", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account, index]);
                 let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
