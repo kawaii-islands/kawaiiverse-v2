@@ -54,6 +54,7 @@ const CreateGame = () => {
     useEffect(() => {
         logInfo();
     }, [account, currentPage]);
+
     const itemRender = (current, type, originalElement) => {
         if (type === "prev") {
             return <span style={{ color: "#FFFFFF" }}>Prev</span>;
@@ -64,6 +65,7 @@ const CreateGame = () => {
         return originalElement;
     };
     const handleOpen = () => setOpen(true);
+
     const handleClose = () => {
         setOpen(false);
         setSuccess(false);
@@ -72,6 +74,7 @@ const CreateGame = () => {
 
     const logInfo = async () => {
         if (!account) return;
+        console.log(Date.now());
         setGameList([]);
         setLoadingGameList(true);
         try {
@@ -219,38 +222,6 @@ const CreateGame = () => {
     const handleCreate = async () => {
         setUploadGameLoading(true);
         if (checkValidation()) {
-            const _data = web3.eth.abi.encodeFunctionCall(
-                {
-                    inputs: [
-                        {
-                            internalType: "address",
-                            name: "_owner",
-                            type: "address",
-                        },
-                        {
-                            internalType: "address",
-                            name: "_imp",
-                            type: "address",
-                        },
-                        {
-                            internalType: "string",
-                            name: "_name",
-                            type: "string",
-                        },
-                        {
-                            internalType: "string",
-                            name: "_symbol",
-                            type: "string",
-                        },
-                    ],
-                    name: "createNFT1155",
-                    outputs: [],
-                    stateMutability: "nonpayable",
-                    type: "function",
-                },
-                [account, KAWAIIVERSE_NFT1155_ADDRESS, gameInfo.name, gameInfo.symbol],
-            );
-
             try {
                 if (chainId !== BSC_CHAIN_ID) {
                     console.log(chainId, BSC_CHAIN_ID);
@@ -260,12 +231,13 @@ const CreateGame = () => {
                         throw new Error("Please change network to Testnet Binance smart chain.");
                     }
                 }
+
                 await write(
-                    "execute",
+                    "createNFT1155",
                     library.provider,
-                    RELAY_ADDRESS,
-                    RELAY_ABI,
-                    [FACTORY_ADDRESS, _data],
+                    FACTORY_ADDRESS,
+                    FACTORY_ABI,
+                    [account, gameInfo.name, gameInfo.symbol, Date.now()],
                     { from: account },
                     hash => {
                         console.log(hash);
