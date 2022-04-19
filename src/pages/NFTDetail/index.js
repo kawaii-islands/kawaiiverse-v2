@@ -121,12 +121,36 @@ const NFTDetail = () => {
         return isApprovedForAll;
         // setIsApprovedForAll(isApprovedForAll);
     };
+   
     const buyNft = async () => {
         console.log(account);
         if(!account) return;
         try{
             // const isApproved = await getAllowance();
             // console.log(isApproved)
+            // const getAllowance = async (address, type) => {
+            //     return read(
+            //         "allowance",
+            //         BSC_CHAIN_ID,
+                    // type === "airi" ? AIRI_ADDRESS : KAWAII_ADDRESS,
+                    // type === "airi" ? AIRI_ABI : KAWAII_ABI,
+            //         [account, address]
+            //     );
+            // };
+            // const approve = async (address, type) => {
+            //     return await write(
+            //         "approve",
+            //         library.provider,
+            //         type === "airi" ? AIRI_ADDRESS : KAWAII_ADDRESS,
+            //         type === "airi" ? AIRI_ABI : KAWAII_ABI,
+            //         [address, web3.utils.toWei("999999999999999", "ether")],
+            //         { from: account }
+            //     );
+            // };
+            // if (Number(allowance) < price * 10 ** 18) {
+            //     await approve(address, token);
+            // }
+            
             const { r,s,v } = await getSignature();
             const _data = web3.eth.abi.encodeFunctionCall(
                 {
