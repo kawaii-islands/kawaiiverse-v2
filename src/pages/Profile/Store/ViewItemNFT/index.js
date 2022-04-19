@@ -73,7 +73,7 @@ const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
         if (sort === sort1) {
             setSort("");
             setGameItemList(originalList);
-            if(search !== ""){
+            if (search !== "") {
                 let listSearch = gameItemList.filter(nft => {
                     if (nft.name) {
                         return (
@@ -100,7 +100,7 @@ const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
                 return Number(b.price) - Number(a.price);
             });
         }
-        if(search !== ""){
+        if (search !== "") {
             setListSearch(newList);
             return;
         }
@@ -109,7 +109,7 @@ const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
     const getListNft = async () => {
         setLoadingListNFT(true);
         try {
-            if(!account || !address) return;
+            if (!account || !address) return;
             const res = await axios.get(`${URL}/v1/nft/${address.toLowerCase()}`);
 
             if (res.status === 200) {
@@ -118,8 +118,8 @@ const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
                 const gameList = await getGameList();
                 let nftSaleList = await getNftList(gameList);
                 nftSaleList = nftSaleList.filter(nft => {
-                    return (nft.nftAddress === address && nft.owner === account)
-                })
+                    return nft.nftAddress === address && nft.owner === account;
+                });
                 // return;
                 for (let i = 0; i < nftSaleList?.length; i++) {
                     for (let j = 0; j < allList?.length; j++) {
@@ -166,6 +166,7 @@ const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
                     }),
                 );
                 // setGameList(gameListData);
+                console.log(gameListData);
                 return gameListData;
             } catch (error) {
                 console.log(error);
@@ -199,13 +200,13 @@ const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
                                 [address ? address : gameList[idx].gameAddress, index],
                             );
                             // let itemInfo = getItemInfo(gameItem.tokenId);
-                            list.push(Object.assign({index: index}, gameItem));
-                            return Object.assign({index: index}, gameItem);
+                            list.push(Object.assign({ index: index }, gameItem));
+                            return Object.assign({ index: index }, gameItem);
                         }),
                     );
                     // console.log(gameItemData);
                     // let myNftList = [];
-                    
+
                     if (gameItemData?.length) {
                         myNftList = gameItemData.filter(nft => nft.owner === account);
                     }
@@ -239,7 +240,7 @@ const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
         </Menu>
     );
     let displayList = listSearch.length > 0 || search !== "" ? listSearch : gameItemList;
-        
+
     return (
         <div className={cx("right-main")}>
             <div className={cx("right-top")}>

@@ -12,12 +12,10 @@ import FACTORY_ABI from "src/utils/abi/factory.json";
 import NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
 import { useWeb3React } from "@web3-react/core";
 import { FACTORY_ADDRESS } from "src/consts/address";
-// import CreateGame from "./CreateGame/CreateGame";
-// import Game from "./Game/index";
-// import StoreProfile from "./Store/index";
-// import Marketplace from "./Marketplace/index";
+import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
+import { KAWAIIVERSE_STORE_ADDRESS } from "src/consts/address";
 import ListNft from "src/components/ListNft/ListNft";
-
+import { toast } from "react-toastify";
 import axios from "axios";
 import FilterMobile from "src/components/FilterMobile/FilterMobile";
 import { useParams } from "react-router-dom";
@@ -26,32 +24,29 @@ import { URL } from "src/consts/constant";
 import ListSkeleton from "src/components/ListSkeleton/ListSkeleton";
 import { InputAdornment, TextField, Input } from "@mui/material";
 import { Menu, Dropdown, Pagination } from "antd";
-// import searchIcon from "../../assets/icons/search_24px.svg";
-import searchIcon from "src/assets/icons/search_24px.svg";
 import { DownOutlined } from "@ant-design/icons";
-// import filter from "../../assets/icons/filter.svg";
 import filter from "src/assets/icons/filter.svg";
 import { Search as SearchIcon } from "@material-ui/icons";
+import cancel from "src/assets/icons/cancel.svg";
 const cx = cn.bind(styles);
-
 
 const PAGE_SIZE = 15;
 const Profile = () => {
-	const { account } = useWeb3React();
-	const [loadingListNFT, setLoadingListNFT] = useState(false);
-	const [openFilterModal, setOpenFilterModal] = useState(false);
-	const [gameList, setGameList] = useState([]);
-	const [gameSelected, setGameSelected] = useState([]);
-	const [activeTab, setActiveTab] = useState(1);
-	const [listNft, setListNft] = useState([]);
+    const { account } = useWeb3React();
+    const [loadingListNFT, setLoadingListNFT] = useState(false);
+    const [openFilterModal, setOpenFilterModal] = useState(false);
+    const [gameList, setGameList] = useState([]);
+    const [gameSelected, setGameSelected] = useState([]);
+    const [activeTab, setActiveTab] = useState(1);
+    const [listNft, setListNft] = useState([]);
     const [search, setSearch] = useState("");
     const [listSearch, setListSearch] = useState([]);
-	const [gameItemList, setGameItemList] = useState([]);
+    const [gameItemList, setGameItemList] = useState([]);
     const [originalList, setOriginalList] = useState([]);
-	const [sort1, setSort] = useState("");
+    const [sort1, setSort] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
-	const handleSearch = e => {
+    const handleSearch = e => {
         setSearch(e.target.value);
         let listSearch = gameItemList.filter(nft => {
             if (nft.name) {
@@ -68,14 +63,35 @@ const Profile = () => {
         }
         setListSearch([...listSearch]);
     };
-	useEffect(() => {
-		logInfo();
-	}, [account]);
-	useEffect(() => {
-		// logInfo();
-		getList();
-	}, [gameSelected]);
-	const itemRender = (current, type, originalElement) => {
+    const checkGameIfIsSelected = address => {
+        let count = -1;
+        gameSelected.map((game, idx) => {
+            if (game.gameAddress === address) {
+                count = idx;
+            }
+        });
+        return count;
+    };
+    const handleDeleteFilter = address => {
+        setGameSelected(gameSelected => {
+            const copyGame = [...gameSelected];
+            copyGame.splice(checkGameIfIsSelected(address), 1);
+            return copyGame;
+        });
+    };
+
+    const handleClearFilter = () => {
+        setGameSelected([]);
+    };
+
+    useEffect(() => {
+        // logGameData();
+    }, [gameSelected]);
+    useEffect(() => {
+        getGameList();
+        // logGameData();
+    }, []);
+    const itemRender = (current, type, originalElement) => {
         if (type === "prev") {
             return <span style={{ color: "#FFFFFF" }}>Prev</span>;
         }
@@ -84,37 +100,93 @@ const Profile = () => {
         }
         return originalElement;
     };
-	const logInfo = async () => {
-		if (account) {
-			setGameList([]);
-			try {
-				const totalGame = await read("nftOfUserLength", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account]);
-				for (let index = 0; index < totalGame; index++) {
-					let gameAddress = await read("nftOfUser", BSC_CHAIN_ID, FACTORY_ADDRESS, FACTORY_ABI, [account, index]);
-					let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
-					setGameList(gameList => [...gameList, { gameAddress, gameName }]);
-				}
-				console.log(gameList);
-			} catch (err) {
-				console.log(err);
-			}
-		}
-	};
-	const getList = async () => {
-		try {
-			const res = await axios.get(`${URL}/v1/nft/0xc0db51c453526d9f233c61b2db570aa754f1cf7e`);
-			if(res.status === 200){
-				setListNft(res.data.data);
-			}
-		} catch (error) {
-			console.log(error);
-		}
-	}
-	const handleSort = sort => {
+
+    const getList = async () => {
+        try {
+            const res = await axios.get(`${URL}/v1/nft/0xc0db51c453526d9f233c61b2db570aa754f1cf7e`);
+            if (res.status === 200) {
+                // setListNft(res.data.data);
+            }
+        } catch (error) {
+            toast.error(error);
+            console.log(error);
+        }
+    };
+
+    const logGameData = async gameList => {
+        try {
+            let game;
+            if (gameSelected.length) {
+                game = gameSelected;
+            } else {
+                game = gameList;
+            }
+            const tmpGameArray = Array(game.length).fill(1);
+            const gameListData = await Promise.all(
+                tmpGameArray.map(async (nftId, idx) => {
+									
+                    let gameItemLength = await read(
+                        "lengthSellNFT1155",
+                        BSC_CHAIN_ID,
+                        KAWAIIVERSE_STORE_ADDRESS,
+                        KAWAII_STORE_ABI,
+                        [game[idx].gameAddress],
+                    );
+										const tmpItemArray = Array(Number(gameItemLength)).fill(1);
+										let res = await axios.get(`${URL}/v1/nft/${game[idx].gameAddress}`);
+										if(res.status === 200){
+											const gameItemData = await Promise.all(
+                        tmpItemArray.map(async (nftId, index) => {
+                            let gameItem = await read(
+                                "dataNFT1155s",
+                                BSC_CHAIN_ID,
+                                KAWAIIVERSE_STORE_ADDRESS,
+                                KAWAII_STORE_ABI,
+                                [game[idx].gameAddress, index],
+                            );
+                            // console.log(gameItem);
+														gameItem.index = index;
+														return gameItem;
+														
+                        }),
+                    );
+										// console.log(gameItemData);
+										// console.log(res.data.data)
+										let mergeArray = gameItemData.map((nft1, idx1) => {
+											let nft = nft1;
+											res.data.data.map((nft2, idx2) => {
+												
+												if((Number(nft1.tokenId) === Number(nft2.tokenId))){
+													nft = {...nft2, ...nft1};
+													// console.log(nft);
+												}
+												
+											})
+											
+											return nft;
+										})
+										// console.log(gameItemData);
+                                        mergeArray = mergeArray.filter(nft => {
+                                            return nft.contract;
+                                        })
+                    return mergeArray;
+										}
+                    
+                    
+                }),
+            );
+						setListNft(gameListData.flat(3));
+            return gameListData.flat(3);
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message || "An error occurred!");
+        }
+    };
+    const handleSort = sort => {
         if (sort === sort1) {
             setSort("");
             setGameItemList(originalList);
-            if(search !== ""){
+            if (search !== "") {
                 let listSearch = gameItemList.filter(nft => {
                     if (nft.name) {
                         return (
@@ -141,14 +213,48 @@ const Profile = () => {
                 return Number(b.price) - Number(a.price);
             });
         }
-        if(search !== ""){
+        if (search !== "") {
             setListSearch(newList);
             return;
         }
         setGameItemList(newList);
     };
-	let displayList = listSearch.length > 0 || search !== "" ? listSearch : gameItemList;
-const menu = (
+    const getGameList = async () => {
+        try {
+            setGameList([]);
+            const totalGame = await read(
+                "lengthListNFT1155",
+                BSC_CHAIN_ID,
+                KAWAIIVERSE_STORE_ADDRESS,
+                KAWAII_STORE_ABI,
+                [],
+            );
+            const tmpArray = Array.from({ length: totalGame }, (v, i) => i);
+            const gameListData = await Promise.all(
+                tmpArray.map(async (nftId, index) => {
+                    let gameAddress = await read(
+                        "listNFT1155",
+                        BSC_CHAIN_ID,
+                        KAWAIIVERSE_STORE_ADDRESS,
+                        KAWAII_STORE_ABI,
+                        [index],
+                    );
+                    let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
+
+                    return { gameAddress, gameName };
+                }),
+            );
+            logGameData(gameListData);
+            setGameList(gameListData);
+
+            return gameListData;
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message || "An error occurred!");
+        }
+    };
+    let displayList = listSearch.length > 0 || search !== "" ? listSearch : listNft;
+    const menu = (
         <Menu className={cx("menu-dropdown")}>
             <Menu.Item
                 key="low-high"
@@ -166,88 +272,109 @@ const menu = (
             </Menu.Item>
         </Menu>
     );
-	return loadingListNFT ? (
-		<LoadingPage />
-	) : (
-		<MainLayout>
-			<div className={cx("profile")}>
-				{openFilterModal && (
-					<FilterMobile
-						setOpenFilterModal={setOpenFilterModal}
-						gameList={gameList}
-						setGameSelected={setGameSelected}
-						gameSelected={gameSelected}
-						activeTab={activeTab}
-						setActiveTab={setActiveTab}
-					/>
-				)}
-				<Row className={cx("row")}>
-					<Col md={6} className={cx("left")}>
-						<FilterStore
-							gameList={gameList}
-							setGameSelected={setGameSelected}
-							gameSelected={gameSelected}
-							activeTab={activeTab}
-							setActiveTab={setActiveTab}
-						/>
-					</Col>
-
-					<Col offset={1} md={17} className={cx("right-wrapper")}>
-					<div className={cx("right-main")}>
-            <div className={cx("right-top")}>
-                <div className={cx("right-top-title")}>{displayList?.length} items</div>
-
-                <Input
-                    disableUnderline
-                    placeholder="Search for NFT"
-                    value={search}
-                    onChange={handleSearch}
-                    className={cx("search")}
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <SearchIcon className={cx("icon")} />
-                        </InputAdornment>
-                    }
-                />
-                <div className={cx("group-button-filter")}>
-                    <Dropdown overlay={menu} className={cx("drop-down")} trigger={["click"]}>
-                        <div className={cx("drop-down-label")}>
-                            <span>Sort by</span> <DownOutlined />
-                        </div>
-                    </Dropdown>
-                </div>
-                {/* URLSearchParams.set('view', false); */}
-               
-            </div>
-            <Row gutter={[20, 20]} className={cx("list")}>
-                {loadingListNFT ? (
-                    <ListSkeleton page={"store"} />
-                ) : (
-                    <ListNft
-                        loading={loadingListNFT}
-                        gameItemList={listNft.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)}
-                        // gameSelected={address}
+    return loadingListNFT ? (
+        <LoadingPage />
+    ) : (
+        <MainLayout>
+            <div className={cx("profile")}>
+                {openFilterModal && (
+                    <FilterMobile
+                        setOpenFilterModal={setOpenFilterModal}
+                        gameList={gameList}
+                        setGameSelected={setGameSelected}
+                        gameSelected={gameSelected}
+                        activeTab={activeTab}
+                        setActiveTab={setActiveTab}
                     />
                 )}
-            </Row>
-            {listNft?.length > 0 && (
-                <div className={cx("pagination")}>
-                    <Pagination
-                        pageSize={PAGE_SIZE}
-                        showSizeChanger={false}
-                        current={currentPage}
-                        total={displayList?.length}
-                        onChange={page => setCurrentPage(page)}
-                        itemRender={itemRender}
-                    />
-                </div>
-            )}
-        </div>
-					</Col>
-				</Row>
-			</div>
-		</MainLayout>
-	);
+                <Row className={cx("row")}>
+                    <Col md={6} className={cx("left")}>
+                        <FilterStore
+                            gameList={gameList}
+                            setGameSelected={setGameSelected}
+                            gameSelected={gameSelected}
+                            activeTab={activeTab}
+                            setActiveTab={setActiveTab}
+                        />
+                    </Col>
+
+                    <Col offset={1} md={17} className={cx("right-wrapper")}>
+                        <div className={cx("right-main")}>
+                            <div className={cx("right-top")}>
+                                <div className={cx("right-top-title")}>{displayList?.length} items</div>
+
+                                <Input
+                                    disableUnderline
+                                    placeholder="Search for NFT"
+                                    value={search}
+                                    onChange={handleSearch}
+                                    className={cx("search")}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <SearchIcon className={cx("icon")} />
+                                        </InputAdornment>
+                                    }
+                                />
+                                <div className={cx("group-button-filter")}>
+                                    <Dropdown overlay={menu} className={cx("drop-down")} trigger={["click"]}>
+                                        <div className={cx("drop-down-label")}>
+                                            <span>Sort by</span> <DownOutlined />
+                                        </div>
+                                    </Dropdown>
+                                </div>
+                                {/* URLSearchParams.set('view', false); */}
+                            </div>
+                            <div className={cx("right-filter")}>
+                                {gameSelected?.map((game, idx) => (
+                                    <div className={cx("filter-box")} key={game.gameAddress}>
+                                        <img
+                                            className={cx("filter-box-image")}
+                                            src={cancel}
+                                            alt="cancel"
+                                            onClick={() => handleDeleteFilter(game.gameAddress)}
+                                        />
+                                        <span style={{ paddingLeft: "5px" }}>{game.gameName}</span>
+                                    </div>
+                                ))}
+
+                                <div className={cx("filter-clear")} onClick={handleClearFilter}>
+                                    CLEAR ALL
+                                </div>
+                            </div>
+
+                            <Row gutter={[20, 20]} className={cx("list")}>
+                                {loadingListNFT ? (
+                                    <ListSkeleton page={"store"} />
+                                ) : (
+                                    <ListNft
+                                        loading={loadingListNFT}
+                                        gameItemList={listNft.slice(
+                                            (currentPage - 1) * PAGE_SIZE,
+                                            currentPage * PAGE_SIZE,
+                                        )}
+																				place="marketplace"
+                                        // gameSelected={address}
+                                    />
+                                )}
+                            </Row>
+                            {listNft?.length > 0 && (
+                                <div className={cx("pagination")}>
+                                    <Pagination
+                                        pageSize={PAGE_SIZE}
+                                        showSizeChanger={false}
+                                        current={currentPage}
+                                        total={displayList?.length}
+                                        onChange={page => setCurrentPage(page)}
+                                        itemRender={itemRender}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </Col>
+                </Row>
+            </div>
+        </MainLayout>
+    );
 };
 
 export default Profile;

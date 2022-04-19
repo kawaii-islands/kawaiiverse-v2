@@ -6,8 +6,9 @@ import styles from "./ListNft.module.scss";
 import NFTItem from "src/components/NFTItem/NFTItem";
 
 const cx = cn.bind(styles);
-const ListNft = ({ gameItemList, gameSelected,loading }) => {
+const ListNft = ({ gameItemList, gameSelected,loading, place }) => {
     const history = useHistory();
+    console.log(gameItemList)
     return (
         <>
             {gameItemList.length > 0 ? (
@@ -18,11 +19,18 @@ const ListNft = ({ gameItemList, gameSelected,loading }) => {
                             isStore={true}
                             data={item}
                             handleNavigation={() =>{
-                                // localStorage.setItem("nft", JSON.stringify(item));
-                                history.push({
-                                    pathname: `/profile/store/view-nft/${gameSelected}/${item._id}/${item.tokenId}/${item.index}`,
-                                    state: { gameSelected },
-                                })
+                                if(place === "marketplace"){
+                                    history.push({
+                                        pathname: `/store/${item.contract}/${item.tokenId}/${item.index}`,
+                                        
+                                    })
+                                }else{
+                                    history.push({
+                                        pathname: `/profile/store/view-nft/${gameSelected}/${item._id}/${item.tokenId}/${item.index}`,
+                                        
+                                    })
+                                }
+                                
                             }
                                 
                             }

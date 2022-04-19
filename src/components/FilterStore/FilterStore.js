@@ -28,7 +28,7 @@ const FilterStore = ({ gameList, setGameSelected, gameSelected }) => {
   const checkGameIfIsSelected = address => {
 		let count = -1;
 		gameSelected.map((game, idx) => {
-			if (game.gameAddress == address) {
+			if (game.gameAddress === address) {
 				count = idx;
 			}
 		});

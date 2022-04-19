@@ -35,7 +35,7 @@ function App() {
                         <Suspense fallback={<LoadingPage />}>
                             <Route exact path="/" component={props => <Home {...props} />} />
                             <Route exact path="/store" component={props => <Store {...props} />} />
-                            <Route path="/store/:id" component={props => <NFTDetail {...props} />} />
+                            <Route path="/store/:storeAddress/:tokenId/:index" component={props => <NFTDetail {...props} />} />
                             <Route exact path="/profile" component={props => <CreateGame {...props} />} />
                             {/* <Route exact path="/profile/create-game" component={props => <CreateGame {...props} />} /> */}
                             <Route exact path="/profile/:tab/:address" component={props => <Profile {...props} />} />

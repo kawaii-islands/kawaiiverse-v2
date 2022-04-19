@@ -1,65 +1,120 @@
-$break-point-1: 768px;
+.mint-nft-detail {
+  max-width: 1180px;
+margin: 0 auto;
+padding-top: 60px;
+  .breadcrums{
+      :global{
+          .MuiTypography-root{
+              color: #BC88FF !important;
+              font-size: 16px;
+              text-transform: capitalize;
+              
+          }
+          .MuiBreadcrumbs-li{
+              cursor: pointer;
+          }
+          .MuiSvgIcon-fontSizeMedium{
+              color: #625D83 !important;
+              // background-color: #625D83 !important;
+          }
+      }
+      padding-bottom: 18px;
+      margin-bottom: 40px;
+      border-bottom: 1px solid rgba(64, 42, 125, 0.5);
+      
+  }
+  .left {
+      display: flex;
+      align-items: flex-start;
 
-.container {
-  width: 100%;
-  padding: 40px 40px;
-  min-height: 100vh;
-  padding-bottom: 60px !important;
+      .back {
+    background: #56428F;
+          border-radius: 4px;
+          padding: 20px 22px;
+          color: #ffffff;
+          font-size: 20px;
+          font-weight: 700;
+          margin-right: 20px;
+          cursor: pointer;
+      }
 
-  @media (max-width: $break-point-1) {
-    padding: 0px 30px;
+      .image-box {
+    border: 3px solid #AD99E7;
+          box-sizing: border-box;
+          border-radius: 8px;
+    background: #56428F;
+          width: 440px;
+          height: 440px;
+          padding: 40px;
+
+          img {
+              width: 100%;
+              height: 100%;
+          }
+      }
   }
 
-  .image {
-    width: 90%;
+  .right {
+  background: #402A7D;
+      backdrop-filter: blur(50px);
+      border-radius: 4px;
+      padding: 32px;
 
-    @media (max-width: $break-point-1) {
-      width: 100%;
-    }
-  }
+      .title {
+          display: flex;
+          align-items: baseline;
+          margin-bottom: 8px;
 
-  .name {
-    font-family: "Mali";
-    color: #ffffff;
-    font-weight: bold;
-    font-size: 32px;
-  }
+          .first {
+              font-weight: 700;
+              font-size: 36px;
+              line-height: 150%;
+              color: #ffffff;
+              margin-right: 10px;
+          }
 
-  .textTag {
-    margin-top: 30px;
-    width: fit-content;
-    background: #162f54;
-    font-family: "Mali";
-    padding: 10px;
+          .second {
+              font-weight: 500;
+              font-size: 24px;
+              line-height: 150%;
+      color: #BE74FF;
+              margin-right: 10px;
+          }
+      }
+
+  .third {
+    background: #AD99E7;
     border-radius: 4px;
-
-    .tagName {
-      color: whitesmoke;
-    }
-
-    .tagPrice {
-      background: linear-gradient(180deg, #89e6ff 0%, #3b7ce3 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: 600;
-    }
-
-    .tagContent {
-      color: #a0edff;
-      font-weight: 500;
-    }
-  }
-  .orderButton {
-    margin-top: 50px;
-    font-family: "Mali";
+    padding: 2px 11px;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 150%;
+    color: #402A7D;
     width: fit-content;
-    padding: 10px 18px;
-    color: #fff;
-    font-size: 20px;
-    font-weight: 600;
-    background: linear-gradient(180deg, #00c6fb 0%, #005bea 100%);
-    backdrop-filter: blur(4px);
-    border-radius: 6px;
-    cursor: pointer;
   }
+
+      .content {
+          display: flex;
+          align-items: baseline;
+          margin-top: 16px;
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 150%;
+
+          .title {
+              color: #D9ADFF;
+              padding-right: 10px;
+          }
+
+          .value {
+              color: #ffffff;
+              text-align: justify;
+          }
+      }
+      .buy-btn{
+          background: yellowgreen;
+          color: blue;
+      }
+  }
+
 }
