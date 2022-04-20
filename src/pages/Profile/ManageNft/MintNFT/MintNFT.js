@@ -244,7 +244,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         try {
             const added = await client.add(file);
             const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-
+            console.log(url)
             setStateForNftData("imageUrl", url, index);
         } catch (error) {
             console.log("Error uploading file: ", error);

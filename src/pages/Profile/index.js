@@ -78,7 +78,6 @@ const Profile = () => {
                 gameUrl = res.data.data[0].logoUrl;
             }
             setGameInfo({ gameName, gameUrl });
-			
         } catch (error) {
             console.log(error);
         }
@@ -114,8 +113,7 @@ const Profile = () => {
             }
         }
     };
-    
-    
+
     return loading ? (
         <LoadingPage />
     ) : (
@@ -148,28 +146,21 @@ const Profile = () => {
                     <div className={cx("right")}>
                         <div className={cx("breadcrums")}>
                             {" "}
-                           
                             <Breadcrumbs separator={<NavigateNextIcon />} aria-label="breadcrumb">
-                           
                                 {pathnames.map((name, index) => {
-                                    if(index === 2) return;
+                                    if (index === 2) return;
                                     let routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
-                                    if(index === 1){
-                                         routeTo = routeTo + `/${pathnames[2]}?view=true`;
+                                    if (index === 1) {
+                                        routeTo = routeTo + `/${pathnames[2]}?view=true`;
                                     }
-                                    
-                                    
-                                    // const isLast = index === pathnames.length - 1;
-                                    // return !isLast ? (
-                                    //     <span key={name}>{name}</span>
-                                    // ) : (
-                                    //     <span key={name} onClick={() => history.push(routeTo)}>
-                                    //         {name}
-                                    //     </span>
-                                    // );
-                                    return <span key={name} onClick={() => history.push(routeTo)}>
-                                    {name}
-                                </span>
+
+                                    return (
+                                        <span key={name} onClick={() => {
+                                            if(index < 2) history.push(routeTo);
+                                        }}>
+                                            {name.replace("-", " ")}
+                                        </span>
+                                    );
                                 })}
                             </Breadcrumbs>
                         </div>

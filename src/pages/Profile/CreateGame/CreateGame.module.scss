@@ -11,7 +11,7 @@ $mobile: 576px;
     padding-bottom: 20px;
 
     .content {
-        width: 70%;
+        width: 80%;
         margin: 0 auto;
         padding-top: 5%;
         
@@ -26,7 +26,7 @@ $mobile: 576px;
     .grid-parent {
         display: flex;
         align-items: stretch;
-        
+        // gap: 10px;
     }
 
     .card {
@@ -85,6 +85,9 @@ $mobile: 576px;
             }
             .game-amount {
                 color: #8d34ff;
+            }
+            a{
+                text-decoration: none;
             }
         }
 
@@ -181,6 +184,17 @@ $mobile: 576px;
             height: 22px;
             cursor: pointer;
         }
+        &--image{
+            .preview-img{
+                position: absolute;
+                top: 15px;
+                right: 5%;
+                width: 45px;
+                height: 45px;
+                // border: 1px solid rgba(82, 64, 130, 0.2);
+            }
+        }
+        
     }
     .modal_success {
         position: relative;
