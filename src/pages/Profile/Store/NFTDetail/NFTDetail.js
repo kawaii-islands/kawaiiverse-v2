@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./NFTDetail.module.scss";
-
+import Grid from "@mui/material/Grid";
 import cn from "classnames/bind";
 import MainLayout from "src/components/MainLayout";
 import { Col, Row } from "antd";
@@ -36,7 +36,7 @@ const NFTDetail = () => {
     let pathnames = pathname.split("/").filter(Boolean);
     pathnames.splice(5, 1);
     pathnames.splice(2, 1);
-    console.log(pathnames)
+    console.log(pathnames);
     const getNftInfo = async () => {
         setLoading(true);
         try {
@@ -49,22 +49,18 @@ const NFTDetail = () => {
             // // let nft = nfts.filter(nft => nft._id === nftId);
             // let nft = nfts[0];
             // nft = { ...nft, ...res.data.data };
-            let gameItem = await read(
-                "dataNFT1155s",
-                BSC_CHAIN_ID,
-                KAWAIIVERSE_STORE_ADDRESS,
-                KAWAII_STORE_ABI,
-                [address, index],
-            );
+            let gameItem = await read("dataNFT1155s", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, [
+                address,
+                index,
+            ]);
             // console.log(res)
-            if(res.status === 200){
-                gameItem = {...gameItem, ...res.data.data}
+            if (res.status === 200) {
+                gameItem = { ...gameItem, ...res.data.data };
             }
             // console.log(allNftSell);
-            console.log(gameItem); 
+            console.log(gameItem);
             // return;
             setNftInfo(gameItem);
-            
         } catch (error) {
             console.log(error);
         }
@@ -192,6 +188,26 @@ const NFTDetail = () => {
                         <div className={cx("content")}>
                             <span className={cx("title")}>Description:</span>
                             <span className={cx("value")}>{nftInfo?.description}</span>
+                        </div>
+                        <div className={cx("content", "content-attribute")}>
+                            <span className={cx("title")}>Attributes:</span>
+
+                            {/* <span className={cx("value")}>{nftInfo?.description}</span> */}
+                            <Grid container spacing={2}>
+                                {nftInfo.attributes?.map((info, idx) => (
+                                    <Grid item container xs={6} key={idx}>
+                                        <Grid item xs={4}>
+                                            <div className={cx("info-image")}>
+                                                <img src={info.image}></img>
+                                            </div>
+                                        </Grid>
+                                        <Grid item xs={8} className={cx("info-group")}>
+                                            <div className={cx("info-group-header")}>{info.type}</div>
+                                            <div className={cx("info-group-text")}>{info.value}</div>
+                                        </Grid>
+                                    </Grid>
+                                ))}
+                            </Grid>
                         </div>
                     </Col>
                 </Row>

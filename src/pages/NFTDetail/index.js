@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./index.module.scss";
-
+import Grid from "@mui/material/Grid";
 import cn from "classnames/bind";
 import MainLayout from "src/components/MainLayout";
 import { Col, Row } from "antd";
@@ -43,19 +43,16 @@ const NFTDetail = () => {
         setLoading(true);
         try {
             const res = await axios.get(`${URL}/v1/nft/${storeAddress.toLowerCase()}/${tokenId}`);
-            let gameItem = await read(
-                "dataNFT1155s",
-                BSC_CHAIN_ID,
-                KAWAIIVERSE_STORE_ADDRESS,
-                KAWAII_STORE_ABI,
-                [storeAddress, index],
-            );
+            let gameItem = await read("dataNFT1155s", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, [
+                storeAddress,
+                index,
+            ]);
             // console.log(res)
-            if(res.status === 200){
-                gameItem = {...gameItem, ...res.data.data}
+            if (res.status === 200) {
+                gameItem = { ...gameItem, ...res.data.data };
             }
             // console.log(allNftSell);
-            console.log(gameItem); 
+            console.log(gameItem);
             gameItem.index = index;
             // return;
             setNftInfo(gameItem);
@@ -64,7 +61,6 @@ const NFTDetail = () => {
             console.log(error);
             setLoading(false);
         }
-        
     };
     const getSignature = async () => {
         try {
@@ -105,35 +101,35 @@ const NFTDetail = () => {
 
             const signature = await sign(account, data, library.provider);
             // const signature2 = await sign2(account, data, library.provider);
-            return signature
+            return signature;
         } catch (err) {
             console.log(err);
         }
     };
     const getAllowance = async () => {
         if (!account) return;
-        console.log(storeAddress)
+        console.log(storeAddress);
         const isApprovedForAll = await read("isApprovedForAll", BSC_CHAIN_ID, storeAddress, KAWAIIVERSE_NFT1155_ABI, [
             account,
             KAWAIIVERSE_STORE_ADDRESS,
         ]);
-        console.log("???", isApprovedForAll)
+        console.log("???", isApprovedForAll);
         return isApprovedForAll;
         // setIsApprovedForAll(isApprovedForAll);
     };
-   
+
     const buyNft = async () => {
         console.log(account);
-        if(!account) return;
-        try{
+        if (!account) return;
+        try {
             // const isApproved = await getAllowance();
             // console.log(isApproved)
             // const getAllowance = async (address, type) => {
             //     return read(
             //         "allowance",
             //         BSC_CHAIN_ID,
-                    // type === "airi" ? AIRI_ADDRESS : KAWAII_ADDRESS,
-                    // type === "airi" ? AIRI_ABI : KAWAII_ABI,
+            // type === "airi" ? AIRI_ADDRESS : KAWAII_ADDRESS,
+            // type === "airi" ? AIRI_ABI : KAWAII_ABI,
             //         [account, address]
             //     );
             // };
@@ -150,27 +146,27 @@ const NFTDetail = () => {
             // if (Number(allowance) < price * 10 ** 18) {
             //     await approve(address, token);
             // }
-            
-            const { r,s,v } = await getSignature();
+
+            const { r, s, v } = await getSignature();
             const _data = web3.eth.abi.encodeFunctionCall(
                 {
                     inputs: [
-                        { "internalType": "address", "name": "sender", "type": "address" },
-                        { "internalType": "address", "name": "_nftAddress", "type": "address" },
-                        { "internalType": "uint256", "name": "_index", "type": "uint256" },
-                        { "internalType": "uint256", "name": "_amount", "type": "uint256" },
-                        { "internalType": "uint8", "name": "v", "type": "uint8" },
-                        { "internalType": "bytes32", "name": "r", "type": "bytes32" },
-                        { "internalType": "bytes32", "name": "s", "type": "bytes32" }
+                        { internalType: "address", name: "sender", type: "address" },
+                        { internalType: "address", name: "_nftAddress", type: "address" },
+                        { internalType: "uint256", name: "_index", type: "uint256" },
+                        { internalType: "uint256", name: "_amount", type: "uint256" },
+                        { internalType: "uint8", name: "v", type: "uint8" },
+                        { internalType: "bytes32", name: "r", type: "bytes32" },
+                        { internalType: "bytes32", name: "s", type: "bytes32" },
                     ],
                     name: "buyNFTPermit",
                     outputs: [],
                     stateMutability: "nonpayable",
-                    type: "function"
+                    type: "function",
                 },
-                [account, storeAddress, index, 1, v,r,s]
+                [account, storeAddress, index, 1, v, r, s],
             );
-            console.log(account, storeAddress, index, 1, v,r,s)
+            console.log(account, storeAddress, index, 1, v, r, s);
             await write(
                 "execute",
                 library.provider,
@@ -184,11 +180,10 @@ const NFTDetail = () => {
                     // setStepLoading(1);
                 },
             );
-        }catch(err){
+        } catch (err) {
             console.log(err);
         }
-        
-    }
+    };
     // buyNft();
     return loading ? (
         <LoadingPage />
@@ -253,7 +248,9 @@ const NFTDetail = () => {
                         <div className={cx("third")}>{nftInfo?.category}</div>
                         <div className={cx("content")}>
                             <span className={cx("title")}>Available:</span>
-                            <span className={cx("value")}>{Number(nftInfo?.amount) - Number(nftInfo?.alreadySale)}/ {nftInfo?.amount}</span>
+                            <span className={cx("value")}>
+                                {Number(nftInfo?.amount) - Number(nftInfo?.alreadySale)}/ {nftInfo?.amount}
+                            </span>
                         </div>
                         <div className={cx("content")}>
                             <span className={cx("title")}>Price:</span>
@@ -267,7 +264,9 @@ const NFTDetail = () => {
                             <span className={cx("title")}>Description:</span>
                             <span className={cx("value")}>{nftInfo?.description}</span>
                         </div>
-                        <Button className={cx("buy-btn")} onClick={buyNft}>Buy NFT</Button>
+                        <Button className={cx("buy-btn")} onClick={buyNft}>
+                            Buy NFT
+                        </Button>
                     </Col>
                 </Row>
             </div>

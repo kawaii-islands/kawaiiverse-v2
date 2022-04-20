@@ -58,8 +58,8 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             const gameList = await getGameList();
             let nftSaleList = await getNftList(gameList);
             nftSaleList = nftSaleList.filter(nft => {
-                return (nft.nftAddress === address && nft.owner === account)
-            })
+                return nft.nftAddress === address && nft.owner === account;
+            });
             // return;
             if (res.status === 200) {
                 let allList = res.data.data;
@@ -73,7 +73,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 allList = allList.filter(nft => {
                     return nft.supply > 0;
                 });
-               
+
                 // return;
                 setList([...allList]);
                 setLoadingGetList(false);
@@ -211,38 +211,16 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 );
             }
 
-            const { r, s, v } = await getSignature();
-            const sign = await getSignature2();
             const tokenIds = listSell.map(nft => nft.tokenId);
             const amounts = listSell.map(nft => nft.quantity);
             const prices = listSell.map(nft => web3.utils.toWei(nft.price));
 
-            const _data = web3.eth.abi.encodeFunctionCall(
-                {
-                    inputs: [
-                        { internalType: "address", name: "sender", type: "address" },
-                        { internalType: "address", name: "_nftAddress", type: "address" },
-                        { internalType: "uint256[]", name: "_tokenIds", type: "uint256[]" },
-                        { internalType: "uint256[]", name: "_amounts", type: "uint256[]" },
-                        { internalType: "uint256[]", name: "_prices", type: "uint256[]" },
-                        { internalType: "uint8", name: "v", type: "uint8" },
-                        { internalType: "bytes32", name: "r", type: "bytes32" },
-                        { internalType: "bytes32", name: "s", type: "bytes32" },
-                    ],
-                    name: "saleNFT1155",
-                    outputs: [],
-                    stateMutability: "nonpayable",
-                    type: "function",
-                },
-                [account, gameSelected, tokenIds, amounts, prices, v, r, s],
-            );
-            
             await write(
-                "execute",
+                "saleNFT1155",
                 library.provider,
-                RELAY_ADDRESS,
-                RELAY_ABI,
-                [KAWAIIVERSE_STORE_ADDRESS, _data],
+                KAWAIIVERSE_STORE_ADDRESS,
+                KAWAII_STORE_ABI,
+                [gameSelected, tokenIds, amounts, prices],
                 { from: account },
                 hash => {
                     console.log(hash);
@@ -270,8 +248,8 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 owner: account,
                 sign: sign,
             };
-            console.log(JSON.stringify(bodyParams))
-            
+            console.log(JSON.stringify(bodyParams));
+
             const res = await axios.post(`${URL}/v1/sale`, bodyParams);
             console.log(res);
             setStepLoading(2);
@@ -290,97 +268,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             setSubmitted(false);
         }
     };
-    const sign2 = async (account, data, provider) => {
-        let res = await provider.send("eth_signTypedData_v4", [account, data]);
-        return res.result;
-    };
-    const getSignature = async () => {
-        try {
-            const nonce = await read("nonces", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, [account]);
-            const name = await read("NAME", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, []);
-            const EIP712Domain = [
-                { name: "name", type: "string" },
-                { name: "version", type: "string" },
-                { name: "chainId", type: "uint256" },
-                { name: "verifyingContract", type: "address" },
-            ];
-            const domain = {
-                name,
-                version: "1",
-                chainId: BSC_CHAIN_ID,
-                verifyingContract: KAWAIIVERSE_STORE_ADDRESS,
-            };
-            const Data = [
-                { name: "sender", type: "address" },
-                { name: "_nftAddress", type: "address" },
-                { name: "nonce", type: "uint256" },
-            ];
 
-            const message = {
-                sender: account,
-                _nftAddress: gameSelected,
-                nonce,
-            };
-            const data = JSON.stringify({
-                types: {
-                    EIP712Domain,
-                    Data,
-                },
-                domain,
-                primaryType: "Data",
-                message,
-            });
-
-            const signature = await sign(account, data, library.provider);
-            // const signature2 = await sign2(account, data, library.provider);
-            return signature
-        } catch (err) {
-            console.log(err);
-        }
-    };
-    const getSignature2 = async () => {
-        try {
-            const nonce = await read("nonces", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, [account]);
-            const name = await read("NAME", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, []);
-            const EIP712Domain = [
-                { name: "name", type: "string" },
-                { name: "version", type: "string" },
-                { name: "chainId", type: "uint256" },
-                { name: "verifyingContract", type: "address" },
-            ];
-            const domain = {
-                name,
-                version: "1",
-                chainId: BSC_CHAIN_ID,
-                verifyingContract: KAWAIIVERSE_STORE_ADDRESS,
-            };
-            const Data = [
-                { name: "sender", type: "address" },
-                { name: "_nftAddress", type: "address" },
-                { name: "nonce", type: "uint256" },
-            ];
-
-            const message = {
-                sender: account,
-                _nftAddress: gameSelected,
-                nonce,
-            };
-            const data = JSON.stringify({
-                types: {
-                    EIP712Domain,
-                    Data,
-                },
-                domain,
-                primaryType: "Data",
-                message,
-            });
-
-            const signature = await sign2(account, data, library.provider);
-            return signature
-        } catch (err) {
-            console.log(err);
-        }
-    };
     return (
         <div className={cx("table")}>
             {showModalLoading && (

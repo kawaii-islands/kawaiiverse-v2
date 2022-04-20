@@ -10,6 +10,7 @@ import { useParams, useHistory } from "react-router-dom";
 import { URL } from "src/consts/constant";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import Grid from "@mui/material/Grid";
 import LoadingPage from "src/components/LoadingPage/LoadingPage";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
@@ -32,6 +33,7 @@ const NFTDetail = () => {
         try {
             const res = await axios.get(`${URL}/v1/nft/${address.toLowerCase()}/${nftId}`);
             setNftInfo(res.data.data);
+            console.log(res.data.data);
             console.log("res :>> ", res);
         } catch (error) {
             console.log(error);
@@ -44,7 +46,7 @@ const NFTDetail = () => {
     ) : (
         <MainLayout>
             <div className={cx("mint-nft-detail")}>
-            <div className={cx("breadcrums")}>
+                <div className={cx("breadcrums")}>
                     {" "}
                     <Breadcrumbs separator={<NavigateNextIcon />} aria-label="breadcrumb">
                         {pathnames.map((name, index) => {
@@ -111,6 +113,26 @@ const NFTDetail = () => {
                         <div className={cx("content")}>
                             <span className={cx("title")}>Description:</span>
                             <span className={cx("value")}>{nftInfo?.description}</span>
+                        </div>
+                        <div className={cx("content", "content-attribute")}>
+                            <span className={cx("title")}>Attributes:</span>
+
+                            {/* <span className={cx("value")}>{nftInfo?.description}</span> */}
+                            <Grid container spacing={2}>
+                                {nftInfo.attributes?.map((info, idx) => (
+                                    <Grid item container xs={6} key={idx}>
+                                        <Grid item xs={4}>
+                                            <div className={cx("info-image")}>
+                                                <img src={info.image}></img>
+                                            </div>
+                                        </Grid>
+                                        <Grid item xs={8} className={cx("info-group")}>
+                                            <div className={cx("info-group-header")}>{info.type}</div>
+                                            <div className={cx("info-group-text")}>{info.value}</div>
+                                        </Grid>
+                                    </Grid>
+                                ))}
+                            </Grid>
                         </div>
                     </Col>
                 </Row>
