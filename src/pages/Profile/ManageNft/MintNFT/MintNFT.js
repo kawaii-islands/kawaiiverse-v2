@@ -538,6 +538,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                     setOpenMintNFTBox={setOpenMintNFTBox}
                                     listNft={listNft}
                                     setListNft={setListNft}
+									gameSelected={gameSelected}
                                 />
                             )}
                         </div>

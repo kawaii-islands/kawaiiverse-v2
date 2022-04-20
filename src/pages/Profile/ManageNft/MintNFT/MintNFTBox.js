@@ -12,6 +12,8 @@ import { Button } from "@mui/material";
 import { create } from "ipfs-http-client";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import axios from "axios";
+import { URL } from "src/consts/constant";
 
 const cx = cn.bind(styles);
 
@@ -23,14 +25,26 @@ let oneAttribute = {
 
 const client = create("https://ipfs.infura.io:5001/api/v0");
 
-const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setListNft, openMintNFTBox }) => {
+const MintNFTBox = ({
+    setOpenMintNFTBox,
+    setStateForNftData,
+    data,
+    listNft,
+    setListNft,
+    openMintNFTBox,
+    gameSelected,
+}) => {
     const history = useHistory();
     const [loading, setLoading] = useState(true);
     const [loadingUploadImg, setLoadingUploadImg] = useState(false);
     const [listAttribute, setListAttribute] = useState([data.attributes]);
+    const [listCategory, setListCategory] = useState([]);
+    const [showListCategory, setShowListCategory] = useState(false);
+    const [listCategoryDisplay, setListCategoryDisplay] = useState();
 
     useEffect(() => {
         setListAttribute(data.attributes);
+        getListCategory();
         setTimeout(() => {
             setLoading(false);
         }, 1500);
@@ -39,6 +53,21 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
     useEffect(() => {
         setStateForNftData("attributes", listAttribute);
     }, [listAttribute]);
+
+    const getListCategory = async () => {
+        try {
+            const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
+            if (res.status === 200) {
+                let listCategory = res.data.data.map((item, index) => item.category);
+                let uniqueCategory = [...new Set(listCategory)];
+                setListCategory(uniqueCategory);
+                setListCategoryDisplay(uniqueCategory);
+                console.log("uniqueCategory :>> ", uniqueCategory);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     const setDetailAttribute = (key, value, index) => {
         let listAttributeCopy = [...listAttribute];
@@ -63,6 +92,14 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
         setLoadingUploadImg(false);
     };
 
+    const handleSelectCategory = value => {
+        let result = [...listCategory];
+        if (value) {
+            result = listCategory.filter(item => item.includes(value));
+        }
+        setListCategoryDisplay(result);
+    };
+
     return (
         <div className={cx("mintNFT-box")}>
             <div className={cx("main-box")}>
@@ -75,8 +112,32 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
                             value={data.category}
                             placeholder="Enter category"
                             className={cx("input")}
-                            onChange={e => setStateForNftData("category", e.target.value)}
+                            onFocus={() => setShowListCategory(true)}
+                            // onBlur={() => !selected && setShowListCategory(false)}
+                            onChange={e => {
+                                setStateForNftData("category", e.target.value);
+                                handleSelectCategory(e.target.value);
+                            }}
                         />
+                        {showListCategory && (
+                            <div className={cx("card")}>
+                                {listCategoryDisplay?.map(
+                                    (category, index) =>
+                                        category && (
+                                            <div
+                                                key={index}
+                                                onClick={() => {
+                                                    setStateForNftData("category", category);
+                                                    setShowListCategory(false);
+                                                }}
+                                                className={cx("valueSelect")}
+                                            >
+                                                {category}
+                                            </div>
+                                        ),
+                                )}
+                            </div>
+                        )}
                     </Col>
                 </Row>
 
