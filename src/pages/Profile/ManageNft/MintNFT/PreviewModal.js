@@ -5,6 +5,7 @@ import cn from "classnames/bind";
 import closeIcon from "src/assets/icons/close-icon.svg";
 import DetailModal from "./DetailModal";
 import { Pagination } from "antd";
+import defaultImage from "src/assets/icons/default_image.svg";
 
 const cx = cn.bind(styles);
 
@@ -57,11 +58,7 @@ const PreviewModal = ({ open, onHide, listNft }) => {
                                     // }}
                                 >
                                     <img
-                                        src={
-                                            item?.imageUrl
-                                                ? `${item.imageUrl}`
-                                                : `https://images.kawaii.global/kawaii-marketplace-image/items/201003.png`
-                                        }
+                                        src={item?.imageUrl ? `${item.imageUrl}` : defaultImage}
                                         alt="preview-img"
                                         className={cx("preview-img")}
                                     />

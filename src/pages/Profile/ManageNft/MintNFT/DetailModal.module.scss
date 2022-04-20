@@ -112,6 +112,37 @@
                             text-align: justify;
                         }
                     }
+
+                    .content-attribute {
+                        flex-direction: column;
+                    }
+
+                    .info-group {
+                        padding-top: 7%;
+                        &-header {
+                            font-size: 16px;
+                            color: white;
+                            font-weight: 600;
+                        }
+                        &-text {
+                            font-size: 14px;
+                            color: white;
+                            font-weight: 400;
+                        }
+                    }
+
+                    .info-image {
+                        display: inline-block;
+                        position: relative;
+                        width: 60px;
+                        height: 60px;
+                        overflow: hidden;
+                        border-radius: 50%;
+                    }
+                    .info-image img {
+                        height: 100%;
+                        width: auto;
+                    }
                 }
             }
         }
