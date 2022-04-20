@@ -65,83 +65,6 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
 
     return (
         <div className={cx("mintNFT-box")}>
-            {/* <Row className={cx("first-row")}>
-                <Col span={5}>
-                    <input
-                        placeholder="Token ID"
-                        value={data.tokenId}
-                        className={cx("input")}
-                        onChange={e => setStateForNftData("tokenId", e.target.value)}
-                    />
-                </Col>
-
-                <Col span={5}>
-                    <input
-                        placeholder="Name"
-                        value={data.name}
-                        className={cx("input")}
-                        onChange={e => setStateForNftData("name", e.target.value)}
-                    />
-                </Col>
-
-                <Col span={4}>
-                    <input
-                        placeholder="Supply"
-                        value={data.supply}
-                        className={cx("input")}
-                        onChange={e => setStateForNftData("supply", e.target.value)}
-                    />
-                </Col>
-
-                <Col span={5}>
-                    {loadingUploadImg ? (
-                        <Spin />
-                    ) : (
-                        <input
-                            value={data.imageUrl}
-                            placeholder="Image url"
-                            className={cx("input")}
-                            onChange={e => setStateForNftData("imageUrl", e.target.value)}
-                        />
-                    )}
-                </Col>
-
-                <Col span={3}>
-                    <div className={cx("one-field")}>
-                        <div className={cx("title")}>or: </div>
-                        <div className={cx("image-upload")}>
-                            <label htmlFor="file-input">
-                                <img src={uploadImageIcon} alt="upload-img" className={cx("upload-img-icon")} />
-                            </label>
-                            <input
-                                placeholder="String"
-                                id="file-input"
-                                type="file"
-                                accept="image/*"
-                                onChange={e => handleUploadImage(e)}
-                            />
-                        </div>
-                    </div>
-                </Col>
-
-                <Col span={1} style={{ cursor: "pointer" }}>
-                    <DeleteOutlinedIcon
-                        className={cx("delete-icon")}
-                        onClick={() => {
-                            if (listNft.length > 1) {
-                                let arr = [...listNft];
-                                arr.splice(openMintNFTBox, 1);
-                                setListNft(arr);
-                            }
-                        }}
-                    />
-                </Col>
-
-                <Col span={1} style={{ cursor: "pointer", textAlign: "right" }} onClick={() => setOpenMintNFTBox(null)}>
-                    <ExpandLessIcon className={cx("expand-icon")} />
-                </Col>
-            </Row> */}
-
             <div className={cx("main-box")}>
                 <Row className={cx("one-field")}>
                     <Col span={4} className={cx("title")}>
@@ -156,20 +79,6 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
                         />
                     </Col>
                 </Row>
-
-                {/* <Row className={cx("one-field")}>
-                    <Col span={4} className={cx("title")}>
-                        Author:
-                    </Col>
-                    <Col span={20}>
-                        <input
-                            value={data.author}
-                            placeholder="Enter author"
-                            className={cx("input")}
-                            onChange={e => setStateForNftData("author", e.target.value)}
-                        />
-                    </Col>
-                </Row> */}
 
                 <Row className={cx("one-field")}>
                     <Col span={4} className={cx("title")}>
@@ -212,12 +121,12 @@ const MintNFTBox = ({ setOpenMintNFTBox, setStateForNftData, data, listNft, setL
                                 setStateForNftData={setStateForNftData}
                             />
                         </div>
-                        <img
-                            src={plusCircleIcon}
-                            alt="add-icon"
-                            className={cx("add-icon")}
+                        <div
+                            className={cx("add-attribute")}
                             onClick={() => setListAttribute([...listAttribute, oneAttribute])}
-                        />
+                        >
+                            <img src={plusCircleIcon} alt="add-icon" className={cx("add-icon")} /> Add attribute
+                        </div>
                     </Col>
                 </Row>
             </div>

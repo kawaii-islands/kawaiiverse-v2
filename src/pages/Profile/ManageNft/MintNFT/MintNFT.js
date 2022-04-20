@@ -26,6 +26,7 @@ import { Modal } from "react-bootstrap";
 import ListAltRoundedIcon from "@mui/icons-material/ListAltRounded";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { useHistory } from "react-router-dom";
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 
 const web3 = new Web3(BSC_rpcUrls);
 const cx = cn.bind(styles);
@@ -84,6 +85,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 
     useEffect(() => {
         if (stepLoading === 3 && listPending.length > 0) {
+			setLoadingSubmit(false);
             setShowPendingModal(true);
         }
     }, [stepLoading]);
@@ -228,6 +230,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                 console.log(hash);
                 setHash(hash);
                 setStepLoading(1);
+				window.localStorage.setItem("listNftPending", JSON.stringify(listNft));
             },
         );
     };
@@ -261,8 +264,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 
                 setLoadingSubmit(true);
                 await createToken(listNft);
-
-                window.localStorage.setItem("listNftPending", JSON.stringify(listNft));
             }
 
             setLoadingSubmit(true);
@@ -286,7 +287,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         } catch (err) {
             console.log(err.response);
             toast.error(err.message || "An error occurred!");
-
             setStepLoading(3);
         } finally {
             setLoading(false);

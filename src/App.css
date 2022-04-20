@@ -116,6 +116,7 @@ body > iframe {pointer-events: none;}
     background: #5d3172 !important;
     color: #ffffff !important;
     border-radius: 50% !important;
+	border: none !important;
 }
 
 .ant-pagination-item a {
@@ -123,9 +124,9 @@ body > iframe {pointer-events: none;}
 }
 
 .ant-pagination-item-active {
-    background: #5d3172 !important;
+	background: #BCABEA !important;
     border-radius: 50% !important;
-    border: none !important;
+    /* border: none !important; */
     /* overflow: hidden; */
 }
 

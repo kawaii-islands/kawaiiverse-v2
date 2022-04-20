@@ -53,18 +53,14 @@ const ViewNFT = ({ gameSelected, setIsMintNFT }) => {
     };
 
     const handleSearch = e => {
-        // let arr = [...listNftByContract];
-        // let result = arr.filter((nft, idx) => {
-        //     if (nft.name) {
-        //         return nft?.name.toUpperCase().includes(e.target.value.toUpperCase());
-        //     }
-        //     let condition1 = nft?.tokenId.toString().includes(e.target.value);
-        //     let condition2 = nft?.name.toUpperCase().includes(e.target.value.toUpperCase());
-        //     let condition3 = nft?.author.toUpperCase().includes(e.target.value.toUpperCase());
-        //     return condition1 || condition2 || condition3;
-        // });
-        // console.log("result :>> ", result);
-        // setDisplayList([...result]);
+        let arr = [...listNftByContract];
+        let result = arr.filter((nft, idx) => {
+            let condition1 = nft?.tokenId.toString().includes(e.target.value);
+            let condition2 = nft?.name.toUpperCase().includes(e.target.value.toUpperCase());
+            let condition3 = nft?.author.toUpperCase().includes(e.target.value.toUpperCase());
+            return condition1 || condition2 || condition3;
+        });
+        setDisplayList([...result]);
     };
 
     return (

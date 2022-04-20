@@ -18,25 +18,25 @@ $mobile: 576px;
     //         color: #2cd7ff;
     //     }
 
-	// 	.delete-icon {
-	// 		cursor: pointer;
-	// 		padding: 6px;
-	// 		border-radius: 50%;
-	// 		color: #7000ff;
-	// 		transition-duration: 0.5s;
-	// 		font-size: 38px;
-	// 		background: #d9cce9;
+    // 	.delete-icon {
+    // 		cursor: pointer;
+    // 		padding: 6px;
+    // 		border-radius: 50%;
+    // 		color: #7000ff;
+    // 		transition-duration: 0.5s;
+    // 		font-size: 38px;
+    // 		background: #d9cce9;
 
-	// 		&:hover {
-	// 			background: #d5c0f0;
-	// 			transition-duration: 0.5s;
-	// 		}
+    // 		&:hover {
+    // 			background: #d5c0f0;
+    // 			transition-duration: 0.5s;
+    // 		}
 
-	// 		&:active {
-	// 			background: #e6d5fb;
-	// 			transition-duration: 0.5s;
-	// 		}
-	// 	}
+    // 		&:active {
+    // 			background: #e6d5fb;
+    // 			transition-duration: 0.5s;
+    // 		}
+    // 	}
 
     //     .expand-icon {
     //         cursor: pointer;
@@ -58,8 +58,8 @@ $mobile: 576px;
     .main-box {
         padding: 30px 40px;
         box-sizing: border-box;
-		border-top: 1px solid rgba(202, 186, 245, 0.5);
-       
+        border-top: 1px solid rgba(202, 186, 245, 0.5);
+
         @media (max-width: $mobile) {
             margin: 8px 12px;
             padding: 12px;
@@ -71,17 +71,27 @@ $mobile: 576px;
             margin-bottom: 30px;
 
             .table-attribute {
-                display: flex;
-                align-items: flex-start;
-                justify-content: space-between;
-
                 .table {
-                    width: 95%;
+                    width: 100%;
                 }
 
-                .add-icon {
-                    padding-top: 14px;
-                    cursor: pointer;
+                .add-attribute {
+                    background: #e3daff;
+                    border-radius: 4px;
+                    padding: 14px;
+                    width: 100%;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					color: #C191FF;
+					margin-top: 5px;
+					cursor: pointer;
+
+					
+					.add-icon {
+						cursor: pointer;
+						margin-right: 8px;
+					}
                 }
             }
         }

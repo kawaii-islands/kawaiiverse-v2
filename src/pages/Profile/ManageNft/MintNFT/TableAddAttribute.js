@@ -107,9 +107,11 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                         <DeleteOutlinedIcon
                             className={cx("delete-icon")}
                             onClick={() => {
-                                let arr = [...listAttribute];
-                                arr.splice(idx, 1);
-                                setListAttribute(arr);
+                                if (listAttribute.length > 1) {
+                                    let arr = [...listAttribute];
+                                    arr.splice(idx, 1);
+                                    setListAttribute(arr);
+                                }
                             }}
                         />
                     </Col>
