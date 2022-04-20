@@ -1,0 +1,151 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap");
+.mint-nft-detail {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding-top: 60px;
+    font-family: "Montserrat";
+    .breadcrums {
+        :global {
+            .MuiTypography-root {
+                color: #bc88ff !important;
+                font-size: 16px;
+                text-transform: capitalize;
+            }
+            .MuiBreadcrumbs-li {
+                cursor: pointer;
+            }
+            .MuiSvgIcon-fontSizeMedium {
+                color: #625d83 !important;
+                // background-color: #625D83 !important;
+            }
+        }
+        padding-bottom: 18px;
+        margin-bottom: 40px;
+        border-bottom: 1px solid rgba(64, 42, 125, 0.5);
+    }
+    .left {
+        display: flex;
+        align-items: flex-start;
+
+        .back {
+            background: #56428f;
+            border-radius: 4px;
+            padding: 20px 22px;
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 700;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .image-box {
+            border: 3px solid #ad99e7;
+            box-sizing: border-box;
+            border-radius: 8px;
+            background: #56428f;
+            width: 440px;
+            height: 440px;
+            padding: 40px;
+            filter: drop-shadow(0px 0px 100px rgba(220, 207, 255, 0.45));
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+
+    .right {
+        background: #402a7d;
+        backdrop-filter: blur(50px);
+        border-radius: 4px;
+        padding: 32px;
+        margin-bottom: 20px;
+
+        .title {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 8px;
+
+            .first {
+                font-weight: 700;
+                font-size: 36px;
+                line-height: 150%;
+                color: #ffffff;
+                margin-right: 10px;
+            }
+
+            .second {
+                font-weight: 500;
+                font-size: 24px;
+                line-height: 150%;
+                color: #be74ff;
+                margin-right: 10px;
+            }
+        }
+
+        .third {
+            background: #ad99e7;
+            border-radius: 4px;
+            padding: 2px 11px;
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 150%;
+            color: #402a7d;
+            width: fit-content;
+        }
+
+        .content {
+            display: flex;
+            align-items: baseline;
+            margin-top: 16px;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 150%;
+
+            .title {
+                color: #d9adff;
+                padding-right: 10px;
+            }
+
+            .value {
+                color: #ffffff;
+                text-align: justify;
+            }
+        }
+
+        .content-attribute {
+            flex-direction: column;
+        }
+
+        .info-group {
+            padding-top: 7%;
+            &-header {
+                font-size: 16px;
+                color: white;
+                font-weight: 600;
+            }
+            &-text {
+                font-size: 14px;
+                color: white;
+                font-weight: 400;
+            }
+        }
+
+        .info-image {
+            display: inline-block;
+            position: relative;
+            width: 60px;
+            height: 60px;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+        .info-image img {
+            height: 100%;
+            width: auto;
+        }
+    }
+    .buy-btn {
+        background: yellowgreen;
+        color: blue;
+    }
+}
