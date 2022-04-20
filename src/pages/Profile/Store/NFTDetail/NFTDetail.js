@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./NFTDetail.module.scss";
-
+import Grid from "@mui/material/Grid";
 import cn from "classnames/bind";
 import MainLayout from "src/components/MainLayout";
 import { Col, Row } from "antd";
@@ -13,42 +13,54 @@ import { useLocation } from "react-router-dom";
 import LoadingPage from "src/components/LoadingPage/LoadingPage";
 import { toast } from "react-toastify";
 import NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
-import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
 import { BSC_CHAIN_ID } from "src/consts/blockchain";
 import { KAWAIIVERSE_STORE_ADDRESS } from "src/consts/address";
 import { read } from "src/services/web3";
 import { useWeb3React } from "@web3-react/core";
-import Grid from "@mui/material/Grid";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import * as web3 from "web3";
+import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
 const cx = cn.bind(styles);
 
 const NFTDetail = () => {
     const history = useHistory();
-    const { nftId, address, tokenId } = useParams();
+    const { nftId, address, tokenId, index } = useParams();
     const [nftInfo, setNftInfo] = useState();
     const [loading, setLoading] = useState(true);
     const { account } = useWeb3React();
-
+    const { pathname } = useLocation();
     useEffect(() => {
         getNftInfo();
     }, [account, address]);
-
+    let pathnames = pathname.split("/").filter(Boolean);
+    pathnames.splice(5, 1);
+    pathnames.splice(2, 1);
+    console.log(pathnames);
     const getNftInfo = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`${URL}/v1/nft/${address}/${tokenId}`);
-            console.log(nftId);
-            const allNftSell = await getNftList(address);
-            console.log(allNftSell);
-            let nfts = allNftSell.filter(nft => Number(nft.tokenId) === Number(tokenId));
-            console.log(nfts);
-            // let nft = nfts.filter(nft => nft._id === nftId);
-            let nft = nfts[0];
-            nft = { ...nft, ...res.data.data };
-
+            const res = await axios.get(`${URL}/v1/nft/${address.toLowerCase()}/${tokenId}`);
+            // console.log(nftId);
+            // const allNftSell = await getNftList(address);
             // console.log(allNftSell);
-            setNftInfo(nft);
-            console.log(nft);
+            // let nfts = allNftSell.filter(nft => Number(nft.tokenId) === Number(tokenId));
+            // console.log(nfts);
+            // // let nft = nfts.filter(nft => nft._id === nftId);
+            // let nft = nfts[0];
+            // nft = { ...nft, ...res.data.data };
+            let gameItem = await read("dataNFT1155s", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, [
+                address,
+                index,
+            ]);
+            // console.log(res)
+            if (res.status === 200) {
+                gameItem = { ...gameItem, ...res.data.data };
+            }
+            // console.log(allNftSell);
+            console.log(gameItem);
+            // return;
+            setNftInfo(gameItem);
         } catch (error) {
             console.log(error);
         }
@@ -105,6 +117,31 @@ const NFTDetail = () => {
     ) : (
         <MainLayout>
             <div className={cx("mint-nft-detail")}>
+                <div className={cx("breadcrums")}>
+                    {" "}
+                    <Breadcrumbs separator={<NavigateNextIcon />} aria-label="breadcrumb">
+                        {pathnames.map((name, index) => {
+                            if (index === 3) return;
+                            let routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
+                            if (index === 1) {
+                                routeTo = routeTo + `/${pathnames[2]}?view=true`;
+                            }
+                            return (
+                                <span
+                                    key={name}
+                                    onClick={() => {
+                                        if (index >= 2) {
+                                            return;
+                                        }
+                                        history.push(routeTo);
+                                    }}
+                                >
+                                    {name}
+                                </span>
+                            );
+                        })}
+                    </Breadcrumbs>
+                </div>
                 <Row>
                     <Col span={10} className={cx("left")}>
                         <Button

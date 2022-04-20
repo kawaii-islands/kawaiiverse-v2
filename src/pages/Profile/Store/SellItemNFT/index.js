@@ -15,7 +15,6 @@ import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
 import RELAY_ABI from "src/utils/abi/relay.json";
 import { BSC_CHAIN_ID, BSC_rpcUrls } from "src/consts/blockchain";
 import "react-toastify/dist/ReactToastify.css";
-import addRowItem from "src/assets/icons/addRowItem.svg";
 import LoadingModal from "src/components/LoadingModal2/LoadingModal";
 import { URL } from "src/consts/constant";
 import NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
@@ -55,11 +54,12 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
     const getListNft = async () => {
         try {
             setLoadingGetList(true);
-            const res = await axios.get(`${URL}/v1/nft/${gameSelected}`);
-            console.log(res);
-
+            const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
             const gameList = await getGameList();
-            const nftSaleList = await getNftList(gameList);
+            let nftSaleList = await getNftList(gameList);
+            nftSaleList = nftSaleList.filter(nft => {
+                return nft.nftAddress === address && nft.owner === account;
+            });
             // return;
             if (res.status === 200) {
                 let allList = res.data.data;
@@ -73,6 +73,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 allList = allList.filter(nft => {
                     return nft.supply > 0;
                 });
+
                 // return;
                 setList([...allList]);
                 setLoadingGetList(false);
@@ -175,18 +176,16 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
 
     const sellNft = async () => {
         console.log(listSell);
-
+        // return;
         if (listSell?.length === 0) return;
         setSubmitted(true);
         let pass = true;
         listSell.forEach(item => {
             if (!item.price || !item.quantity || Number(item.price) <= 0 || Number(item.quantity) <= 0) pass = false;
         });
-        // return;
         if (!pass) {
             return;
         }
-
         try {
             if (chainId !== BSC_CHAIN_ID) {
                 const error = await createNetworkOrSwitch(library.provider);
@@ -229,6 +228,30 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                     setStepLoading(1);
                 },
             );
+            // {
+            //     "contract": "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
+            //     "tokenId": 5448,
+            //     "amount": 5,
+            //     "price": 1,
+            //     "tokenUnit": "0x6fe3d0f096fc932a905accd1eb1783f6e4cec717",
+            //     "supply": 100,
+            //     "owner": "0xce2fd7544e0b2cc94692d4a704debef7bcb61328",
+            //     "sign": "asdfajj32h4j23jwklfjklsdjfklajlskdfjlaksdjflkasjdlfkjdaskl"
+            // }
+            let bodyParams = {
+                contract: address,
+                amount: Number(listSell[0].quantity),
+                tokenId: Number(listSell[0].tokenId),
+                price: Number(listSell[0].price),
+                supply: Number(listSell[0].supply),
+                tokenUnit: "0x6fe3d0f096fc932a905accd1eb1783f6e4cec717",
+                owner: account,
+                sign: sign,
+            };
+            console.log(JSON.stringify(bodyParams));
+
+            const res = await axios.post(`${URL}/v1/sale`, bodyParams);
+            console.log(res);
             setStepLoading(2);
             setSubmitted(false);
             setListSell([]);

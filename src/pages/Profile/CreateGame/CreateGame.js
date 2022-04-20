@@ -72,7 +72,7 @@ const CreateGame = () => {
     };
     const skeletonArray = Array.from(Array(8).keys());
 
-    const logInfo = async () => {
+    const logInfo = async type => {
         if (!account) return;
         console.log(Date.now());
         setGameList([]);
@@ -100,6 +100,7 @@ const CreateGame = () => {
             setGameList(lists);
         } catch (err) {
             console.log(err);
+            setLoadingGameList(false);
         } finally {
             setLoadingGameList(false);
         }
@@ -258,7 +259,7 @@ const CreateGame = () => {
                 };
 
                 const res = await axios.post(`${URL}/v1/game/logo`, bodyParams);
-                if (res.data.message == "success") {
+                if (res.data.message === "success") {
                     console.log(res);
                     setgameInfo({});
                     setFileName();
@@ -272,7 +273,7 @@ const CreateGame = () => {
                     setUploadGameLoading(false);
                     setFailed(true);
                 }
-                logInfo();
+                logInfo("revert");
             } catch (err) {
                 setUploadGameLoading(false);
                 setFailed(true);
@@ -417,7 +418,7 @@ const CreateGame = () => {
                         onChange={handleChangeSymbol}
                     />
                     {componentErrorSymbol}
-                    <div className={cx("input_container")}>
+                    <div className={cx("input_container", "input_container--image")}>
                         <input
                             placeholder="Avatar"
                             value={fileName || ""}
@@ -435,6 +436,9 @@ const CreateGame = () => {
                             style={{ display: "none" }}
                             onChange={e => handleUploadImage(e)}
                         />
+                        {gameInfo.avatar && (
+                            <img src={gameInfo.avatar || ""} alt="preview" className={cx("preview-img")} />
+                        )}
                         {componentErrorImage}
                     </div>
 
@@ -447,7 +451,7 @@ const CreateGame = () => {
     return (
         <div className={cx("container")}>
             <div className={cx("content")}>
-                <Grid container spacing={2} className={cx("grid-parent")}>
+                <Grid container spacing={4} className={cx("grid-parent")}>
                     <Grid item md={4} sm={6} xs={12}>
                         <Card className={cx("create-card", "card")} onClick={handleOpen}>
                             <CardContent>

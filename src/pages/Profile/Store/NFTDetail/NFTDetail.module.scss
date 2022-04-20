@@ -4,7 +4,25 @@
     margin: 0 auto;
     padding-top: 60px;
     font-family: "Montserrat";
-
+    .breadcrums {
+        :global {
+            .MuiTypography-root {
+                color: #bc88ff !important;
+                font-size: 16px;
+                text-transform: capitalize;
+            }
+            .MuiBreadcrumbs-li {
+                cursor: pointer;
+            }
+            .MuiSvgIcon-fontSizeMedium {
+                color: #625d83 !important;
+                // background-color: #625D83 !important;
+            }
+        }
+        padding-bottom: 18px;
+        margin-bottom: 40px;
+        border-bottom: 1px solid rgba(64, 42, 125, 0.5);
+    }
     .left {
         display: flex;
         align-items: flex-start;

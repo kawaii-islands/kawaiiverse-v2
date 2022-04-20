@@ -9,11 +9,12 @@ import logoTrend from "../../../assets/images/trend1.png";
 import logoLayers from "../../../assets/images/layers1.png";
 import Button from "@mui/material/Button";
 import { useHistory } from "react-router";
-
+import {shortenAddress} from "src/utils/string";
 const cx = cn.bind(styles);
 
 const Item = ({ item }) => {
     const history = useHistory();
+
     return (
         <Card className={cx("item-card", "card")}>
             <CardContent>
@@ -29,6 +30,10 @@ const Item = ({ item }) => {
                 <Typography className={cx("item-paragraph")}>
                     <img src={logoTrend} alt="logo" className={cx("game-mini")} />
                     Total sale: <span className={cx("game-amount")}>1,000,000 KWT</span>
+                </Typography>
+                <Typography className={cx("item-paragraph")}>
+                    <img src={logoTrend} alt="logo" className={cx("game-mini")} />
+                    Address: <a href={`https://testnet.bscscan.com/address/${item.gameAddress}`} target="_blank"><span className={cx("game-amount")}>{shortenAddress(item.gameAddress)}</span></a>
                 </Typography>
             </CardContent>
             <CardActions className={cx("create-action")}>
