@@ -5,6 +5,7 @@ import { Col, Row, Spin } from "antd";
 import { create } from "ipfs-http-client";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import uploadImageIcon from "src/assets/icons/uploadImage.svg";
+import defaultImage from "src/assets/icons/default_image.svg";
 
 const cx = cn.bind(styles);
 const client = create("https://ipfs.infura.io:5001/api/v0");
@@ -57,18 +58,8 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                         {loadingUploadAttributeImg && indexImg === idx ? (
                             <Spin style={{ marginLeft: "10px" }} />
                         ) : (
-                            <img
-                                src={
-                                    item?.image
-                                        ? item?.image
-                                        : `https://images.kawaii.global/kawaii-marketplace-image/items/201003.png`
-                                }
-                                alt="nft-icon"
-                                width={28}
-                                height={28}
-                            />
+                            <img src={item?.image ? item?.image : defaultImage} alt="nft-icon" width={28} height={28} />
                         )}
-
                         <input
                             value={item?.image}
                             placeholder="String"
@@ -76,9 +67,8 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                             onChange={e => {
                                 setDetailAttribute("image", e.target.value, idx);
                             }}
-                            style={{ width: "50%" }}
+                            style={{ width: "50%", marginLeft: '5px' }}
                         />
-
                         <span>&nbsp; or:</span>
                         <span className={cx("image-upload")}>
                             <label htmlFor={`attr-image-${idx}`}>

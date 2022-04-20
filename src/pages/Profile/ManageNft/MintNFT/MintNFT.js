@@ -26,7 +26,8 @@ import { Modal } from "react-bootstrap";
 import ListAltRoundedIcon from "@mui/icons-material/ListAltRounded";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { useHistory } from "react-router-dom";
-import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
+import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
+import defaultImage from "src/assets/icons/default_image.svg";
 
 const web3 = new Web3(BSC_rpcUrls);
 const cx = cn.bind(styles);
@@ -52,8 +53,17 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
             },
         ],
         rarity: "",
-        supply: 0,
+        supply: 1,
         category: "",
+    };
+
+    let error = {
+        tokenIdErr: false,
+        tokenIdExist: false,
+        tokenIdDuplicate: false,
+        nameErr: false,
+        imageUrlErr: false,
+        supplyErr: false,
     };
 
     const { account, chainId, library } = useWeb3React();
@@ -63,9 +73,9 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
     const [loadingSubmit, setLoadingSubmit] = useState(false);
     const [open, setOpen] = useState(false);
     const [listNft, setListNft] = useState([oneNft]);
+    const [listErr, setListErr] = useState([error]);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [listInvalidToken, setListInvalidToken] = useState({});
-    const [checkedTokenId, setCheckedTokenId] = useState(false);
     const [loadingUploadImg, setLoadingUploadImg] = useState(false);
     const [imageIdx, setImageIdx] = useState();
     const [stepLoading, setStepLoading] = useState(0);
@@ -75,6 +85,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         ? JSON.parse(window.localStorage.getItem("listNftPending"))
         : [];
     const [showPendingModal, setShowPendingModal] = useState(listPending.length);
+    const [listNftByContract, setListNftByContract] = useState();
 
     useEffect(() => {
         if (listPending.length > 0) {
@@ -85,16 +96,49 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 
     useEffect(() => {
         if (stepLoading === 3 && listPending.length > 0) {
-			setLoadingSubmit(false);
+            setLoadingSubmit(false);
             setShowPendingModal(true);
         }
     }, [stepLoading]);
 
-    const setStateForNftData = (key, value, id = openMintNFTBox) => {
-        if (key === "tokenId") {
-            setCheckedTokenId(false);
+    useEffect(() => {
+        getListNftByContract();
+    }, [gameSelected]);
+
+    const getListNftByContract = async () => {
+        try {
+            const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
+            if (res.status === 200) {
+                console.log(res.data.data);
+                setListNftByContract(res.data.data);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const setError = (key, value, id) => {
+        let listErrCopy = [...listErr];
+        listErrCopy[id] = { ...listErrCopy[id], [key]: true };
+
+        if (key.includes("tokenId")) {
+            let check = listNftByContract?.filter(nft => parseInt(nft.tokenId) === parseInt(value));
+            let checkDuplicate = listNft?.filter(nft => parseInt(nft.tokenId) === parseInt(value));
+
+            console.log("check :>> ", check);
+            if (check?.length > 0) {
+                listErrCopy[id] = { ...listErrCopy[id], tokenIdExist: true };
+            } else listErrCopy[id] = { ...listErrCopy[id], tokenIdExist: false };
+
+            if (checkDuplicate?.length > 0) {
+                listErrCopy[id] = { ...listErrCopy[id], tokenIdDuplicate: true };
+            } else listErrCopy[id] = { ...listErrCopy[id], tokenIdDuplicate: false };
         }
 
+        setListErr(listErrCopy);
+    };
+
+    const setStateForNftData = (key, value, id = openMintNFTBox) => {
         let listNftCopy = [...listNft];
         listNftCopy[id] = { ...listNftCopy[id], [key]: value };
 
@@ -102,13 +146,48 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
     };
 
     const checkInvalidData = data => {
+        let arr = [...listErr];
+        let flag = false;
+
         for (let i = 0; i < data.length; i++) {
-            if (!data[i].tokenId || !data[i].name || !data[i].supply || !data[i].imageUrl) {
-                return true;
+            if (!data[i].tokenId) {
+                arr[i] = { ...arr[i], tokenIdErr: true };
+                flag = true;
+            } else if (data[i].tokenId < 0) {
+                flag = true;
+            }
+
+            if (!data[i].name) {
+                arr[i] = { ...arr[i], nameErr: true };
+                flag = true;
+            }
+
+            if (!data[i].supply) {
+                arr[i] = { ...arr[i], supplyErr: true };
+                flag = true;
+            } else if (data[i].supply <= 0) {
+                flag = true;
+            }
+
+            if (!data[i].imageUrl) {
+                arr[i] = { ...arr[i], imageUrlErr: true };
+                flag = true;
+            }
+
+            let check = [];
+            listNftByContract?.filter(nft => parseInt(nft.tokenId) === parseInt(data[i].tokenId));
+            let checkDuplicate = [];
+            listNft?.filter(nft => parseInt(nft.tokenId) === parseInt(data[i].tokenId));
+
+            console.log("flag :>> ", flag);
+
+            if (check?.length > 0 || checkDuplicate?.length > 0) {
+                flag = true;
             }
         }
 
-        return false;
+        setListErr(arr);
+        return flag;
     };
 
     const sign = async (account, data, provider) => {
@@ -177,33 +256,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         return signature;
     };
 
-    const checkInValidTokenId = async data => {
-        let list = [];
-        let check = false;
-
-        await Promise.all(
-            data.map(async (item, ind) => {
-                if (isNaN(item.tokenId)) return;
-
-                let itemSupply = await read("getSupplyOfNft", BSC_CHAIN_ID, gameSelected, KAWAIIVERSE_NFT1155_ABI, [
-                    item.tokenId,
-                ]);
-
-                list[ind] = itemSupply;
-
-                if (itemSupply != 0) {
-                    check = true;
-                }
-                console.log(check);
-            }),
-        );
-
-        setListInvalidToken(list);
-        setCheckedTokenId(true);
-        console.log("check", check);
-        return check;
-    };
-
     const createToken = async data => {
         let listTokenId = data.map(token => token.tokenId);
         let listTokenSupply = data.map(token => token.supply);
@@ -230,7 +282,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                 console.log(hash);
                 setHash(hash);
                 setStepLoading(1);
-				window.localStorage.setItem("listNftPending", JSON.stringify(listNft));
+                window.localStorage.setItem("listNftPending", JSON.stringify(listNft));
             },
         );
     };
@@ -244,7 +296,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         try {
             const added = await client.add(file);
             const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-            console.log(url)
+            console.log(url);
             setStateForNftData("imageUrl", url, index);
         } catch (error) {
             console.log("Error uploading file: ", error);
@@ -255,12 +307,13 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 
     const submit = async () => {
         setIsSubmitted(true);
+        setOpenMintNFTBox(null);
 
         try {
             if (!listPending.length) {
                 const checkData = await checkInvalidData(listNft);
-                const checkToken = await checkInValidTokenId(listNft);
-                if (checkData || checkToken) return;
+                console.log("checkData :>> ", checkData);
+                if (checkData) return;
 
                 setLoadingSubmit(true);
                 await createToken(listNft);
@@ -336,18 +389,23 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                         value={item?.tokenId}
                                         className={cx(
                                             "input",
-                                            isSubmitted &&
-                                                (!item.tokenId ||
-                                                    isNaN(item.tokenId) ||
-                                                    (listInvalidToken[index] > 0 && checkedTokenId)) &&
+                                            listErr[index].tokenIdErr &&
+                                                (!item.tokenId || isNaN(item.tokenId) || listInvalidToken[index] > 0) &&
                                                 "invalid",
                                         )}
-                                        onChange={e => setStateForNftData("tokenId", e.target.value, index)}
+                                        onChange={e => {
+                                            setError("tokenIdErr", e.target.value, index);
+                                            setStateForNftData("tokenId", e.target.value, index);
+                                        }}
                                     />
-                                    {isSubmitted &&
+                                    {console.log("err :>> ", listErr[index].tokenIdErr)}
+                                    {listErr[index].tokenIdErr &&
                                         (() => {
                                             if (!item.tokenId) {
                                                 return <div style={{ color: "#9e494d" }}>Please enter tokenId!</div>;
+                                            }
+                                            if (listErr[index].tokenIdDuplicate) {
+                                                return <div style={{ color: "#9e494d" }}>TokenId duplicate!</div>;
                                             }
                                             if (isNaN(item.tokenId) || item.tokenId < 0) {
                                                 return (
@@ -356,7 +414,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                                     </div>
                                                 );
                                             }
-                                            if (checkedTokenId && listInvalidToken[index] > 0) {
+                                            if (listErr[index].tokenIdExist > 0) {
                                                 return <div style={{ color: "#9e494d" }}>TokenId existed!</div>;
                                             }
                                         })()}
@@ -365,11 +423,14 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                     <input
                                         placeholder="Name"
                                         value={item?.name}
-                                        className={cx("input", isSubmitted && !item.name && "invalid")}
-                                        onChange={e => setStateForNftData("name", e.target.value, index)}
+                                        className={cx("input", listErr[index].nameErr && !item.name && "invalid")}
+                                        onChange={e => {
+                                            setStateForNftData("name", e.target.value, index);
+                                            setError("nameErr", true, index);
+                                        }}
                                     />
-                                    {isSubmitted && !item.name && (
-                                        <div style={{ color: "#9e494d" }}>Please enter token name!</div>
+                                    {listErr[index].nameErr && !item.name && (
+                                        <div style={{ color: "#9e494d" }}>Please enter NFT name!</div>
                                     )}
                                 </Col>
                                 <Col span={4}>
@@ -378,13 +439,21 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                         value={item?.supply}
                                         className={cx(
                                             "input",
-                                            isSubmitted && (!item.supply || isNaN(item.supply)) && "invalid",
+                                            listErr[index].supplyErr &&
+                                                (!item.supply || isNaN(item.supply)) &&
+                                                "invalid",
                                         )}
-                                        onChange={e => setStateForNftData("supply", e.target.value, index)}
+                                        onChange={e => {
+                                            setError("supplyErr", true, index);
+                                            setStateForNftData("supply", e.target.value, index);
+                                        }}
                                     />
-                                    {isSubmitted && (!item.supply || isNaN(item.supply)) && (
-                                        <div style={{ color: "#9e494d" }}>Invalid supply!</div>
-                                    )}
+                                    {(listErr[index].supplyErr && !item.supply && (
+                                        <div style={{ color: "#9e494d" }}>Please enter supply!</div>
+                                    )) ||
+                                        ((isNaN(item.supply) || item.supply <= 0) && (
+                                            <div style={{ color: "#9e494d" }}>Supply must be positive number!</div>
+                                        ))}
                                 </Col>
                                 <Col span={8}>
                                     <Row style={{ alignItems: "center" }}>
@@ -393,11 +462,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                                 <Spin />
                                             ) : (
                                                 <img
-                                                    src={
-                                                        item?.imageUrl
-                                                            ? item?.imageUrl
-                                                            : `https://images.kawaii.global/kawaii-marketplace-image/items/201003.png`
-                                                    }
+                                                    src={item?.imageUrl ? item?.imageUrl : defaultImage}
                                                     alt="nft-icon"
                                                     width={36}
                                                     height={36}
@@ -408,9 +473,13 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                             <input
                                                 placeholder="https://images..."
                                                 value={item?.imageUrl}
-                                                className={cx("input", isSubmitted && !item.imageUrl && "invalid")}
+                                                className={cx(
+                                                    "input",
+                                                    listErr[index].imageUrlErr && !item.imageUrl && "invalid",
+                                                )}
                                                 onChange={e => {
                                                     setImageIdx(index);
+                                                    setError("imageUrlErr", true, index);
                                                     setStateForNftData("imageUrl", e.target.value, index);
                                                 }}
                                                 style={{ width: "80%" }}
@@ -436,7 +505,8 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                             </span>
                                         </Col>
                                     </Row>
-                                    {isSubmitted && !item.imageUrl && (
+
+                                    {listErr[index].imageUrlErr && !item.imageUrl && (
                                         <div style={{ color: "#9e494d" }}>Please enter image url!</div>
                                     )}
                                 </Col>
@@ -445,7 +515,10 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                         className={cx("delete-icon")}
                                         onClick={() => {
                                             let arr = [...listNft];
+                                            let arrError = [...listErr];
                                             arr.splice(index, 1);
+                                            arrError.splice(index, 1);
+                                            setListErr(arrError);
                                             setListNft(arr);
                                         }}
                                     />
@@ -475,6 +548,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                     className={cx("add-nft")}
                     onClick={() => {
                         setListNft([...listNft, oneNft]);
+                        setListErr([...listErr, error]);
                         setOpenMintNFTBox(listNft.length);
                     }}
                 >
@@ -483,10 +557,18 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                 </div>
 
                 <div className={cx("group-button")}>
-                    <Button className={cx("preview")} onClick={() => setOpen(true)}>
+                    <Button
+                        disabled={listNft.length < 1}
+                        className={cx("preview", listNft.length < 1 && "disable-preview")}
+                        onClick={() => setOpen(true)}
+                    >
                         Preview
                     </Button>
-                    <Button className={cx("submit")} onClick={submit}>
+                    <Button
+                        disabled={listNft.length < 1}
+                        className={cx("submit", listNft.length < 1 && "disable-submit")}
+                        onClick={submit}
+                    >
                         Submit
                     </Button>
                 </div>

@@ -159,6 +159,12 @@ $mobile: 576px;
             color: #ffffff;
         }
 
+		.disable-submit {
+            @extend .submit;
+			background: rgba(223, 1, 255, 0.2);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
         .preview {
             background: #8301ff;
             border-radius: 4px;
@@ -167,6 +173,12 @@ $mobile: 576px;
             font-size: 16px;
             line-height: 150%;
             color: #ffffff;
+        }
+
+        .disable-preview {
+            @extend .preview;
+            background: rgba(131, 1, 255, 0.2);
+            color: rgba(255, 255, 255, 0.5);
         }
     }
 }
@@ -239,7 +251,7 @@ $mobile: 576px;
             border-radius: 4px;
             color: white;
             width: 88%;
-			margin-top: 10px;
+            margin-top: 10px;
         }
     }
 }

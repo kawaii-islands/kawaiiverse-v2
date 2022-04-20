@@ -32,7 +32,6 @@ const ViewNFT = ({ gameSelected, setIsMintNFT }) => {
             const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
             if (res.status === 200) {
                 let data = res.data.data.reverse();
-                console.log(data)
                 setListNftByContract(data);
                 setDisplayList(data);
                 setLoading(false);
