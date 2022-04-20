@@ -23,7 +23,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-				font-family: "Montserrat", sans-serif;
+                font-family: "Montserrat", sans-serif;
 
                 .icon {
                     cursor: pointer;
@@ -32,7 +32,7 @@
             }
 
             .button {
-				margin-left: 20px;
+                margin-left: 20px;
                 background: linear-gradient(94.08deg, #7f00ff -1.88%, #e100ff 100%);
                 border-radius: 6px;
                 color: #f6f7fb;
@@ -45,9 +45,9 @@
     }
 
     .list-nft {
+        width: 100%;
         display: flex;
         flex-flow: row wrap;
-        justify-content: space-between;
 
         &::after {
             content: "";
