@@ -1,299 +1,380 @@
 import React, { useEffect, useState } from "react";
-import cn from "classnames/bind";
-import NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
-import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
-import { BSC_CHAIN_ID } from "src/consts/blockchain";
-import { KAWAIIVERSE_STORE_ADDRESS } from "src/consts/address";
-import { toast } from "react-toastify";
-import { useWeb3React } from "@web3-react/core";
-import { Search as SearchIcon } from "@material-ui/icons";
-import { Menu, Dropdown, Row, Col, Pagination } from "antd";
-import { useHistory } from "react-router";
-import { read } from "src/services/web3";
-import { DownOutlined } from "@ant-design/icons";
-
-import { InputAdornment, TextField, Input } from "@mui/material";
-import MainLayout from "src/components/MainLayout";
-import searchIcon from "../../assets/icons/search_24px.svg";
-import NFTItem from "../../components/NFTItem/NFTItem";
-import filter from "../../assets/icons/filter.svg";
-import cancel from "../../assets/icons/cancel.svg";
-import FilterStore from "src/components/FilterStore/FilterStore";
-import FilterMobile from "../../components/FilterMobile/FilterMobile";
-import ListSkeleton from "../../components/ListSkeleton/ListSkeleton";
 import LoadingPage from "src/components/LoadingPage/LoadingPage";
-import ListNft from "src/components/ListNft/ListNft";
-
+import MainLayout from "src/components/MainLayout";
 import styles from "./index.module.scss";
-
+import cn from "classnames/bind";
+import { Col, Row } from "antd";
+import FilterStore from "src/components/FilterStore/FilterStore";
+import { Button } from "@mui/material";
+import { read } from "src/services/web3";
+import { BSC_CHAIN_ID } from "src/consts/blockchain";
+import FACTORY_ABI from "src/utils/abi/factory.json";
+import NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
+import { useWeb3React } from "@web3-react/core";
+import { FACTORY_ADDRESS } from "src/consts/address";
+import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
+import { KAWAIIVERSE_STORE_ADDRESS } from "src/consts/address";
+import ListNft from "src/components/ListNft/ListNft";
+import { toast } from "react-toastify";
+import axios from "axios";
+import FilterMobile from "src/components/FilterMobile/FilterMobile";
+import { useParams } from "react-router-dom";
+import { KAWAII1155_ADDRESS } from "src/consts/constant";
+import { URL } from "src/consts/constant";
+import ListSkeleton from "src/components/ListSkeleton/ListSkeleton";
+import { InputAdornment, TextField, Input } from "@mui/material";
+import { Menu, Dropdown, Pagination } from "antd";
+import { DownOutlined } from "@ant-design/icons";
+import filter from "src/assets/icons/filter.svg";
+import { Search as SearchIcon } from "@material-ui/icons";
+import cancel from "src/assets/icons/cancel.svg";
 const cx = cn.bind(styles);
 
-const Store = () => {
-	const history = useHistory();
-	const { account } = useWeb3React();
-	const [gameList, setGameList] = useState([]);
-	const [gameItemList, setGameItemList] = useState([]);
-	const [openFilterModal, setOpenFilterModal] = useState(false);
-	const [loading, setLoading] = useState(true);
-	const [loadingListNFT, setLoadingListNFT] = useState(true);
-	const [totalGameAmount, setTotalGameAmount] = useState(0);
-	const [gameSelected, setGameSelected] = useState([]);
+const PAGE_SIZE = 15;
+const Profile = () => {
+    const { account } = useWeb3React();
+    const [loadingListNFT, setLoadingListNFT] = useState(false);
+    const [openFilterModal, setOpenFilterModal] = useState(false);
+    const [gameList, setGameList] = useState([]);
+    const [gameSelected, setGameSelected] = useState([]);
+    const [activeTab, setActiveTab] = useState(1);
+    const [listNft, setListNft] = useState([]);
+    const [search, setSearch] = useState("");
+    const [listSearch, setListSearch] = useState([]);
+    const [gameItemList, setGameItemList] = useState([]);
+    const [originalList, setOriginalList] = useState([]);
+    const [sort1, setSort] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
 
+    const handleSearch = e => {
+        setSearch(e.target.value);
+        let listSearch = gameItemList.filter(nft => {
+            if (nft.name) {
+                return (
+                    nft?.name.toUpperCase().includes(e.target.value.toUpperCase()) ||
+                    nft?.tokenId.toString().includes(e.target.value)
+                );
+            }
+            return false;
+        });
+        if (e.target.value === "") {
+            setListSearch([]);
+            return;
+        }
+        setListSearch([...listSearch]);
+    };
+    const checkGameIfIsSelected = address => {
+        let count = -1;
+        gameSelected.map((game, idx) => {
+            if (game.gameAddress === address) {
+                count = idx;
+            }
+        });
+        return count;
+    };
+    const handleDeleteFilter = address => {
+        setGameSelected(gameSelected => {
+            const copyGame = [...gameSelected];
+            copyGame.splice(checkGameIfIsSelected(address), 1);
+            return copyGame;
+        });
+    };
 
-	useEffect(() => {
-		logInfo();
+    const handleClearFilter = () => {
+        setGameSelected([]);
+    };
 
-	}, [totalGameAmount, account]);
+    useEffect(() => {
+        // logGameData();
+    }, [gameSelected]);
+    useEffect(() => {
+        getGameList();
+        // logGameData();
+    }, []);
+    const itemRender = (current, type, originalElement) => {
+        if (type === "prev") {
+            return <span style={{ color: "#FFFFFF" }}>Prev</span>;
+        }
+        if (type === "next") {
+            return <span style={{ color: "#FFFFFF" }}>Next</span>;
+        }
+        return originalElement;
+    };
 
-	useEffect(() => {
-		logGameData();
-	}, [gameSelected, gameList]);
+    const getList = async () => {
+        try {
+            const res = await axios.get(`${URL}/v1/nft/0xc0db51c453526d9f233c61b2db570aa754f1cf7e`);
+            if (res.status === 200) {
+                // setListNft(res.data.data);
+            }
+        } catch (error) {
+            toast.error(error);
+            console.log(error);
+        }
+    };
 
-	const logInfo = async () => {
-		if (account) {
-			let lists = [];
-			try {
-				const totalGame = await read(
-					"lengthListNFT1155",
-					BSC_CHAIN_ID,
-					KAWAIIVERSE_STORE_ADDRESS,
-					KAWAII_STORE_ABI,
-					[],
-				);
-				setGameList([]);
-				// const tmpArray = [...Array(totalGame.length).keys()];
-				const tmpArray = Array.from({ length: totalGame }, (v, i) => i);
+    const logGameData = async gameList => {
+        try {
+            let game;
+            if (gameSelected.length) {
+                game = gameSelected;
+            } else {
+                game = gameList;
+            }
+            const tmpGameArray = Array(game.length).fill(1);
+            const gameListData = await Promise.all(
+                tmpGameArray.map(async (nftId, idx) => {
+									
+                    let gameItemLength = await read(
+                        "lengthSellNFT1155",
+                        BSC_CHAIN_ID,
+                        KAWAIIVERSE_STORE_ADDRESS,
+                        KAWAII_STORE_ABI,
+                        [game[idx].gameAddress],
+                    );
+										const tmpItemArray = Array(Number(gameItemLength)).fill(1);
+										let res = await axios.get(`${URL}/v1/nft/${game[idx].gameAddress}`);
+										if(res.status === 200){
+											const gameItemData = await Promise.all(
+                        tmpItemArray.map(async (nftId, index) => {
+                            let gameItem = await read(
+                                "dataNFT1155s",
+                                BSC_CHAIN_ID,
+                                KAWAIIVERSE_STORE_ADDRESS,
+                                KAWAII_STORE_ABI,
+                                [game[idx].gameAddress, index],
+                            );
+                            // console.log(gameItem);
+														gameItem.index = index;
+														return gameItem;
+														
+                        }),
+                    );
+										// console.log(gameItemData);
+										// console.log(res.data.data)
+										let mergeArray = gameItemData.map((nft1, idx1) => {
+											let nft = nft1;
+											res.data.data.map((nft2, idx2) => {
+												
+												if((Number(nft1.tokenId) === Number(nft2.tokenId))){
+													nft = {...nft2, ...nft1};
+													// console.log(nft);
+												}
+												
+											})
+											
+											return nft;
+										})
+										// console.log(gameItemData);
+                                        mergeArray = mergeArray.filter(nft => {
+                                            return nft.contract;
+                                        })
+                    return mergeArray;
+										}
+                    
+                    
+                }),
+            );
+						setListNft(gameListData.flat(3));
+            return gameListData.flat(3);
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message || "An error occurred!");
+        }
+    };
+    const handleSort = sort => {
+        if (sort === sort1) {
+            setSort("");
+            setGameItemList(originalList);
+            if (search !== "") {
+                let listSearch = gameItemList.filter(nft => {
+                    if (nft.name) {
+                        return (
+                            nft?.name.toUpperCase().includes(search.toUpperCase()) ||
+                            nft?.tokenId.toString().includes(search)
+                        );
+                    }
+                    return false;
+                });
+                setListSearch([...listSearch]);
+            }
+            return;
+        }
+        setSort(sort);
+        let newList = search !== "" ? [...listSearch] : [...gameItemList];
 
-				try {
+        if (sort === "low") {
+            newList = newList.sort(function (a, b) {
+                return Number(a.price) - Number(b.price);
+            });
+        }
+        if (sort === "high") {
+            newList = newList.sort(function (a, b) {
+                return Number(b.price) - Number(a.price);
+            });
+        }
+        if (search !== "") {
+            setListSearch(newList);
+            return;
+        }
+        setGameItemList(newList);
+    };
+    const getGameList = async () => {
+        try {
+            setGameList([]);
+            const totalGame = await read(
+                "lengthListNFT1155",
+                BSC_CHAIN_ID,
+                KAWAIIVERSE_STORE_ADDRESS,
+                KAWAII_STORE_ABI,
+                [],
+            );
+            const tmpArray = Array.from({ length: totalGame }, (v, i) => i);
+            const gameListData = await Promise.all(
+                tmpArray.map(async (nftId, index) => {
+                    let gameAddress = await read(
+                        "listNFT1155",
+                        BSC_CHAIN_ID,
+                        KAWAIIVERSE_STORE_ADDRESS,
+                        KAWAII_STORE_ABI,
+                        [index],
+                    );
+                    let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
 
-					const gameListData = Promise.all(
-						tmpArray.map(async (nftId, index) => {
-							let gameAddress = await read("listNFT1155", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, [
-								index,
-							]);
-							let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
-							lists.push({ gameAddress, gameName })
-						}),
-					).then(() => {
-						console.log(lists.length)
+                    return { gameAddress, gameName };
+                }),
+            );
+            logGameData(gameListData);
+            setGameList(gameListData);
 
-						setGameList(lists);
-						setTotalGameAmount(lists.length);
+            return gameListData;
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message || "An error occurred!");
+        }
+    };
+    let displayList = listSearch.length > 0 || search !== "" ? listSearch : listNft;
+    const menu = (
+        <Menu className={cx("menu-dropdown")}>
+            <Menu.Item
+                key="low-high"
+                onClick={() => handleSort("low")}
+                className={cx(sort1 === "low" && "menu-dropdown--active")}
+            >
+                <div>Price: Low to High</div>
+            </Menu.Item>
+            <Menu.Item
+                key="high-low"
+                onClick={() => handleSort("high")}
+                className={cx(sort1 === "high" && "menu-dropdown--active")}
+            >
+                <div>Price: High to Low</div>
+            </Menu.Item>
+        </Menu>
+    );
+    return loadingListNFT ? (
+        <LoadingPage />
+    ) : (
+        <MainLayout>
+            <div className={cx("profile")}>
+                {openFilterModal && (
+                    <FilterMobile
+                        setOpenFilterModal={setOpenFilterModal}
+                        gameList={gameList}
+                        setGameSelected={setGameSelected}
+                        gameSelected={gameSelected}
+                        activeTab={activeTab}
+                        setActiveTab={setActiveTab}
+                    />
+                )}
+                <Row className={cx("row")}>
+                    <Col md={6} className={cx("left")}>
+                        <FilterStore
+                            gameList={gameList}
+                            setGameSelected={setGameSelected}
+                            gameSelected={gameSelected}
+                            activeTab={activeTab}
+                            setActiveTab={setActiveTab}
+                        />
+                    </Col>
 
-					}
-					);
-				} catch (error) {
-					console.log(error);
-					toast.error(error.message || "An error occurred!");
-				}
-			} catch (error) {
-				console.log(error);
-				toast.error(error.message || "An error occurred!");
-			}
-		}
-		setLoading(false)
-	};
+                    <Col offset={1} md={17} className={cx("right-wrapper")}>
+                        <div className={cx("right-main")}>
+                            <div className={cx("right-top")}>
+                                <div className={cx("right-top-title")}>{displayList?.length} items</div>
 
-	const logGameData = async () => {
-		setLoadingListNFT(true);
-		setGameItemList([]);
-		let list = [];
-		const tmpGameArray = [...Array(gameSelected.length ? gameSelected.length : gameList.length).keys()];
-		try {
+                                <Input
+                                    disableUnderline
+                                    placeholder="Search for NFT"
+                                    value={search}
+                                    onChange={handleSearch}
+                                    className={cx("search")}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <SearchIcon className={cx("icon")} />
+                                        </InputAdornment>
+                                    }
+                                />
+                                <div className={cx("group-button-filter")}>
+                                    <Dropdown overlay={menu} className={cx("drop-down")} trigger={["click"]}>
+                                        <div className={cx("drop-down-label")}>
+                                            <span>Sort by</span> <DownOutlined />
+                                        </div>
+                                    </Dropdown>
+                                </div>
+                                {/* URLSearchParams.set('view', false); */}
+                            </div>
+                            <div className={cx("right-filter")}>
+                                {gameSelected?.map((game, idx) => (
+                                    <div className={cx("filter-box")} key={game.gameAddress}>
+                                        <img
+                                            className={cx("filter-box-image")}
+                                            src={cancel}
+                                            alt="cancel"
+                                            onClick={() => handleDeleteFilter(game.gameAddress)}
+                                        />
+                                        <span style={{ paddingLeft: "5px" }}>{game.gameName}</span>
+                                    </div>
+                                ))}
 
-			const gameListData = await Promise.all(
-				tmpGameArray.map(async (nftId, idx) => {
-					let gameItemLength = await read(
-						"lengthSellNFT1155",
-						BSC_CHAIN_ID,
-						KAWAIIVERSE_STORE_ADDRESS,
-						KAWAII_STORE_ABI,
-						[gameSelected.length ? gameSelected[idx].gameAddress : gameList[idx].gameAddress],
-					);
-					const tmpItemArray = Array.from({ length: gameItemLength }, (v, i) => i);
+                                <div className={cx("filter-clear")} onClick={handleClearFilter}>
+                                    CLEAR ALL
+                                </div>
+                            </div>
 
+                            <Row gutter={[20, 20]} className={cx("list")}>
+                                {loadingListNFT ? (
+                                    <ListSkeleton page={"store"} />
+                                ) : (
+                                    <ListNft
+                                        loading={loadingListNFT}
+                                        gameItemList={listNft.slice(
+                                            (currentPage - 1) * PAGE_SIZE,
+                                            currentPage * PAGE_SIZE,
+                                        )}
+																				place="marketplace"
+                                        // gameSelected={address}
+                                    />
+                                )}
+                            </Row>
+                            {listNft?.length > 0 && (
+                                <div className={cx("pagination")}>
+                                    <Pagination
+                                        pageSize={PAGE_SIZE}
+                                        showSizeChanger={false}
+                                        current={currentPage}
+                                        total={displayList?.length}
+                                        onChange={page => setCurrentPage(page)}
+                                        itemRender={itemRender}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </Col>
+                </Row>
+            </div>
+        </MainLayout>
+    );
+};
 
-					const gameItemData = await Promise.all(
-						tmpItemArray.map(async (nftId, index) => {
-							let gameItem = await read("dataNFT1155s", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, [
-								gameSelected.length ? gameSelected[idx].gameAddress : gameList[idx].gameAddress,
-								index,
-							]);
-							list.push(gameItem);
-						}),
-					).then(() => {
-						console.log(list.length)
-						setGameItemList(list)
-					});
-
-				}),
-			);
-		} catch (error) {
-			console.log(error);
-			toast.error(error.message || "An error occurred!");
-		}
-
-		const logGameData = async () => {
-			setLoadingListNFT(true);
-			setGameItemList([]);
-			const tmpGameArray = [...Array(gameSelected.length ? gameSelected.length : gameList.length).keys()];
-			try {
-				const gameListData = Promise.all(
-					tmpGameArray.map(async (nftId, idx) => {
-						let gameItemLength = await read(
-							"lengthSellNFT1155",
-							BSC_CHAIN_ID,
-							KAWAIIVERSE_STORE_ADDRESS,
-							KAWAII_STORE_ABI,
-							[gameSelected.length ? gameSelected[idx].gameAddress : gameList[idx].gameAddress],
-						);
-						const tmpItemArray = [...Array(gameItemLength).keys()];
-						try {
-							const gameItemData = Promise.all(
-								tmpItemArray.map(async (nftId, index) => {
-									let gameItem = await read("dataNFT1155s", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, [
-										gameSelected.length ? gameSelected[idx].gameAddress : gameList[idx].gameAddress,
-										index,
-									]);
-									setGameItemList(gameItemList => [...gameItemList, gameItem]);
-								}),
-							);
-						} catch (error) {
-							console.log(error);
-							toast.error(error.message || "An error occurred!");
-						}
-					}),
-				);
-			} catch (error) {
-				console.log(error);
-				toast.error(error.message || "An error occurred!");
-			}
-
-			setLoadingListNFT(false);
-		};
-
-		const menu = (
-			<Menu>
-				<Menu.Item>
-					<div>1st menu item</div>
-				</Menu.Item>
-			</Menu>
-		);
-
-		const itemRender = (current, type, originalElement) => {
-			if (type === "prev") {
-				return <span style={{ color: "#FFFFFF" }}>Prev</span>;
-			}
-			if (type === "next") {
-				return <span style={{ color: "#FFFFFF" }}>Next</span>;
-			}
-			return originalElement;
-		};
-
-		const handleDeleteFilter = address => {
-			setGameSelected(gameSelected => {
-				const copyGame = [...gameSelected];
-				copyGame.splice(checkGameIfIsSelected(address), 1);
-				return copyGame;
-			});
-		};
-
-		const handleClearFilter = () => {
-			setGameSelected([]);
-		};
-
-		const checkGameIfIsSelected = address => {
-			let count = -1;
-			gameSelected.map((game, idx) => {
-				if (game.gameAddress == address) {
-					count = idx;
-				}
-			});
-			return count;
-		};
-
-		return loading ? (
-			<LoadingPage />
-		) : (
-			<MainLayout>
-				<div className={cx("store")}>
-					<div className={cx("left")}>
-						<FilterStore
-							gameList={gameList}
-							setGameSelected={setGameSelected}
-							gameSelected={gameSelected}
-							checkGameIfIsSelected={checkGameIfIsSelected}
-						/>
-					</div>
-					<div className={cx("right")}>
-						<div className={cx("right-top")}>
-							<div className={cx("right-top-title")}>{gameItemList.length} items</div>
-							<div className={cx("group-search")}>
-								<Input
-									disableUnderline
-									placeholder="Search for NFT"
-									className={cx("search")}
-									endAdornment={
-										<InputAdornment position="end">
-											<SearchIcon className={cx("icon")} />
-										</InputAdornment>
-									}
-								/>
-								<div className={cx("group-button")}>
-									<Dropdown overlay={menu} className={cx("drop-down")}>
-										<div className={cx("drop-down-label")}>
-											<span>Sort by</span> <DownOutlined />
-										</div>
-									</Dropdown>
-									<div className={cx("button-filter")} onClick={() => setOpenFilterModal(!openFilterModal)}>
-										<img src={filter} alt="filter" />
-										<span style={{ paddingLeft: "8px" }}>Filter</span>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div className={cx("right-filter")}>
-							{gameSelected?.map((game, idx) => (
-								<div className={cx("filter-box")} key={game.gameAddress}>
-									<img
-										className={cx("filter-box-image")}
-										src={cancel}
-										alt="cancel"
-										onClick={() => handleDeleteFilter(game.gameAddress)}
-									/>
-									<span style={{ paddingLeft: "5px" }}>{game.gameName}</span>
-								</div>
-							))}
-
-							<div className={cx("filter-clear")} onClick={handleClearFilter}>
-								CLEAR ALL
-							</div>
-						</div >
-						<div className={cx("right-main")}>
-							<Row gutter={[20, 20]}>
-								{loadingListNFT ? (
-									<ListSkeleton />
-								) : (
-									<ListNft gameItemList={gameItemList} />
-								)}
-							</Row>
-						</div>
-
-						<div className={cx("pagination")}>
-							<Pagination
-								showSizeChanger={false}
-								defaultCurrent={1}
-								total={gameItemList.length}
-								itemRender={itemRender}
-							/>
-						</div>
-					</div >
-					{openFilterModal && <FilterMobile setOpenFilterModal={setOpenFilterModal} />}
-				</div >
-			</MainLayout >
-		);
-	};
-}
-
-export default Store;
+export default Profile;
