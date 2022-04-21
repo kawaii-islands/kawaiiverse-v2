@@ -18,7 +18,7 @@ import CreateGame from "./pages/Profile/CreateGame/CreateGame";
 
 const Home = React.lazy(() => import("src/pages/Home/index.js"));
 const Store = React.lazy(() => import("src/pages/Store/index.js"));
-const NFTDetail = React.lazy(() => import("src/pages/NFTDetail/index.js"));
+const NFTDetail = React.lazy(() => import("src/pages/Store/NFTDetail/index.js"));
 const Profile = React.lazy(() => import("src/pages/Profile/index"));
 const MintNFTDetail = React.lazy(() => import("src/pages/Profile/ManageNft/NFTDetail/NFTDetail"));
 const SellNFTDetail = React.lazy(() => import("src/pages/Profile/Store/NFTDetail/NFTDetail"));
@@ -35,7 +35,10 @@ function App() {
                         <Suspense fallback={<LoadingPage />}>
                             <Route exact path="/" component={props => <Home {...props} />} />
                             <Route exact path="/store" component={props => <Store {...props} />} />
-                            <Route path="/store/:storeAddress/:tokenId/:index" component={props => <NFTDetail {...props} />} />
+                            <Route
+                                path="/store/:storeAddress/:tokenId/:index"
+                                component={props => <NFTDetail {...props} />}
+                            />
                             <Route exact path="/profile" component={props => <CreateGame {...props} />} />
                             {/* <Route exact path="/profile/create-game" component={props => <CreateGame {...props} />} /> */}
                             <Route exact path="/profile/:tab/:address" component={props => <Profile {...props} />} />

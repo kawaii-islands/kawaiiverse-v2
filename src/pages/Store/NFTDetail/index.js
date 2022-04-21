@@ -15,14 +15,16 @@ import { toast } from "react-toastify";
 import NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
 import RELAY_ABI from "src/utils/abi/relay.json";
 import KAWAIIVERSE_NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
-import { KAWAIIVERSE_STORE_ADDRESS, RELAY_ADDRESS } from "src/consts/address";
+import { KAWAIIVERSE_STORE_ADDRESS, KAWAII_TOKEN_ADDRESS, RELAY_ADDRESS } from "src/consts/address";
+import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
+import KAWAII_TOKEN_ABI from "src/utils/abi/KawaiiToken.json";
 import { read, write, sign } from "src/services/web3";
 import { useWeb3React } from "@web3-react/core";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import Web3 from "web3";
 import { BSC_CHAIN_ID, BSC_rpcUrls } from "src/consts/blockchain";
-import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
+// import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
 const cx = cn.bind(styles);
 const web3 = new Web3(BSC_rpcUrls);
 const NFTDetail = () => {
@@ -108,78 +110,45 @@ const NFTDetail = () => {
     };
     const getAllowance = async () => {
         if (!account) return;
-        console.log(storeAddress);
-        const isApprovedForAll = await read("isApprovedForAll", BSC_CHAIN_ID, storeAddress, KAWAIIVERSE_NFT1155_ABI, [
+        let allowance;
+        allowance = await read("allowance", BSC_CHAIN_ID, KAWAII_TOKEN_ADDRESS, KAWAII_TOKEN_ABI, [
             account,
             KAWAIIVERSE_STORE_ADDRESS,
         ]);
-        console.log("???", isApprovedForAll);
-        return isApprovedForAll;
+        console.log(allowance);
+        return getAllowance;
         // setIsApprovedForAll(isApprovedForAll);
+    };
+    const approve = async () => {
+        return await write(
+            "approve",
+            library.provider,
+            KAWAII_TOKEN_ADDRESS,
+            KAWAII_TOKEN_ABI,
+            [KAWAIIVERSE_STORE_ADDRESS, Web3.utils.toWei("999999999999999", "ether")],
+            { from: account },
+        );
     };
 
     const buyNft = async () => {
         console.log(account);
         if (!account) return;
         try {
-            // const isApproved = await getAllowance();
-            // console.log(isApproved)
-            // const getAllowance = async (address, type) => {
-            //     return read(
-            //         "allowance",
-            //         BSC_CHAIN_ID,
-            // type === "airi" ? AIRI_ADDRESS : KAWAII_ADDRESS,
-            // type === "airi" ? AIRI_ABI : KAWAII_ABI,
-            //         [account, address]
-            //     );
-            // };
-            // const approve = async (address, type) => {
-            //     return await write(
-            //         "approve",
-            //         library.provider,
-            //         type === "airi" ? AIRI_ADDRESS : KAWAII_ADDRESS,
-            //         type === "airi" ? AIRI_ABI : KAWAII_ABI,
-            //         [address, web3.utils.toWei("999999999999999", "ether")],
-            //         { from: account }
-            //     );
-            // };
-            // if (Number(allowance) < price * 10 ** 18) {
-            //     await approve(address, token);
+            // const allowance = await getAllowance();
+            // if (!allowance) {
+            //     await approve();
             // }
-
-            const { r, s, v } = await getSignature();
-            const _data = web3.eth.abi.encodeFunctionCall(
-                {
-                    inputs: [
-                        { internalType: "address", name: "sender", type: "address" },
-                        { internalType: "address", name: "_nftAddress", type: "address" },
-                        { internalType: "uint256", name: "_index", type: "uint256" },
-                        { internalType: "uint256", name: "_amount", type: "uint256" },
-                        { internalType: "uint8", name: "v", type: "uint8" },
-                        { internalType: "bytes32", name: "r", type: "bytes32" },
-                        { internalType: "bytes32", name: "s", type: "bytes32" },
-                    ],
-                    name: "buyNFTPermit",
-                    outputs: [],
-                    stateMutability: "nonpayable",
-                    type: "function",
-                },
-                [account, storeAddress, index, 1, v, r, s],
-            );
-            console.log(account, storeAddress, index, 1, v, r, s);
-            await write(
-                "execute",
-                library.provider,
-                RELAY_ADDRESS,
-                RELAY_ABI,
-                [KAWAIIVERSE_STORE_ADDRESS, _data],
-                { from: account },
-                hash => {
-                    console.log(hash);
-                    // setHash(hash);
-                    // setStepLoading(1);
-                },
-            );
+            // await write(
+            //     "buyNFTPermit",
+            //     library.provider,
+            //     KAWAIIVERSE_STORE_ADDRESS,
+            //     KAWAII_STORE_ABI,
+            //     [storeAddress, tokenId, 1],
+            //     { from: account },
+            //     hash => {
+            //         console.log(hash);
+            //     },
+            // );
         } catch (err) {
             console.log(err);
         }
@@ -263,6 +232,26 @@ const NFTDetail = () => {
                         <div className={cx("content")}>
                             <span className={cx("title")}>Description:</span>
                             <span className={cx("value")}>{nftInfo?.description}</span>
+                        </div>
+                        <div className={cx("content", "content-attribute")}>
+                            <span className={cx("title")}>Attributes:</span>
+
+                            {/* <span className={cx("value")}>{nftInfo?.description}</span> */}
+                            <Grid container spacing={2}>
+                                {nftInfo.attributes?.map((info, idx) => (
+                                    <Grid item container xs={6} key={idx}>
+                                        <Grid item xs={4}>
+                                            <div className={cx("info-image")}>
+                                                <img src={info.image}></img>
+                                            </div>
+                                        </Grid>
+                                        <Grid item xs={8} className={cx("info-group")}>
+                                            <div className={cx("info-group-header")}>{info.type}</div>
+                                            <div className={cx("info-group-text")}>{info.value}</div>
+                                        </Grid>
+                                    </Grid>
+                                ))}
+                            </Grid>
                         </div>
                         <Button className={cx("buy-btn")} onClick={buyNft}>
                             Buy NFT

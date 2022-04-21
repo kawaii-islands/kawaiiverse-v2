@@ -34,6 +34,7 @@ const PAGE_SIZE = 15;
 const Profile = () => {
     const { account } = useWeb3React();
     const [loadingListNFT, setLoadingListNFT] = useState(false);
+    const [loadingPage, setLoadingPage] = useState(false);
     const [openFilterModal, setOpenFilterModal] = useState(false);
     const [gameList, setGameList] = useState([]);
     const [gameSelected, setGameSelected] = useState([]);
@@ -63,6 +64,7 @@ const Profile = () => {
         }
         setListSearch([...listSearch]);
     };
+
     const checkGameIfIsSelected = address => {
         let count = -1;
         gameSelected.map((game, idx) => {
@@ -72,6 +74,7 @@ const Profile = () => {
         });
         return count;
     };
+
     const handleDeleteFilter = address => {
         setGameSelected(gameSelected => {
             const copyGame = [...gameSelected];
@@ -85,11 +88,11 @@ const Profile = () => {
     };
 
     useEffect(() => {
-        // logGameData();
-    }, [gameSelected]);
+        console.log(gameSelected);
+        logGameData();
+    }, [gameSelected, gameList]);
     useEffect(() => {
         getGameList();
-        // logGameData();
     }, []);
     const itemRender = (current, type, originalElement) => {
         if (type === "prev") {
@@ -113,10 +116,43 @@ const Profile = () => {
         }
     };
 
-    const logGameData = async gameList => {
+    const getGameItemLength = async gameAddress => {
+        let length;
+        length = await read("lengthSellNFT1155", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, [
+            gameAddress,
+        ]);
+        return length;
+    };
+
+    const getGameItemData = async (gameAddress, gameIndex) => {
+        let gameData;
+        gameData = await read("dataNFT1155s", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, [
+            gameAddress,
+            gameIndex,
+        ]);
+        return gameData;
+    };
+
+    const mergeArrayData = (dataArray1, dataArray2) => {
+        let mergedArray = dataArray1.map((nft1, idx1) => {
+            let nft = nft1;
+            dataArray2.map((nft2, idx2) => {
+                if (Number(nft1.tokenId) === Number(nft2.tokenId)) {
+                    nft = { ...nft2, ...nft1 };
+                }
+            });
+
+            return nft;
+        });
+        return mergedArray;
+    };
+
+    const logGameData = async () => {
+        setLoadingListNFT(true);
         try {
             let game;
-            if (gameSelected.length) {
+            console.log(gameSelected.length);
+            if (gameSelected?.length != 0) {
                 game = gameSelected;
             } else {
                 game = gameList;
@@ -124,64 +160,35 @@ const Profile = () => {
             const tmpGameArray = Array(game.length).fill(1);
             const gameListData = await Promise.all(
                 tmpGameArray.map(async (nftId, idx) => {
-									
-                    let gameItemLength = await read(
-                        "lengthSellNFT1155",
-                        BSC_CHAIN_ID,
-                        KAWAIIVERSE_STORE_ADDRESS,
-                        KAWAII_STORE_ABI,
-                        [game[idx].gameAddress],
-                    );
-										const tmpItemArray = Array(Number(gameItemLength)).fill(1);
-										let res = await axios.get(`${URL}/v1/nft/${game[idx].gameAddress}`);
-										if(res.status === 200){
-											const gameItemData = await Promise.all(
-                        tmpItemArray.map(async (nftId, index) => {
-                            let gameItem = await read(
-                                "dataNFT1155s",
-                                BSC_CHAIN_ID,
-                                KAWAIIVERSE_STORE_ADDRESS,
-                                KAWAII_STORE_ABI,
-                                [game[idx].gameAddress, index],
-                            );
-                            // console.log(gameItem);
-														gameItem.index = index;
-														return gameItem;
-														
-                        }),
-                    );
-										// console.log(gameItemData);
-										// console.log(res.data.data)
-										let mergeArray = gameItemData.map((nft1, idx1) => {
-											let nft = nft1;
-											res.data.data.map((nft2, idx2) => {
-												
-												if((Number(nft1.tokenId) === Number(nft2.tokenId))){
-													nft = {...nft2, ...nft1};
-													// console.log(nft);
-												}
-												
-											})
-											
-											return nft;
-										})
-										// console.log(gameItemData);
-                                        mergeArray = mergeArray.filter(nft => {
-                                            return nft.contract;
-                                        })
-                    return mergeArray;
-										}
-                    
-                    
+                    let gameItemLength = await getGameItemLength(game[idx].gameAddress);
+                    const tmpItemArray = Array(Number(gameItemLength)).fill(1);
+                    let res = await axios.get(`${URL}/v1/nft/${game[idx].gameAddress}`);
+                    if (res.status === 200) {
+                        const gameItemData = await Promise.all(
+                            tmpItemArray.map(async (nftId, index) => {
+                                let gameItem = await getGameItemData(game[idx].gameAddress, index);
+                                gameItem.index = index;
+                                return gameItem;
+                            }),
+                        );
+                        let mergeArray = mergeArrayData(gameItemData, res.data.data);
+                        mergeArray = mergeArray.filter(nft => {
+                            return nft.contract;
+                        });
+                        return mergeArray;
+                    }
                 }),
             );
-						setListNft(gameListData.flat(3));
+            setListNft(gameListData.flat(3));
             return gameListData.flat(3);
         } catch (error) {
             console.log(error);
             toast.error(error.message || "An error occurred!");
+        } finally {
+            setLoadingListNFT(false);
         }
     };
+
     const handleSort = sort => {
         if (sort === sort1) {
             setSort("");
@@ -219,26 +226,28 @@ const Profile = () => {
         }
         setGameItemList(newList);
     };
+
+    const getGameLength = async () => {
+        let length;
+        length = await read("lengthListNFT1155", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, []);
+        return length;
+    };
+
+    const getGameAddress = async gameIndex => {
+        let address;
+        address = await read("listNFT1155", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, [gameIndex]);
+        return address;
+    };
+
     const getGameList = async () => {
+        setLoadingListNFT(true);
         try {
             setGameList([]);
-            const totalGame = await read(
-                "lengthListNFT1155",
-                BSC_CHAIN_ID,
-                KAWAIIVERSE_STORE_ADDRESS,
-                KAWAII_STORE_ABI,
-                [],
-            );
+            const totalGame = await getGameLength();
             const tmpArray = Array.from({ length: totalGame }, (v, i) => i);
             const gameListData = await Promise.all(
                 tmpArray.map(async (nftId, index) => {
-                    let gameAddress = await read(
-                        "listNFT1155",
-                        BSC_CHAIN_ID,
-                        KAWAIIVERSE_STORE_ADDRESS,
-                        KAWAII_STORE_ABI,
-                        [index],
-                    );
+                    let gameAddress = await getGameAddress(index);
                     let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
 
                     return { gameAddress, gameName };
@@ -251,6 +260,8 @@ const Profile = () => {
         } catch (error) {
             console.log(error);
             toast.error(error.message || "An error occurred!");
+        } finally {
+            setLoadingListNFT(false);
         }
     };
     let displayList = listSearch.length > 0 || search !== "" ? listSearch : listNft;
@@ -272,7 +283,7 @@ const Profile = () => {
             </Menu.Item>
         </Menu>
     );
-    return loadingListNFT ? (
+    return loadingPage ? (
         <LoadingPage />
     ) : (
         <MainLayout>
@@ -352,7 +363,7 @@ const Profile = () => {
                                             (currentPage - 1) * PAGE_SIZE,
                                             currentPage * PAGE_SIZE,
                                         )}
-																				place="marketplace"
+                                        place="marketplace"
                                         // gameSelected={address}
                                     />
                                 )}
