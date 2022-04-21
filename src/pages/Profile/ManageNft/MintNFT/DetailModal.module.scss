@@ -111,6 +111,38 @@
                             color: #ffffff;
                             text-align: justify;
                         }
+
+                        .list-attribute {
+                            margin: 10px 0px;
+                            width: 100%;
+                            display: flex;
+                            flex-wrap: wrap;
+
+                            .one-attribute {
+                                display: flex;
+                                align-items: center;
+                                color: #ffffff;
+                                min-width: 50%;
+                                padding: 10px;
+
+                                .info-image {
+                                    margin-right: 16px;
+                                }
+
+                                .info-attribute {
+                                    .info-header {
+                                        font-weight: 500;
+                                        font-size: 16px;
+                                    }
+
+                                    .info-text {
+                                        font-weight: 300;
+                                        font-size: 14px;
+                                        line-height: 150%;
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     .content-attribute {
@@ -137,11 +169,13 @@
                         width: 60px;
                         height: 60px;
                         overflow: hidden;
-                        border-radius: 50%;
+                        border-radius: 4px;
+                        background: #ad99e7;
+                        padding: 5px;
                     }
                     .info-image img {
                         height: 100%;
-                        width: auto;
+                        width: 100%;
                     }
                 }
             }

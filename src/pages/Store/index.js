@@ -253,6 +253,9 @@ const Profile = () => {
                     return { gameAddress, gameName };
                 }),
             );
+
+            console.log("gameListData :>> ", gameListData);
+
             logGameData(gameListData);
             setGameList(gameListData);
 
@@ -298,8 +301,8 @@ const Profile = () => {
                         setActiveTab={setActiveTab}
                     />
                 )}
-                <Row className={cx("row")}>
-                    <Col md={6} className={cx("left")}>
+                <div className={cx("row")}>
+                    <div className={cx("left")}>
                         <FilterStore
                             gameList={gameList}
                             setGameSelected={setGameSelected}
@@ -307,82 +310,78 @@ const Profile = () => {
                             activeTab={activeTab}
                             setActiveTab={setActiveTab}
                         />
-                    </Col>
+                    </div>
 
-                    <Col offset={1} md={17} className={cx("right-wrapper")}>
-                        <div className={cx("right-main")}>
-                            <div className={cx("right-top")}>
-                                <div className={cx("right-top-title")}>{displayList?.length} items</div>
+                    <div className={cx("right")}>
+                        <div className={cx("right-top")}>
+                            <div className={cx("right-top-title")}>{displayList?.length} items</div>
 
-                                <Input
-                                    disableUnderline
-                                    placeholder="Search for NFT"
-                                    value={search}
-                                    onChange={handleSearch}
-                                    className={cx("search")}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <SearchIcon className={cx("icon")} />
-                                        </InputAdornment>
-                                    }
-                                />
-                                <div className={cx("group-button-filter")}>
-                                    <Dropdown overlay={menu} className={cx("drop-down")} trigger={["click"]}>
-                                        <div className={cx("drop-down-label")}>
-                                            <span>Sort by</span> <DownOutlined />
-                                        </div>
-                                    </Dropdown>
-                                </div>
-                                {/* URLSearchParams.set('view', false); */}
-                            </div>
-                            <div className={cx("right-filter")}>
-                                {gameSelected?.map((game, idx) => (
-                                    <div className={cx("filter-box")} key={game.gameAddress}>
-                                        <img
-                                            className={cx("filter-box-image")}
-                                            src={cancel}
-                                            alt="cancel"
-                                            onClick={() => handleDeleteFilter(game.gameAddress)}
-                                        />
-                                        <span style={{ paddingLeft: "5px" }}>{game.gameName}</span>
+                            <Input
+                                disableUnderline
+                                placeholder="Search for NFT"
+                                value={search}
+                                onChange={handleSearch}
+                                className={cx("search")}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <SearchIcon className={cx("icon")} />
+                                    </InputAdornment>
+                                }
+                            />
+                            <div className={cx("group-button-filter")}>
+                                <Dropdown overlay={menu} className={cx("drop-down")} trigger={["click"]}>
+                                    <div className={cx("drop-down-label")}>
+                                        <span>Sort by</span> <DownOutlined />
                                     </div>
-                                ))}
-
-                                <div className={cx("filter-clear")} onClick={handleClearFilter}>
-                                    CLEAR ALL
-                                </div>
+                                </Dropdown>
                             </div>
-
-                            <Row gutter={[20, 20]} className={cx("list")}>
-                                {loadingListNFT ? (
-                                    <ListSkeleton page={"store"} />
-                                ) : (
-                                    <ListNft
-                                        loading={loadingListNFT}
-                                        gameItemList={listNft.slice(
-                                            (currentPage - 1) * PAGE_SIZE,
-                                            currentPage * PAGE_SIZE,
-                                        )}
-                                        place="marketplace"
-                                        // gameSelected={address}
-                                    />
-                                )}
-                            </Row>
-                            {listNft?.length > 0 && (
-                                <div className={cx("pagination")}>
-                                    <Pagination
-                                        pageSize={PAGE_SIZE}
-                                        showSizeChanger={false}
-                                        current={currentPage}
-                                        total={displayList?.length}
-                                        onChange={page => setCurrentPage(page)}
-                                        itemRender={itemRender}
-                                    />
-                                </div>
-                            )}
+                            {/* URLSearchParams.set('view', false); */}
                         </div>
-                    </Col>
-                </Row>
+						
+                        <div className={cx("right-filter")}>
+                            {gameSelected?.map((game, idx) => (
+                                <div className={cx("filter-box")} key={game.gameAddress}>
+                                    <img
+                                        className={cx("filter-box-image")}
+                                        src={cancel}
+                                        alt="cancel"
+                                        onClick={() => handleDeleteFilter(game.gameAddress)}
+                                    />
+                                    <span style={{ paddingLeft: "5px" }}>{game.gameName}</span>
+                                </div>
+                            ))}
+
+                            <div className={cx("filter-clear")} onClick={handleClearFilter}>
+                                CLEAR ALL
+                            </div>
+                        </div>
+
+                        <Row gutter={[20, 20]} className={cx("list")}>
+                            {loadingListNFT ? (
+                                <ListSkeleton page={"store"} />
+                            ) : (
+                                <ListNft
+                                    loading={loadingListNFT}
+                                    gameItemList={listNft.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)}
+                                    place="marketplace"
+                                    // gameSelected={address}
+                                />
+                            )}
+                        </Row>
+                        {listNft?.length > 0 && (
+                            <div className={cx("pagination")}>
+                                <Pagination
+                                    pageSize={PAGE_SIZE}
+                                    showSizeChanger={false}
+                                    current={currentPage}
+                                    total={displayList?.length}
+                                    onChange={page => setCurrentPage(page)}
+                                    itemRender={itemRender}
+                                />
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         </MainLayout>
     );

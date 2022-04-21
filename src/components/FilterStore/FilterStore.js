@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import cn from "classnames/bind";
 import styles from "./FilterStore.module.scss";
 import filter from "../../assets/icons/filter.svg";
@@ -6,42 +6,71 @@ import { Collapse } from "antd";
 import logoKawaii from "../../assets/images/logo_kawaii.png";
 import { Button } from "@mui/material";
 import { useHistory } from "react-router-dom";
+import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
+
 const { Panel } = Collapse;
 const cx = cn.bind(styles);
 
 const FilterStore = ({ gameList, setGameSelected, gameSelected }) => {
-  const handleGameClick = (address, name) => {
-    if (checkGameIfIsSelected(address) !== -1) {
-      setGameSelected(gameSelected => {
-        const copyGame = [...gameSelected];
-        copyGame.splice(checkGameIfIsSelected(address), 1);
-        return copyGame;
-      });
-    } else {
-      setGameSelected(gameSelected => [...gameSelected, { gameAddress: address, gameName: name }]);
-    }
-    // let listGame = new Set(gameSelected);
-    // listGame.add(address);  
-    // listGame = [...listGame.values()];
-    // setGameSelected([...listGame]);
-  };
-  const checkGameIfIsSelected = address => {
-		let count = -1;
-		gameSelected.map((game, idx) => {
-			if (game.gameAddress === address) {
-				count = idx;
-			}
-		});
-		return count;
-	};
-  return (
-    <div className={cx("filter")}>
-      <div className={cx("card-header")}>
-        <img src={filter} alt="filter" />
-        <span className={cx("title")}>Filter</span>
-      </div>
-      <div className={cx("collapse")}>
-        <Collapse
+    const [openListGame, setOpenListGame] = useState(false);
+
+    const handleGameClick = (address, name) => {
+        if (checkGameIfIsSelected(address) !== -1) {
+            setGameSelected(gameSelected => {
+                const copyGame = [...gameSelected];
+                copyGame.splice(checkGameIfIsSelected(address), 1);
+                return copyGame;
+            });
+        } else {
+            setGameSelected(gameSelected => [...gameSelected, { gameAddress: address, gameName: name }]);
+        }
+
+        console.log("gameList :>> ", gameList);
+        console.log("gameSelected :>> ", gameSelected);
+    };
+    const checkGameIfIsSelected = address => {
+        let count = -1;
+        gameSelected.map((game, idx) => {
+            if (game.gameAddress === address) {
+                count = idx;
+            }
+        });
+        return count;
+    };
+    return (
+        <div className={cx("filter")}>
+            <div className={cx("card-header")}>
+                <img src={filter} alt="filter" />
+                <span className={cx("title")}>Filter</span>
+            </div>
+            <div className={cx("collapse")}>
+                <div className={cx("panel")}>
+                    <div className={cx("panel-header")}>
+                        <span>Game</span>
+                        <KeyboardArrowDownRoundedIcon
+                            style={{ fontSize: "28px" }}
+                            onClick={() => setOpenListGame(!openListGame)}
+                        />
+                    </div>
+                    {openListGame && (
+                        <div className={cx("panel-content")}>
+                            {gameList?.map((gameName, idx) => (
+                                <div
+                                    className={cx(
+                                        "game-name",
+                                        gameSelected.includes(gameName.gameAddress) && "game-active",
+                                    )}
+                                    key={idx}
+                                    onClick={() => handleGameClick(gameName.gameAddress, gameName.gameName)}
+                                >
+                                    <img src={logoKawaii} className={cx("game-avatar")} alt="" />
+                                    <span>{gameName.gameName}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+                {/* <Collapse
           defaultActiveKey={["1"]}
           expandIconPosition="right"
           bordered={false}
@@ -63,10 +92,10 @@ const FilterStore = ({ gameList, setGameSelected, gameSelected }) => {
               ))}
             </div>
           </Panel>
-        </Collapse>
-      </div>
-    </div>
-  );
+        </Collapse> */}
+            </div>
+        </div>
+    );
 };
 
 export default FilterStore;
