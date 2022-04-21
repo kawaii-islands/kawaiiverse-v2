@@ -145,7 +145,10 @@
         }
     }
     .buy-btn {
-        background: yellowgreen;
-        color: blue;
+		background: linear-gradient(94.08deg, #7F00FF -1.88%, #E100FF 100%);
+		border-radius: 6px;
+		color: #F6F7FB;
+		padding: 10px 30px;
+		width: fit-content;
     }
 }
