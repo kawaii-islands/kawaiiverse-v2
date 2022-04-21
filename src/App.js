@@ -4,6 +4,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { light } from "src/themes/light";
 import "./App.css";
 import "antd/dist/antd.css";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -23,7 +24,6 @@ const MintNFTDetail = React.lazy(() => import("src/pages/Profile/ManageNft/NFTDe
 const SellNFTDetail = React.lazy(() => import("src/pages/Profile/Store/NFTDetail/NFTDetail"));
 
 function App() {
-    
     return (
         <Provider store={store}>
             <ThemeProvider theme={light}>

@@ -102,7 +102,7 @@ const LoadingModal = ({
                                     setIsSellNFT(false);
                                 }}
                                 size="medium"
-                                style={{ background: "#A863FF", color: "#FFFFFF", marginTop: 10, width: "70%" }}
+                                style={{  background:  "#8301ff", color: "#FFFFFF", marginTop: 10, width: "70%" }}
                             >
                                 View NFT
                             </Button>

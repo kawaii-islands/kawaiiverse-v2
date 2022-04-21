@@ -3,63 +3,17 @@ $tablet: 768px;
 $mobile: 576px;
 .mintNFT-box {
     background: #ebe3ff;
-    border: 1px solid rgba(202, 186, 245, 0.3);
+    // border: 1px solid rgba(202, 186, 245, 0.3);
     box-sizing: border-box;
     backdrop-filter: blur(50px);
     border-radius: 4px;
     margin-bottom: 5px;
 
-    // .first-row {
-    //     padding: 12px 20px;
-    //     align-items: center;
-    //     border-bottom: 1px solid rgba(202, 186, 245, 0.5);
-
-    //     .preview {
-    //         color: #2cd7ff;
-    //     }
-
-	// 	.delete-icon {
-	// 		cursor: pointer;
-	// 		padding: 6px;
-	// 		border-radius: 50%;
-	// 		color: #7000ff;
-	// 		transition-duration: 0.5s;
-	// 		font-size: 38px;
-	// 		background: #d9cce9;
-
-	// 		&:hover {
-	// 			background: #d5c0f0;
-	// 			transition-duration: 0.5s;
-	// 		}
-
-	// 		&:active {
-	// 			background: #e6d5fb;
-	// 			transition-duration: 0.5s;
-	// 		}
-	// 	}
-
-    //     .expand-icon {
-    //         cursor: pointer;
-    //         transition-duration: 0.35s;
-    //         font-size: 28px;
-    //         color: #14142b;
-    //     }
-
-    //     .input {
-    //         @extend .input;
-    //         width: 80%;
-    //     }
-
-    //     .one-field {
-    //         @extend .one-field;
-    //     }
-    // }
-
     .main-box {
         padding: 30px 40px;
         box-sizing: border-box;
-		border-top: 1px solid rgba(202, 186, 245, 0.5);
-       
+        border-top: 1px solid rgba(202, 186, 245, 0.5);
+
         @media (max-width: $mobile) {
             margin: 8px 12px;
             padding: 12px;
@@ -71,17 +25,26 @@ $mobile: 576px;
             margin-bottom: 30px;
 
             .table-attribute {
-                display: flex;
-                align-items: flex-start;
-                justify-content: space-between;
-
                 .table {
-                    width: 95%;
+                    width: 100%;
                 }
 
-                .add-icon {
-                    padding-top: 14px;
+                .add-attribute {
+                    background: #e3daff;
+                    border-radius: 4px;
+                    padding: 14px;
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #c191ff;
+                    margin-top: 5px;
                     cursor: pointer;
+
+                    .add-icon {
+                        cursor: pointer;
+                        margin-right: 8px;
+                    }
                 }
             }
         }
@@ -181,5 +144,39 @@ $mobile: 576px;
         width: 80%;
         margin: 0px !important;
         margin-left: 5px !important;
+    }
+}
+
+.card {
+	position: absolute;
+    width: fit-content;
+    min-width: 200px;
+    background: #f7f3fa;
+    color: #402a7d;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.04);
+    max-height: 200px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    z-index: 2;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: rgb(220, 220, 220);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .valueSelect {
+        padding: 10px 20px;
+        cursor: pointer;
+
+        &:hover {
+            background: #e3daff;
+        }
     }
 }

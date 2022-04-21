@@ -6,6 +6,8 @@ import { useHistory, useParams } from "react-router";
 import manageNftIcon from "src/assets/icons/manage-nft-icon.svg";
 import storeIcon from "src/assets/icons/store-icon.svg";
 import Modal from "@mui/material/Modal";
+import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
+import { toast } from "react-toastify";
 
 const cx = cn.bind(styles);
 
@@ -44,7 +46,14 @@ const Filter = ({ gameList, setGameSelected, gameSelected, activeTab, setActiveT
                     <div className={cx("game-name")}>
                         <div>{gameInfo.gameName || "Kawaii Islands"}</div>
                         <div style={{ fontSize: "12px", fontWeight: "400" }}>
-                            {address.slice(0, 6) + "..." + address.slice(-6)}
+                            {address.slice(0, 6) + "..." + address.slice(-6)} &nbsp;{" "}
+                            <ContentCopyRoundedIcon
+                                className={cx("icon-copy")}
+                                onClick={() => {
+                                    navigator.clipboard.writeText(address);
+                                    toast.success("Copied!");
+                                }}
+                            />
                         </div>
                     </div>
                 </div>
