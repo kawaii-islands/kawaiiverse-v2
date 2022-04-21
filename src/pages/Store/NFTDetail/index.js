@@ -41,6 +41,7 @@ const NFTDetail = () => {
     let pathnames = pathname.split("/").filter(Boolean);
     pathnames.splice(5, 1);
     pathnames.splice(2, 1);
+    pathnames.splice(1,4)
     const getNftInfo = async () => {
         setLoading(true);
         try {
@@ -110,8 +111,8 @@ const NFTDetail = () => {
     };
     const getAllowance = async () => {
         if (!account) return;
-        let allowance;
-        allowance = await read("allowance", BSC_CHAIN_ID, KAWAII_TOKEN_ADDRESS, KAWAII_TOKEN_ABI, [
+        console.log('run');
+        const allowance = await read("allowance", BSC_CHAIN_ID, KAWAII_TOKEN_ADDRESS, KAWAII_TOKEN_ABI, [
             account,
             KAWAIIVERSE_STORE_ADDRESS,
         ]);
@@ -125,35 +126,36 @@ const NFTDetail = () => {
             library.provider,
             KAWAII_TOKEN_ADDRESS,
             KAWAII_TOKEN_ABI,
-            [KAWAIIVERSE_STORE_ADDRESS, Web3.utils.toWei("999999999999999", "ether")],
+            [KAWAIIVERSE_STORE_ADDRESS, Web3.utils.toWei("9999999999", "ether")],
             { from: account },
         );
     };
 
     const buyNft = async () => {
-        console.log(account);
+       
         if (!account) return;
         try {
-            // const allowance = await getAllowance();
-            // if (!allowance) {
-            //     await approve();
-            // }
-            // await write(
-            //     "buyNFTPermit",
-            //     library.provider,
-            //     KAWAIIVERSE_STORE_ADDRESS,
-            //     KAWAII_STORE_ABI,
-            //     [storeAddress, tokenId, 1],
-            //     { from: account },
-            //     hash => {
-            //         console.log(hash);
-            //     },
-            // );
+            
+            const allowance = await getAllowance();
+            if (!allowance) {
+                await approve();
+            }
+            console.log(storeAddress, index, 1);
+            await write(
+                "buyNFT1155",
+                library.provider,
+                KAWAIIVERSE_STORE_ADDRESS,
+                KAWAII_STORE_ABI,
+                [storeAddress, index, 1],
+                { from: account },
+                hash => {
+                    console.log(hash);
+                },
+            );
         } catch (err) {
             console.log(err);
         }
     };
-    // buyNft();
     return loading ? (
         <LoadingPage />
     ) : (

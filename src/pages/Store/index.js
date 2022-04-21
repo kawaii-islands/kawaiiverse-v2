@@ -148,11 +148,12 @@ const Profile = () => {
     };
 
     const logGameData = async () => {
+        
         setLoadingListNFT(true);
         try {
             let game;
             console.log(gameSelected.length);
-            if (gameSelected?.length != 0) {
+            if (gameSelected?.length !== 0) {
                 game = gameSelected;
             } else {
                 game = gameList;
@@ -168,11 +169,13 @@ const Profile = () => {
                             tmpItemArray.map(async (nftId, index) => {
                                 let gameItem = await getGameItemData(game[idx].gameAddress, index);
                                 gameItem.index = index;
+                                console.log(gameItem);
                                 return gameItem;
                             }),
                         );
                         let mergeArray = mergeArrayData(gameItemData, res.data.data);
                         mergeArray = mergeArray.filter(nft => {
+                            console.log(nft);
                             return nft.contract;
                         });
                         return mergeArray;
