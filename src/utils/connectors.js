@@ -10,42 +10,45 @@ const RPC_URL_97 = "https://data-seed-prebsc-1-s1.binance.org:8545/";
 
 const POLLING_INTERVAL = 12000;
 export const RPC_URLS = {
-  1: process.env.REACT_APP_RPC_URL_1 || RPC_URL_1,
-  42: process.env.REACT_APP_RPC_URL_42 || RPC_URL_42,
-  56: process.env.REACT_APP_RPC_URL_56 || RPC_URL_56,
-  97: RPC_URL_97,
+    1: process.env.REACT_APP_RPC_URL_1 || RPC_URL_1,
+    42: process.env.REACT_APP_RPC_URL_42 || RPC_URL_42,
+    56: process.env.REACT_APP_RPC_URL_56 || RPC_URL_56,
+    97: RPC_URL_97,
+    90009000: "http://167.71.194.142:8545/",
 };
 export const NETWORKS = {
-  matic: 137,
-  mainnet: 56,
-  testnet: 97,
-  ropsten: 3,
-  kovan: 42,
-  rinkeby: 4,
-  goerli: 5,
-  ethereum: 1,
+    evmos: 90009000,
+    matic: 137,
+    mainnet: 56,
+    testnet: 97,
+    ropsten: 3,
+    kovan: 42,
+    rinkeby: 4,
+    goerli: 5,
+    ethereum: 1,
 };
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [
-    NETWORKS["matic"],
-    NETWORKS["mainnet"],
-    NETWORKS["testnet"],
-    NETWORKS["ropsten"],
-    NETWORKS["rinkeby"],
-    NETWORKS["goerli"],
-    NETWORKS["kovan"],
-    NETWORKS["ethereum"],
-  ],
+    supportedChainIds: [
+        NETWORKS["evmos"],
+        NETWORKS["matic"],
+        NETWORKS["mainnet"],
+        NETWORKS["testnet"],
+        NETWORKS["ropsten"],
+        NETWORKS["rinkeby"],
+        NETWORKS["goerli"],
+        NETWORKS["kovan"],
+        NETWORKS["ethereum"],
+    ],
 });
 
 export const walletlink = new WalletLinkConnector({
-  url: RPC_URLS[97],
-  appName: "yAI Finance",
+    url: RPC_URLS[97],
+    appName: "yAI Finance",
 });
 
 export const walletconnect = new WalletConnectConnector({
-  rpc: { 56: RPC_URLS[56] },
-  qrcode: true,
-  pollingInterval: POLLING_INTERVAL,
+    rpc: { 56: RPC_URLS[56] },
+    qrcode: true,
+    pollingInterval: POLLING_INTERVAL,
 });

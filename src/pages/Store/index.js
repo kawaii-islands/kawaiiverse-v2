@@ -253,6 +253,9 @@ const Profile = () => {
                     return { gameAddress, gameName };
                 }),
             );
+
+			console.log('gameListData :>> ', gameListData);
+
             logGameData(gameListData);
             setGameList(gameListData);
 

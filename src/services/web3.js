@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { RPC_URLS } from "src/utils/connectors";
+import { RPC_URLS } from "src/helpers/connectors";
 import { splitSignature } from "@ethersproject/bytes";
 import { BSC_CHAIN_ID_HEX, BSC_rpcUrls, BSC_blockExplorerUrls, BSC_CHAIN_ID } from "src/consts/blockchain";
 
