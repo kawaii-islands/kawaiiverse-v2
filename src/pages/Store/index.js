@@ -254,7 +254,7 @@ const Profile = () => {
                 }),
             );
 
-            console.log("gameListData :>> ", gameListData);
+            console.log("gameListData store :>> ", gameListData);
 
             logGameData(gameListData);
             setGameList(gameListData);
@@ -337,7 +337,7 @@ const Profile = () => {
                             </div>
                             {/* URLSearchParams.set('view', false); */}
                         </div>
-						
+
                         <div className={cx("right-filter")}>
                             {gameSelected?.map((game, idx) => (
                                 <div className={cx("filter-box")} key={game.gameAddress}>
