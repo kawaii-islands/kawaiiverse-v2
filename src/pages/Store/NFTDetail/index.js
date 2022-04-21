@@ -27,6 +27,7 @@ import { BSC_CHAIN_ID, BSC_rpcUrls } from "src/consts/blockchain";
 // import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
 const cx = cn.bind(styles);
 const web3 = new Web3(BSC_rpcUrls);
+
 const NFTDetail = () => {
     const history = useHistory();
     const { storeAddress, tokenId, index } = useParams();
@@ -210,11 +211,17 @@ const NFTDetail = () => {
                     </Col>
 
                     <Col offset={1} span={13} className={cx("right")}>
-                        <div className={cx("title")}>
-                            <span className={cx("first")}>{nftInfo?.name}</span>
-                            <span className={cx("second")}>#{nftInfo?.tokenId}</span>
+                        <div className={cx("top")}>
+                            <div className={cx("title")}>
+                                <span className={cx("first")}>{nftInfo?.name}</span>
+                                <span className={cx("second")}>#{nftInfo?.tokenId}</span>
+                            </div>
+                            <Button className={cx("buy-btn")} onClick={buyNft}>
+                                Buy NFT
+                            </Button>
                         </div>
-                        <div className={cx("third")}>{nftInfo?.category}</div>
+
+                        <div className={cx("category")}>{nftInfo?.category}</div>
                         <div className={cx("content")}>
                             <span className={cx("title")}>Available:</span>
                             <span className={cx("value")}>
@@ -235,11 +242,29 @@ const NFTDetail = () => {
                         </div>
                         <div className={cx("content", "content-attribute")}>
                             <span className={cx("title")}>Attributes:</span>
+                            <div className={cx("list-attribute")}>
+                                {nftInfo.attributes?.map((info, ind) => (
+                                    <div className={cx("one-attribute")} key={ind}>
+                                        <div className={cx("info-image")}>
+                                            <img src={info?.image} alt="attr" />
+                                        </div>
+                                        <div className={cx("info-attribute")}>
+                                            <div className={cx("info-header")}>{info?.type}</div>
+                                            <div className={cx("info-text")}>{info?.value}</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
 
-                            {/* <span className={cx("value")}>{nftInfo?.description}</span> */}
-                            <Grid container spacing={2}>
+                            {/* <Grid container spacing={2}>
                                 {nftInfo.attributes?.map((info, idx) => (
-                                    <Grid item container xs={6} key={idx}>
+                                    <Grid
+                                        item
+                                        container
+                                        xs={6}
+                                        key={idx}
+                                        style={{ display: "flex", alignItems: "center" }}
+                                    >
                                         <Grid item xs={4}>
                                             <div className={cx("info-image")}>
                                                 <img src={info.image}></img>
@@ -251,11 +276,11 @@ const NFTDetail = () => {
                                         </Grid>
                                     </Grid>
                                 ))}
-                            </Grid>
+                            </Grid> */}
                         </div>
-                        <Button className={cx("buy-btn")} onClick={buyNft}>
+                        {/* <Button className={cx("buy-btn")} onClick={buyNft}>
                             Buy NFT
-                        </Button>
+                        </Button> */}
                     </Col>
                 </Row>
             </div>

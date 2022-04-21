@@ -39,7 +39,7 @@ const ListNft = ({ gameItemList, gameSelected,loading, place }) => {
                 </div>
             ) : (
                 <>
-                    <Empty style={{ margin: "20px auto" }} /> 
+                    <Empty style={{ margin: "20px auto", color: '#FFF' }} /> 
                 </>
             )}
         </>
