@@ -26,6 +26,7 @@ import Web3 from "web3";
 import { BSC_CHAIN_ID, BSC_rpcUrls } from "src/consts/blockchain";
 import LoadingModal from "src/components/LoadingModal2/LoadingModal";
 // import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
+import logoKawaii from "src/assets/images/logo_kawaii.png"
 const cx = cn.bind(styles);
 const web3 = new Web3(BSC_rpcUrls);
 
@@ -93,12 +94,18 @@ const NFTDetail = () => {
     };
 
     const buyNft = async () => {
-       
-        if (!account) return;
+        let amount = Number(nftInfo?.amount) - Number(nftInfo?.alreadySale);
+        if (!account) {
+            toast.error("Connect wallet first !");
+            return;
+        }
+        if(amount === 0){
+            toast.error("Hết hàng không mua được");
+            return;
+        }
         try {
             if (chainId !== BSC_CHAIN_ID) {
                 const error = await createNetworkOrSwitch(library.provider);
-                console.log(error);
                 if (error) {
                     toast.error(error);
                     throw new Error("Please change network to Testnet Binance smart chain.");
@@ -111,6 +118,7 @@ const NFTDetail = () => {
             if (!allowance) {
                 await approve();
             }
+            
             await write(
                 "buyNFT1155",
                 library.provider,
@@ -131,7 +139,7 @@ const NFTDetail = () => {
             toast.error(err);
             setStepLoading(3);
         }finally {
-            // setShowModalLoading(false);
+            getNftInfo();
             setLoadingModal(false);
         }
     };
@@ -157,7 +165,7 @@ const NFTDetail = () => {
                     notViewNft={true}
                 />
             )}
-                <div className={cx("breadcrums")}>
+                {/* <div className={cx("breadcrums")}>
                     {" "}
                     <Breadcrumbs separator={<NavigateNextIcon />} aria-label="breadcrumb">
                         {pathnames.map((name, index) => {
@@ -181,7 +189,7 @@ const NFTDetail = () => {
                             );
                         })}
                     </Breadcrumbs>
-                </div>
+                </div> */}
                 <Row>
                     <Col span={10} className={cx("left")}>
                         <Button
@@ -222,7 +230,7 @@ const NFTDetail = () => {
                         <div className={cx("content")}>
                             <span className={cx("title")}>Available:</span>
                             <span className={cx("value")}>
-                                {Number(nftInfo?.amount) - Number(nftInfo?.alreadySale)}/ {nftInfo?.amount}
+                                {Number(nftInfo?.amount) - Number(nftInfo?.alreadySale)}
                             </span>
                         </div>
                         <div className={cx("content")}>
@@ -240,10 +248,10 @@ const NFTDetail = () => {
                         <div className={cx("content", "content-attribute")}>
                             <span className={cx("title")}>Attributes:</span>
                             <div className={cx("list-attribute")}>
-                                {nftInfo.attributes?.map((info, ind) => (
+                                {nftInfo.attributes[0].type && nftInfo.attributes?.map((info, ind) => (
                                     <div className={cx("one-attribute")} key={`attribute-${ind}`}>
                                         <div className={cx("info-image")}>
-                                            <img src={info?.image} alt="attr" />
+                                            <img src={info?.image || logoKawaii} alt="attr" />
                                         </div>
                                         <div className={cx("info-attribute")}>
                                             <div className={cx("info-header")}>{info?.type}</div>

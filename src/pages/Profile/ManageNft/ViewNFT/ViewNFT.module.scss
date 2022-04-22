@@ -1,3 +1,8 @@
+$break-point-1: 814px;
+$mobile: 576px;
+// $break-point-1: 1180px;
+$break-point-2: 912px;
+$break-point-3: 767px;
 .view-nft {
     .top {
         display: flex;
@@ -11,7 +16,23 @@
             line-height: 24px;
             color: #ffffff;
         }
-
+        .drop-down {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #56428F;
+            border-radius: 6px;
+            padding: 10.5px 12px;
+            width: 144px;
+            margin-left: 36px;
+            font-size: 14px;
+            :global{
+              .anticon-down{
+                font-weight: bold;
+                font-size: 14px;
+              }
+            }
+        }
         .group-search {
             display: flex;
             align-items: center;
@@ -60,3 +81,24 @@
     text-align: center;
     margin-top: 30px;
 }
+.menu-dropdown{
+    background-color: #56428F !important;
+    padding: 0px;
+    li{
+      color: #fff !important;
+      // font-weight: 600;
+    }
+    li:hover{
+      background-color: #56428F !important;
+  
+    }
+    &--active{
+      background: linear-gradient(94.08deg, #7F00FF -1.88%, #E100FF 100%);
+    }
+    :global{
+      .ant-dropdown{
+        background-color: #56428F !important;
+      }
+    }
+  }
+ 

@@ -27,6 +27,7 @@ import { Menu, Dropdown, Pagination } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import filter from "src/assets/icons/filter.svg";
 import { Search as SearchIcon } from "@material-ui/icons";
+
 import cancel from "src/assets/icons/cancel.svg";
 const cx = cn.bind(styles);
 
@@ -168,13 +169,15 @@ const Profile = () => {
                         const gameItemData = await Promise.all(
                             tmpItemArray.map(async (nftId, index) => {
                                 let gameItem = await getGameItemData(game[idx].gameAddress, index);
+                                
                                 gameItem.index = index;
+                                gameItem.game = game[idx]; 
                                 return gameItem;
                             }),
                         );
                         let mergeArray = mergeArrayData(gameItemData, res.data.data);
                         mergeArray = mergeArray.filter(nft => {
-                            return nft.contract;
+                            return nft.contract && ((Number(nft?.amount) - Number(nft?.alreadySale)) > 0)
                         });
                         return mergeArray;
                     }
@@ -251,7 +254,12 @@ const Profile = () => {
                 tmpArray.map(async (nftId, index) => {
                     let gameAddress = await getGameAddress(index);
                     let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
-
+                    let res = await axios.get(`${URL}/v1/game/logo?contract=${gameAddress}`);
+                    // console.log(gameAddress, gameName)
+                    if(res.status === 200 && res.data.data[0]){
+                        
+                        return { gameAddress, gameName, logoUrl: res.data.data[0].logoUrl };
+                    }
                     return { gameAddress, gameName };
                 }),
             );
@@ -287,7 +295,6 @@ const Profile = () => {
             </Menu.Item>
         </Menu>
     );
-    console.log(gameSelected)
     return loadingPage ? (
         <LoadingPage />
     ) : (
@@ -337,7 +344,6 @@ const Profile = () => {
                                     </div>
                                 </Dropdown>
                             </div>
-                            {/* URLSearchParams.set('view', false); */}
                         </div>
 						
                         <div className={cx("right-filter")}>

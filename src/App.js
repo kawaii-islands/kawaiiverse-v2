@@ -29,6 +29,8 @@ function App() {
             <ThemeProvider theme={light}>
                 <CssBaseline />
                 <Messages />
+                
+                <ToastContainer />
                 <Router>
                     <Header />
                     <CacheSwitch>
