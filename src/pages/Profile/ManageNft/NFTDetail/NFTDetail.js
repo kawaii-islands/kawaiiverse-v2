@@ -14,6 +14,7 @@ import Grid from "@mui/material/Grid";
 import LoadingPage from "src/components/LoadingPage/LoadingPage";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import logoKawaii from "src/assets/images/logo_kawaii.png"
 const cx = cn.bind(styles);
 
 const NFTDetail = () => {
@@ -119,10 +120,10 @@ const NFTDetail = () => {
 
                             {/* <span className={cx("value")}>{nftInfo?.description}</span> */}
 							<div className={cx("list-attribute")}>
-                                {nftInfo.attributes?.map((info, ind) => (
+                                {nftInfo.attributes[0].type && nftInfo.attributes?.map((info, ind) => (
                                     <div className={cx("one-attribute")} key={ind}>
                                         <div className={cx("info-image")}>
-                                            <img src={info?.image} alt="attr" />
+                                            <img src={info?.image || logoKawaii} alt="attr" />
                                         </div>
                                         <div className={cx("info-attribute")}>
                                             <div className={cx("info-header")}>{info?.type}</div>

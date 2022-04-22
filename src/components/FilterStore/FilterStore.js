@@ -7,14 +7,15 @@ import logoKawaii from "../../assets/images/logo_kawaii.png";
 import { Button } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
-
+import { pink } from "@mui/material/colors";
+import Checkbox from "@mui/material/Checkbox";
 const { Panel } = Collapse;
 const cx = cn.bind(styles);
 
 const FilterStore = ({ gameList, setGameSelected, gameSelected }) => {
-    const [openListGame, setOpenListGame] = useState(false);
+    const [openListGame, setOpenListGame] = useState(true);
 
-    const handleGameClick = (address, name) => {
+    const handleGameClick = (address, name, logoUrl) => {
         if (checkGameIfIsSelected(address) !== -1) {
             setGameSelected(gameSelected => {
                 const copyGame = [...gameSelected];
@@ -22,9 +23,11 @@ const FilterStore = ({ gameList, setGameSelected, gameSelected }) => {
                 return copyGame;
             });
         } else {
-            setGameSelected(gameSelected => [...gameSelected, { gameAddress: address, gameName: name }]);
+            setGameSelected(gameSelected => [
+                ...gameSelected,
+                { gameAddress: address, gameName: name, logoUrl: logoUrl },
+            ]);
         }
-
     };
     const checkGameIfIsSelected = address => {
         let count = -1;
@@ -64,10 +67,25 @@ const FilterStore = ({ gameList, setGameSelected, gameSelected }) => {
                                         // className={cx("game-name", condition && "game-active")}
                                         className={cx("game-name")}
                                         key={idx}
-                                        onClick={() => handleGameClick(gameName.gameAddress, gameName.gameName)}
+                                        onClick={() =>
+                                            handleGameClick(gameName.gameAddress, gameName.gameName, gameName.logoUrl)
+                                        }
                                     >
-                                        <input type="checkbox" checked={condition}/>
-                                        <img src={logoKawaii} className={cx("game-avatar")} alt="" />
+                                        <Checkbox
+                                            type="checkbox"
+                                            checked={condition}
+                                            sx={{
+                                                color: "#fff",
+                                                "&.Mui-checked": {
+                                                    color: "#FF6FB5"
+                                                },
+                                            }}
+                                        />
+                                        <img
+                                            src={gameName.logoUrl || logoKawaii}
+                                            className={cx("game-avatar")}
+                                            alt=""
+                                        />
                                         <span>{gameName.gameName}</span>
                                     </div>
                                 );

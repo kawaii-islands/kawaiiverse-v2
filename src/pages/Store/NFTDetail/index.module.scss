@@ -186,12 +186,13 @@
             height: 60px;
             overflow: hidden;
             border-radius: 4px;
-            background: #ad99e7;
-            padding: 5px;
+            // background: #ad99e7;
+            // padding: 5px;
+            border: 1px solid #ad99e7;
         }
         .info-image img {
-            height: 100%;
-            width: auto;
+            width: 60px;
+            height: 60px;
         }
     }
 }

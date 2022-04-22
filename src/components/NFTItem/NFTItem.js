@@ -8,8 +8,8 @@ import { BSC_rpcUrls } from "src/consts/blockchain";
 const cx = cn.bind(styles);
 const web3 = new Web3(BSC_rpcUrls);
 
-const NFTItem = ({ onClick, data, handleNavigation, isStore }) => {
-    // console.log(data);
+const NFTItem = ({ onClick, data, handleNavigation, isStore, place }) => {
+    console.log(data);
 
     return (
         <div className={cx("nft-item")}>
@@ -22,13 +22,21 @@ const NFTItem = ({ onClick, data, handleNavigation, isStore }) => {
                             : `url(https://images.kawaii.global/kawaii-marketplace-image/items/206008.png)`,
                     }}
                 >
-                    {isStore && (
+                    {isStore && place !== "marketplace" && (
                         <div className={cx("tag")}>
                             {data.amount - data.alreadySale}/{data.amount || data.supply} Left
                         </div>
                     )}
                 </div>
-
+                {place === "marketplace" && (
+                    <div className={cx("middle")}>
+                    <div className={cx("tag-market")}>
+                        <img src={data.game.logoUrl || logoKawaii} alt="" />
+                        <span>{data.game.gameName}</span>
+                    </div>
+                    <div className={cx("quantity")}>{data.amount - data.alreadySale}</div>
+                    </div>
+                )}
                 <div className={cx("bottom")}>
                     <div className={cx("title")}>{data?.name || "Name"}</div>
                     <div className={cx("nftId")}>#{data?.tokenId}</div>
