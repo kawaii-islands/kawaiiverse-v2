@@ -40,24 +40,23 @@ $break-point-2: 912px;
         height: fit-content;
         cursor: pointer;
         margin: 0px 18px 30px 18px;
-        .middle{
+
+        .middle {
             display: flex;
             padding-top: 12px;
             padding-left: 20px;
             padding-right: 20px;
             justify-content: space-between;
             align-items: center;
-            .quantity{
-                color: #fff;
-                border: 1px solid white;
+            .quantity {
+                color: #dac6ff;
+                border: 1px solid #dac6ff;
                 // border-radius: 50%;
                 border-radius: 4px;
                 padding: 4px 6px;
             }
         }
-        .tag-market{
-            
-            
+        .tag-market {
             // position: absolute;
             // padding-bottom: 8px;
             // background:rgba(255, 255, 255, 0.25);
@@ -69,17 +68,17 @@ $break-point-2: 912px;
             align-items: center;
             gap: 12px;
 
-            img{
+            img {
                 width: 28px;
                 height: 28px;
                 border-radius: 50%;
                 border: 1px solid rgba(220, 196, 174, 0.75);
             }
-            span{
-                color: #fff !important;
-                color: red;
+            span {
+                color: #dac6ff !important;
+                // color: red;
                 // font-weight: bold;
-                font-family: 'Montserrat';
+                font-family: "Montserrat";
                 font-size: 18px;
             }
         }
@@ -98,7 +97,7 @@ $break-point-2: 912px;
             @media (max-width: $break-point-1) {
                 background-size: 150px 190px;
             }
-           
+
             .tag {
                 background: rgba(232, 217, 255, 0.5);
                 color: #402a7d;
@@ -176,4 +175,10 @@ $break-point-2: 912px;
             }
         }
     }
+   
+}
+.container:hover {
+    box-shadow: 0 0 8px 0 rgba(199, 215, 230, 1);
+    transition: all 0.1s ease 0s;
+    // transform: scale(1.2);
 }
