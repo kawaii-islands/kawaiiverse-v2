@@ -18,23 +18,31 @@ import KAWAIIVERSE_NFT1155_ABI from "src/utils/abi/KawaiiverseNFT1155.json";
 import { KAWAIIVERSE_STORE_ADDRESS, KAWAII_TOKEN_ADDRESS, RELAY_ADDRESS } from "src/consts/address";
 import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
 import KAWAII_TOKEN_ABI from "src/utils/abi/KawaiiToken.json";
-import { read, write, sign } from "src/services/web3";
+import { read, write, sign, createNetworkOrSwitch } from "src/services/web3";
 import { useWeb3React } from "@web3-react/core";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import Web3 from "web3";
 import { BSC_CHAIN_ID, BSC_rpcUrls } from "src/consts/blockchain";
+import LoadingModal from "src/components/LoadingModal2/LoadingModal";
 // import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
 const cx = cn.bind(styles);
 const web3 = new Web3(BSC_rpcUrls);
+
 const NFTDetail = () => {
     const history = useHistory();
+
+    const { account, library, chainId } = useWeb3React();
     const { storeAddress, tokenId, index } = useParams();
     const [nftInfo, setNftInfo] = useState();
     const [loading, setLoading] = useState(true);
     // const { account } = useWeb3React();
     const { pathname } = useLocation();
-    const { account, library, chainId } = useWeb3React();
+    const [showModalLoading, setShowModalLoading] = useState(false);
+    const [loadingTitle, setLoadingTitle] = useState("");
+    const [stepLoading, setStepLoading] = useState(0);
+    const [hash, setHash] = useState();
+    const [loadingModal, setLoadingModal] = useState(false);
     useEffect(() => {
         getNftInfo();
     }, [useParams, account]);
@@ -50,73 +58,26 @@ const NFTDetail = () => {
                 storeAddress,
                 index,
             ]);
-            // console.log(res)
             if (res.status === 200) {
                 gameItem = { ...gameItem, ...res.data.data };
             }
-            // console.log(allNftSell);
-            console.log(gameItem);
             gameItem.index = index;
-            // return;
             setNftInfo(gameItem);
-            setLoading(false);
+            
         } catch (error) {
             console.log(error);
+            
+        } finally{
             setLoading(false);
         }
     };
-    const getSignature = async () => {
-        try {
-            const nonce = await read("nonces", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, [account]);
-            const name = await read("NAME", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, []);
-            const EIP712Domain = [
-                { name: "name", type: "string" },
-                { name: "version", type: "string" },
-                { name: "chainId", type: "uint256" },
-                { name: "verifyingContract", type: "address" },
-            ];
-            const domain = {
-                name,
-                version: "1",
-                chainId: BSC_CHAIN_ID,
-                verifyingContract: KAWAIIVERSE_STORE_ADDRESS,
-            };
-            const Data = [
-                { name: "sender", type: "address" },
-                { name: "_nftAddress", type: "address" },
-                { name: "nonce", type: "uint256" },
-            ];
-
-            const message = {
-                sender: account,
-                _nftAddress: storeAddress,
-                nonce,
-            };
-            const data = JSON.stringify({
-                types: {
-                    EIP712Domain,
-                    Data,
-                },
-                domain,
-                primaryType: "Data",
-                message,
-            });
-
-            const signature = await sign(account, data, library.provider);
-            // const signature2 = await sign2(account, data, library.provider);
-            return signature;
-        } catch (err) {
-            console.log(err);
-        }
-    };
+    
     const getAllowance = async () => {
         if (!account) return;
-        console.log('run');
         const allowance = await read("allowance", BSC_CHAIN_ID, KAWAII_TOKEN_ADDRESS, KAWAII_TOKEN_ABI, [
             account,
             KAWAIIVERSE_STORE_ADDRESS,
         ]);
-        console.log(allowance);
         return getAllowance;
         // setIsApprovedForAll(isApprovedForAll);
     };
@@ -135,12 +96,21 @@ const NFTDetail = () => {
        
         if (!account) return;
         try {
-            
+            if (chainId !== BSC_CHAIN_ID) {
+                const error = await createNetworkOrSwitch(library.provider);
+                console.log(error);
+                if (error) {
+                    toast.error(error);
+                    throw new Error("Please change network to Testnet Binance smart chain.");
+                }
+            }
+            setShowModalLoading(true);
+            setStepLoading(0);
+            setLoadingModal(true);
             const allowance = await getAllowance();
             if (!allowance) {
                 await approve();
             }
-            console.log(storeAddress, index, 1);
             await write(
                 "buyNFT1155",
                 library.provider,
@@ -150,10 +120,19 @@ const NFTDetail = () => {
                 { from: account },
                 hash => {
                     console.log(hash);
+                    setHash(hash);
+                    setStepLoading(1);
                 },
+
             );
+            setStepLoading(2);
         } catch (err) {
             console.log(err);
+            toast.error(err);
+            setStepLoading(3);
+        }finally {
+            // setShowModalLoading(false);
+            setLoadingModal(false);
         }
     };
     return loading ? (
@@ -161,6 +140,23 @@ const NFTDetail = () => {
     ) : (
         <MainLayout>
             <div className={cx("mint-nft-detail")}>
+            {showModalLoading && (
+                <LoadingModal
+                    show={showModalLoading}
+                    network={"BscScan"}
+                    loading={loadingModal}
+                    title={loadingTitle}
+                    stepLoading={stepLoading}
+                    onHide={() => {
+                        setShowModalLoading(false);
+                        setHash(undefined);
+                        setStepLoading(0);
+                    }}
+                    hash={hash}
+                    hideParent={() => {}}
+                    notViewNft={true}
+                />
+            )}
                 <div className={cx("breadcrums")}>
                     {" "}
                     <Breadcrumbs separator={<NavigateNextIcon />} aria-label="breadcrumb">
@@ -212,11 +208,17 @@ const NFTDetail = () => {
                     </Col>
 
                     <Col offset={1} span={13} className={cx("right")}>
-                        <div className={cx("title")}>
-                            <span className={cx("first")}>{nftInfo?.name}</span>
-                            <span className={cx("second")}>#{nftInfo?.tokenId}</span>
+                        <div className={cx("top")}>
+                            <div className={cx("title")}>
+                                <span className={cx("first")}>{nftInfo?.name}</span>
+                                <span className={cx("second")}>#{nftInfo?.tokenId}</span>
+                            </div>
+                            <Button className={cx("buy-btn")} onClick={buyNft}>
+                                Buy NFT
+                            </Button>
                         </div>
-                        <div className={cx("third")}>{nftInfo?.category}</div>
+
+                        <div className={cx("category")}>{nftInfo?.category}</div>
                         <div className={cx("content")}>
                             <span className={cx("title")}>Available:</span>
                             <span className={cx("value")}>
@@ -225,7 +227,7 @@ const NFTDetail = () => {
                         </div>
                         <div className={cx("content")}>
                             <span className={cx("title")}>Price:</span>
-                            {/* <span className={cx("value")}>{web3.utils.fromWei(nftInfo?.price)} KWT</span> */}
+                            <span className={cx("value")}>{web3.utils.fromWei(nftInfo?.price)} KWT</span>
                         </div>
                         <div className={cx("content")}>
                             <span className={cx("title")}>Author:</span>
@@ -237,11 +239,29 @@ const NFTDetail = () => {
                         </div>
                         <div className={cx("content", "content-attribute")}>
                             <span className={cx("title")}>Attributes:</span>
+                            <div className={cx("list-attribute")}>
+                                {nftInfo.attributes?.map((info, ind) => (
+                                    <div className={cx("one-attribute")} key={`attribute-${ind}`}>
+                                        <div className={cx("info-image")}>
+                                            <img src={info?.image} alt="attr" />
+                                        </div>
+                                        <div className={cx("info-attribute")}>
+                                            <div className={cx("info-header")}>{info?.type}</div>
+                                            <div className={cx("info-text")}>{info?.value}</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
 
-                            {/* <span className={cx("value")}>{nftInfo?.description}</span> */}
-                            <Grid container spacing={2}>
+                            {/* <Grid container spacing={2}>
                                 {nftInfo.attributes?.map((info, idx) => (
-                                    <Grid item container xs={6} key={idx}>
+                                    <Grid
+                                        item
+                                        container
+                                        xs={6}
+                                        key={idx}
+                                        style={{ display: "flex", alignItems: "center" }}
+                                    >
                                         <Grid item xs={4}>
                                             <div className={cx("info-image")}>
                                                 <img src={info.image}></img>
@@ -253,11 +273,11 @@ const NFTDetail = () => {
                                         </Grid>
                                     </Grid>
                                 ))}
-                            </Grid>
+                            </Grid> */}
                         </div>
-                        <Button className={cx("buy-btn")} onClick={buyNft}>
+                        {/* <Button className={cx("buy-btn")} onClick={buyNft}>
                             Buy NFT
-                        </Button>
+                        </Button> */}
                     </Col>
                 </Row>
             </div>

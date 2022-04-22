@@ -10,6 +10,10 @@ $mobile: 576px;
             @media(max-width: $break-point-1){
                 display: none;
             }
+
+			@media (min-width: 1600px) {
+                min-width: 360px;
+            }
         }
 
         .right {

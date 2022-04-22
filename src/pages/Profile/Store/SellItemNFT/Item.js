@@ -63,7 +63,7 @@ const Item = ({
         if(success){
             setInfo({price: 0, quantity: 0});
             setSubmitted(false);
-            setRowItem(1);
+            
             setDeleted(false);
             setNft({})
         }
@@ -155,6 +155,7 @@ const Item = ({
         setInfo({ price: 0, quantity: 0 });
         if (index + 1 < rowItem) {
             setDeleted(true);
+            setRowItem(rowItem - 1);
             return;
         }
         setRowItem(rowItem - 1);

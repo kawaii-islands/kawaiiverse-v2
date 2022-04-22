@@ -28,6 +28,7 @@ const LoadingModal = ({
     hash,
     hideParent,
     notClose,
+    notViewNft
 }) => {
 
     const history = useHistory();
@@ -96,7 +97,7 @@ const LoadingModal = ({
                                 </a>
                             )}
                             <br />
-                            <Button
+                            {!notViewNft && <Button
                                 onClick={() => {
                                     history.push({ search: "?view=true" });
                                     setIsSellNFT(false);
@@ -105,7 +106,7 @@ const LoadingModal = ({
                                 style={{  background:  "#8301ff", color: "#FFFFFF", marginTop: 10, width: "70%" }}
                             >
                                 View NFT
-                            </Button>
+                            </Button>}
                         </div>
                     </div>
                 ) : stepLoading === 1 ? (

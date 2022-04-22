@@ -228,16 +228,6 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                     setStepLoading(1);
                 },
             );
-            // {
-            //     "contract": "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
-            //     "tokenId": 5448,
-            //     "amount": 5,
-            //     "price": 1,
-            //     "tokenUnit": "0x6fe3d0f096fc932a905accd1eb1783f6e4cec717",
-            //     "supply": 100,
-            //     "owner": "0xce2fd7544e0b2cc94692d4a704debef7bcb61328",
-            //     "sign": "asdfajj32h4j23jwklfjklsdjfklajlskdfjlaksdjflkasjdlfkjdaskl"
-            // }
             let bodyParams = {
                 contract: address,
                 amount: Number(listSell[0].quantity),

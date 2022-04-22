@@ -8,7 +8,6 @@ import NFTItem from "src/components/NFTItem/NFTItem";
 const cx = cn.bind(styles);
 const ListNft = ({ gameItemList, gameSelected,loading, place }) => {
     const history = useHistory();
-    console.log(gameItemList)
     return (
         <>
             {gameItemList.length > 0 ? (
@@ -39,7 +38,7 @@ const ListNft = ({ gameItemList, gameSelected,loading, place }) => {
                 </div>
             ) : (
                 <>
-                    <Empty style={{ margin: "20px auto" }} /> 
+                    <Empty style={{ margin: "20px auto", color: '#FFF' }} /> 
                 </>
             )}
         </>
