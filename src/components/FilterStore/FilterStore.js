@@ -75,9 +75,9 @@ const FilterStore = ({ gameList, setGameSelected, gameSelected }) => {
                                             type="checkbox"
                                             checked={condition}
                                             sx={{
-                                                color: "#fff",
+                                                color: "#E7DFFF",
                                                 "&.Mui-checked": {
-                                                    color: "#FF6FB5"
+                                                    color: "#bcabea"
                                                 },
                                             }}
                                         />
