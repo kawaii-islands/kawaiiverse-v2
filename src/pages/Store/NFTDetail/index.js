@@ -124,7 +124,7 @@ const NFTDetail = () => {
                 library.provider,
                 KAWAIIVERSE_STORE_ADDRESS,
                 KAWAII_STORE_ABI,
-                [storeAddress, index, 1],
+                [storeAddress, index, amount],
                 { from: account },
                 hash => {
                     console.log(hash);
