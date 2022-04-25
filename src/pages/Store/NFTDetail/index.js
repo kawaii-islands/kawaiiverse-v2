@@ -248,7 +248,7 @@ const NFTDetail = () => {
                         <div className={cx("content", "content-attribute")}>
                             <span className={cx("title")}>Attributes:</span>
                             <div className={cx("list-attribute")}>
-                                {nftInfo.attributes[0].type && nftInfo.attributes?.map((info, ind) => (
+                                {nftInfo.attributes?.map((info, ind) => (
                                     <div className={cx("one-attribute")} key={`attribute-${ind}`}>
                                         <div className={cx("info-image")}>
                                             <img src={info?.image || logoKawaii} alt="attr" />
