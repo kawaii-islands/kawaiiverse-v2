@@ -6,7 +6,10 @@ $mobile: 576px;
 .container {
     min-height: calc(100vh - 70px);
     width: 100%;
-    background: #1b1349;
+    background: url("../../../assets/images/bg.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
     color: white;
     padding-bottom: 20px;
 
@@ -30,7 +33,7 @@ $mobile: 576px;
     }
 
     .card {
-        background: #ebe3ff;
+        background: linear-gradient(180deg,hsla(0,0%,100%,.7),hsla(0,0%,100%,.175));
         border-radius: 8px;
         min-height: 100%;
     }

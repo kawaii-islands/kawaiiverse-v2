@@ -19,13 +19,15 @@ $break-point-3: 767px;
         font-weight: bold;
         font-size: 20px;
         line-height: 26px;
-        color: #ffffff;
+        color: 
+        #833F1D;
     }
 
     .search {
         width: 380px;
-        border-bottom: 2px solid #ffffff;
-        color: #ffffff !important;
+        border-bottom:  2px solid rgba(188, 166, 150, 0.5);
+        color: 
+        #833F1D !important;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -37,7 +39,7 @@ $break-point-3: 767px;
 
         .icon {
             cursor: pointer;
-            color: #ffffff;
+            color: #944850;
         }
     }
 
@@ -47,7 +49,7 @@ $break-point-3: 767px;
         // margin-left: auto;
 
         .drop-down {
-            background: #56428f;
+            background: #944850;
             border-radius: 6px;
             padding: 10.5px 12px;
             width: 144px;
@@ -146,13 +148,13 @@ $break-point-3: 767px;
 .button-sell {
     width: fit-content;
     padding: 8px 20px !important;
-    font-weight: bold;
+    font-weight: 400;
     font-size: 16px !important;
     line-height: 150%;
 
     border-radius: 0px;
     color: white !important;
-    background: linear-gradient(94.08deg, #7f00ff -1.88%, #e100ff 100%) !important;
+    background: #944850 !important;
     border-radius: 6px;
     @media (max-width: $mobile) {
         font-size: 14px;

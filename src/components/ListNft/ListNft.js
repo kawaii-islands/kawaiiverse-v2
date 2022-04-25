@@ -18,7 +18,7 @@ const ListNft = ({ gameItemList, gameSelected,loading, place }) => {
                             isStore={true}
                             data={item}
                             place={place}
-                            
+                            index={index}
                             handleNavigation={() =>{
                                 if(place === "marketplace"){
                                     history.push({

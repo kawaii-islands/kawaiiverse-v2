@@ -14,7 +14,8 @@ $break-point-3: 767px;
             font-weight: 700;
             font-size: 20px;
             line-height: 24px;
-            color: #ffffff;
+            color: 
+            #833F1D;
         }
         .drop-down {
             display: flex;
@@ -39,8 +40,9 @@ $break-point-3: 767px;
 
             .search {
                 width: 240px;
-                border-bottom: 2px solid #ffffff;
-                color: #ffffff !important;
+                border-bottom: 2px solid rgba(188, 166, 150, 0.5);
+                color: 
+                #833F1D !important;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -48,13 +50,13 @@ $break-point-3: 767px;
 
                 .icon {
                     cursor: pointer;
-                    color: #ffffff;
+                    color: #944850;
                 }
             }
 
             .button {
                 margin-left: 20px;
-                background: linear-gradient(94.08deg, #7f00ff -1.88%, #e100ff 100%);
+                background: #a86c60;
                 border-radius: 6px;
                 color: #f6f7fb;
                 font-weight: 700;

@@ -1,6 +1,6 @@
 .filter {
-    background: #402a7d;
-    backdrop-filter: blur(50px);
+    background: rgba(253, 245, 232, 0.5);
+    backdrop-filter: blur(20px);
     min-height: 100%;
 
     .game-info {
@@ -17,7 +17,7 @@
             border-radius: 50%;
             padding: 3px;
             z-index: 2;
-            background: #402a7d;
+            // background: #402a7d;
             text-align: center;
 
             .game-image {
@@ -35,14 +35,15 @@
             bottom: -28%;
             width: fit-content;
             background: rgba(254, 253, 255, 0.25);
-            border: 1px solid #ccb9ff;
+            border: 1px solid #CF9C8F;
             box-sizing: border-box;
             border-radius: 8px;
             padding: 20px 50px 14px 50px;
             font-weight: 600;
             font-size: 20px;
             line-height: 150%;
-            color: #e7dfff;
+            color: 
+            #833F1D;
 			text-align: center;
 
             .icon-copy {
@@ -61,19 +62,19 @@
 
     .menu {
         margin-top: 80px;
-        border-top: 1px solid #5e4b93;
+        border-top: 1px solid #944850;
         padding-top: 40px;
 
         .menu-item {
             padding: 18px 50px;
-            color: #ffffff;
+            color: #944850;
             cursor: pointer;
             transition-duration: 0.35s;
 
-            &:hover {
-                background: #bcabea;
-                color: #8b1eeb;
-            }
+            // &:hover {
+            //     background: #bcabea;
+            //     color: #8b1eeb;
+            // }
 
             .menu-title {
                 font-weight: 600;
@@ -88,9 +89,9 @@
             }
         }
 
-        .active {
-            background: #bcabea;
-            color: #8b1eeb;
-        }
+        // .active {
+        //     background: #bcabea;
+        //     color: #8b1eeb;
+        // }
     }
 }

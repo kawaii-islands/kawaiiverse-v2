@@ -11,6 +11,10 @@ $break-point-3: 767px;
             border: 1px solid rgba(255, 255, 255, 0.2) !important;
         }
     }
+    background: url("../../assets/images/bg.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100% 100%;
     .row {
         display: flex;
         // align-items: flex-start !important;
@@ -80,13 +84,15 @@ $break-point-3: 767px;
                     font-weight: bold;
                     font-size: 20px;
                     line-height: 26px;
-                    color: #ffffff;
+                    color: 
+                    #833F1D;
                 }
 
                 .search {
                     width: 380px;
-                    border-bottom: 2px solid #ffffff;
-                    color: #ffffff !important;
+                    border-bottom: 2px solid rgba(188, 166, 150, 0.5);
+                    color: 
+                    #833F1D !important;
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
@@ -98,7 +104,7 @@ $break-point-3: 767px;
 
                     .icon {
                         cursor: pointer;
-                        color: #ffffff;
+                        color: #833F1D;
                     }
                 }
 

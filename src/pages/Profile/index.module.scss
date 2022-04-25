@@ -1,6 +1,10 @@
 $break-point-1: 814px;
 $mobile: 576px;
 .profile {
+    background: url("../../assets/images/bg.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100% 100%;
     .row {
         display: flex;
 
@@ -19,10 +23,12 @@ $mobile: 576px;
         .right {
             padding: 60px 48px 30px 48px;
             width: 100%;
+           
             .breadcrums{
                 :global{
                     .MuiTypography-root{
-                        color: #BC88FF !important;
+                        color: 
+                        #833F1D !important;
                         font-size: 16px;
                         text-transform: capitalize;
                         
@@ -32,13 +38,14 @@ $mobile: 576px;
                         
                     }
                     .MuiSvgIcon-fontSizeMedium{
-                        color: #625D83 !important;
+                        color: 
+                        #833F1D !important;
                         // background-color: #625D83 !important;
                     }
                 }
                 padding-bottom: 18px;
                 margin-bottom: 40px;
-                border-bottom: 1px solid rgba(64, 42, 125, 0.5);
+                border-bottom: 1px solid #944850;
                 
             }
             @media(max-width: $break-point-1){

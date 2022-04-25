@@ -9,12 +9,12 @@ $w-input: 100px;
     padding: 14px 0px;
     font-family: "Montserrat";
     font-weight: bold;
-    color: #402A7D;
+    color: #833F1D;
     display: flex;
     flex-direction: column;
     // align-items: center;
     position: relative;
-    background: #EBE3FF;
+    background: rgba(255, 255, 255, 0.7);
     margin-top: 5px !important;
     
     &-hide{
@@ -34,7 +34,7 @@ $w-input: 100px;
             height: 20px;
         }
         &-title {
-            color: #c190ff;
+            color: #833F1D;
             font-size: 14px;
             font-weight: 500;
             margin-left: 12px;

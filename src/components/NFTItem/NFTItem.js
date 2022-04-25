@@ -8,11 +8,11 @@ import { BSC_rpcUrls } from "src/consts/blockchain";
 const cx = cn.bind(styles);
 const web3 = new Web3(BSC_rpcUrls);
 
-const NFTItem = ({ onClick, data, handleNavigation, isStore, place }) => {
+const NFTItem = ({ onClick, data, handleNavigation, isStore, place,index }) => {
     console.log(data);
 
     return (
-        <div className={cx("nft-item")}>
+        <div className={cx("nft-item")} style={{padding: index === 0 && 0}}>
             <div className={cx("container")} onClick={handleNavigation}>
                 <div
                     className={cx("top")}

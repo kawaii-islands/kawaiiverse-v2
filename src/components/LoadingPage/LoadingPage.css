@@ -1,7 +1,10 @@
 .loading-page {
     width: 100%;
     height: 100vh;
-    background: #1b1349;
+    background: url("../../assets/images/bg.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;

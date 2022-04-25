@@ -33,13 +33,13 @@ $break-point-2: 912px;
         width: 240px;
         min-height: 320px;
         // background: #402a7d;
-        background: linear-gradient(180deg, #6f08fe 0%, #513e7d 100%);
-        border: 1px solid #ad99e7;
+        background: linear-gradient(180deg, #fef5e8 0%, #fee8d0 100%);
+        border: 1px solid #cf9c8f;
         box-sizing: border-box;
         border-radius: 6px;
         height: fit-content;
         cursor: pointer;
-        margin: 0px 18px 30px 18px;
+        // margin: 0px 18px 30px 18px;
 
         .middle {
             display: flex;
@@ -75,7 +75,7 @@ $break-point-2: 912px;
                 border: 1px solid rgba(220, 196, 174, 0.75);
             }
             span {
-                color: #dac6ff !important;
+                color: #833f1d;
                 // color: red;
                 // font-weight: bold;
                 font-family: "Montserrat";
@@ -83,10 +83,11 @@ $break-point-2: 912px;
             }
         }
         .top {
-            border-bottom: 1px solid #ad99e7;
+            border-bottom: 1px solid #833f1d;
             // margin-top: 40px;
             box-sizing: border-box;
-            // border-radius: 8px 8px 0px 0px;
+            border-radius: 8px 8px 0px 0px;
+            overflow: hidden;
             width: 100%;
             padding: 0px 20px;
             height: 270px;
@@ -141,7 +142,7 @@ $break-point-2: 912px;
                     font-weight: 500;
                     font-size: 16px;
                     line-height: 21px;
-                    color: #ffffff;
+                    color: #833f1d;
                     margin-left: 12px;
                 }
             }
@@ -150,7 +151,7 @@ $break-point-2: 912px;
                 font-weight: 600;
                 font-size: 18px;
                 line-height: 23px;
-                color: #ffffff;
+                color: #833f1d;
                 margin-bottom: 10px;
             }
 
@@ -158,24 +159,27 @@ $break-point-2: 912px;
                 font-weight: 500;
                 font-size: 16px;
                 line-height: 20px;
-                color: #dac6ff;
+                color: #833f1d;
                 margin-bottom: 10px;
             }
 
             .number-box {
-                background: #3d1c6c;
+                // background: #3d1c6c;
                 border-radius: 4px;
                 padding: 8px 12px;
 
                 .number {
                     font-size: 16px;
                     font-weight: 600;
-                    color: #be74ff;
+                    background: linear-gradient(180deg, #fd993b 0%, #ec5f19 100%);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    text-fill-color: transparent;
                 }
             }
         }
     }
-   
 }
 .container:hover {
     box-shadow: 0 0 8px 0 rgba(199, 215, 230, 1);
