@@ -26,7 +26,7 @@ import Web3 from "web3";
 import { BSC_CHAIN_ID, BSC_rpcUrls } from "src/consts/blockchain";
 import LoadingModal from "src/components/LoadingModal2/LoadingModal";
 // import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
-import logoKawaii from "src/assets/images/logo_kawaii.png"
+import logoKawaii from "src/assets/images/logo_kawaii.png";
 const cx = cn.bind(styles);
 const web3 = new Web3(BSC_rpcUrls);
 
@@ -44,13 +44,15 @@ const NFTDetail = () => {
     const [stepLoading, setStepLoading] = useState(0);
     const [hash, setHash] = useState();
     const [loadingModal, setLoadingModal] = useState(false);
+    const [amountBuy, setAmountBuy] = useState(0);
+
     useEffect(() => {
         getNftInfo();
     }, [useParams, account]);
     let pathnames = pathname.split("/").filter(Boolean);
     pathnames.splice(5, 1);
     pathnames.splice(2, 1);
-    pathnames.splice(1,4)
+    pathnames.splice(1, 4);
     const getNftInfo = async () => {
         setLoading(true);
         try {
@@ -64,15 +66,13 @@ const NFTDetail = () => {
             }
             gameItem.index = index;
             setNftInfo(gameItem);
-            
         } catch (error) {
             console.log(error);
-            
-        } finally{
+        } finally {
             setLoading(false);
         }
     };
-    
+
     const getAllowance = async () => {
         if (!account) return;
         const allowance = await read("allowance", BSC_CHAIN_ID, KAWAII_TOKEN_ADDRESS, KAWAII_TOKEN_ABI, [
@@ -99,10 +99,17 @@ const NFTDetail = () => {
             toast.error("Connect wallet first !");
             return;
         }
-        if(amount === 0){
+
+        if (amount === 0) {
             toast.error("Hết hàng không mua được");
             return;
         }
+
+        if (amount < amountBuy || amountBuy < 1) {
+            toast.error("Invalid number");
+            return;
+        }
+
         try {
             if (chainId !== BSC_CHAIN_ID) {
                 const error = await createNetworkOrSwitch(library.provider);
@@ -118,27 +125,26 @@ const NFTDetail = () => {
             if (!allowance) {
                 await approve();
             }
-            
+
             await write(
                 "buyNFT1155",
                 library.provider,
                 KAWAIIVERSE_STORE_ADDRESS,
                 KAWAII_STORE_ABI,
-                [storeAddress, index, amount],
+                [storeAddress, index, amountBuy],
                 { from: account },
                 hash => {
                     console.log(hash);
                     setHash(hash);
                     setStepLoading(1);
                 },
-
             );
             setStepLoading(2);
         } catch (err) {
             console.log(err);
             toast.error(err);
             setStepLoading(3);
-        }finally {
+        } finally {
             getNftInfo();
             setLoadingModal(false);
         }
@@ -148,23 +154,23 @@ const NFTDetail = () => {
     ) : (
         <MainLayout>
             <div className={cx("mint-nft-detail")}>
-            {showModalLoading && (
-                <LoadingModal
-                    show={showModalLoading}
-                    network={"BscScan"}
-                    loading={loadingModal}
-                    title={loadingTitle}
-                    stepLoading={stepLoading}
-                    onHide={() => {
-                        setShowModalLoading(false);
-                        setHash(undefined);
-                        setStepLoading(0);
-                    }}
-                    hash={hash}
-                    hideParent={() => {}}
-                    notViewNft={true}
-                />
-            )}
+                {showModalLoading && (
+                    <LoadingModal
+                        show={showModalLoading}
+                        network={"BscScan"}
+                        loading={loadingModal}
+                        title={loadingTitle}
+                        stepLoading={stepLoading}
+                        onHide={() => {
+                            setShowModalLoading(false);
+                            setHash(undefined);
+                            setStepLoading(0);
+                        }}
+                        hash={hash}
+                        hideParent={() => {}}
+                        notViewNft={true}
+                    />
+                )}
                 {/* <div className={cx("breadcrums")}>
                     {" "}
                     <Breadcrumbs separator={<NavigateNextIcon />} aria-label="breadcrumb">
@@ -228,14 +234,41 @@ const NFTDetail = () => {
 
                         <div className={cx("category")}>{nftInfo?.category}</div>
                         <div className={cx("content")}>
-                            <span className={cx("title")}>Available:</span>
-                            <span className={cx("value")}>
-                                {Number(nftInfo?.amount) - Number(nftInfo?.alreadySale)}
-                            </span>
+                            <div style={{ width: "70%" }}>
+                                <span className={cx("title")}>Available:</span>
+                                <span className={cx("value")}>
+                                    {Number(nftInfo?.amount) - Number(nftInfo?.alreadySale)}
+                                </span>
+                            </div>
+                            <div>
+                                <span className={cx("title")}>Amount:</span>
+                                <input
+                                    placeholder="0"
+                                    style={{
+                                        background: "#FAF0FF",
+                                        borderRadius: "4px",
+                                        padding: "8px",
+                                        width: "80px",
+                                        border: "none",
+                                    }}
+                                    onChange={e => setAmountBuy(e.target.value)}
+                                />
+                                <br />
+                                {/* {<span style={{ color: "#dc615d" }}>Invalid number!</span>} */}
+                            </div>
                         </div>
                         <div className={cx("content")}>
-                            <span className={cx("title")}>Price:</span>
-                            <span className={cx("value")}>{web3.utils.fromWei(nftInfo?.price)} KWT</span>
+                            <div style={{ width: "70%" }}>
+                                <span className={cx("title")}>Price/NFT:</span>
+                                <span className={cx("value")}>{web3.utils.fromWei(nftInfo?.price)} KWT</span>
+                            </div>
+                            <div>
+                                <span className={cx("title")}>Total Price:</span>
+                                <span className={cx("value")}>
+                                    {console.log("nftInfo.price :>> ", nftInfo.price)}
+                                    {parseInt(amountBuy) ? web3.utils.fromWei(nftInfo?.price) * parseInt(amountBuy) : 0} KWT
+                                </span>
+                            </div>
                         </div>
                         <div className={cx("content")}>
                             <span className={cx("title")}>Author:</span>
