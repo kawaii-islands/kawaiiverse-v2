@@ -196,3 +196,9 @@
         }
     }
 }
+
+.price-input::-webkit-outer-spin-button,
+.price-input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}

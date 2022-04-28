@@ -247,6 +247,8 @@ const NFTDetail = () => {
                                 <span className={cx("title")}>Amount:</span>
                                 <input
                                     placeholder="0"
+                                    type="number"
+									min={0}
                                     style={{
                                         background: "#FAF0FF",
                                         borderRadius: "4px",
@@ -255,6 +257,8 @@ const NFTDetail = () => {
                                         border: "none",
                                     }}
                                     onChange={e => setAmountBuy(e.target.value)}
+									className={cx("price-input")}
+									pattern="^[1-9][0-9]*$"
                                 />
                                 <br />
                                 {/* {<span style={{ color: "#dc615d" }}>Invalid number!</span>} */}
