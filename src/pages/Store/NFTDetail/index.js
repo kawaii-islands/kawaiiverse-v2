@@ -79,10 +79,13 @@ const NFTDetail = () => {
             account,
             KAWAIIVERSE_STORE_ADDRESS,
         ]);
-        return getAllowance;
+        console.log("allowance :>> ", typeof allowance);
+        return allowance;
         // setIsApprovedForAll(isApprovedForAll);
     };
+
     const approve = async () => {
+        console.log("account :>> ", account);
         return await write(
             "approve",
             library.provider,
@@ -101,7 +104,7 @@ const NFTDetail = () => {
         }
 
         if (amount === 0) {
-            toast.error("Hết hàng không mua được");
+            toast.error("Sold out!");
             return;
         }
 
@@ -122,7 +125,7 @@ const NFTDetail = () => {
             setStepLoading(0);
             setLoadingModal(true);
             const allowance = await getAllowance();
-            if (!allowance) {
+            if (allowance < web3.utils.fromWei(nftInfo?.price) * parseInt(amountBuy)) {
                 await approve();
             }
 
@@ -266,7 +269,10 @@ const NFTDetail = () => {
                                 <span className={cx("title")}>Total Price:</span>
                                 <span className={cx("value")}>
                                     {console.log("nftInfo.price :>> ", nftInfo.price)}
-                                    {parseInt(amountBuy) ? web3.utils.fromWei(nftInfo?.price) * parseInt(amountBuy) : 0} KWT
+                                    {parseInt(amountBuy)
+                                        ? web3.utils.fromWei(nftInfo?.price) * parseInt(amountBuy)
+                                        : 0}{" "}
+                                    KWT
                                 </span>
                             </div>
                         </div>
