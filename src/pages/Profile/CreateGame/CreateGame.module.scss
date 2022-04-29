@@ -114,8 +114,9 @@ $mobile: 576px;
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 40%;
+    width: 30%;
     min-height: 335px;
+    
     transform: translate(-50%, -50%);
     background-color: #ebe3ff;
     border-radius: 8px;
@@ -131,7 +132,7 @@ $mobile: 576px;
     }
     .error_tag {
         margin: 0 auto;
-        width: 70%;
+        width: 60%;
         text-align: left;
         &_text {
             margin: 0;
@@ -146,7 +147,7 @@ $mobile: 576px;
         background-color: #ebe3ff;
         line-height: 45px;
         margin-top: 15px;
-        width: 70%;
+        width: 60%;
         border: 1px solid rgba(82, 64, 130, 0.2);
         box-sizing: border-box;
         border-radius: 4px;
@@ -156,7 +157,7 @@ $mobile: 576px;
         background-color: #ebe3ff;
         line-height: 45px;
         margin-top: 15px;
-        width: 70%;
+        width: 60%;
         border: 1px solid rgba(82, 64, 130, 0.2);
         box-sizing: border-box;
         border-radius: 4px;
@@ -180,22 +181,24 @@ $mobile: 576px;
             position: absolute;
             top: 28px;
             width: 24px;
-            right: 17%;
+            right: 13%;
             height: 22px;
             cursor: pointer;
         }
         &--image{
-            .preview-img{
-                position: absolute;
-                top: 15px;
-                right: 5%;
-                width: 45px;
-                height: 45px;
-                // border: 1px solid rgba(82, 64, 130, 0.2);
-            }
+            
         }
-        
+        .preview-img{
+            // position: absolute;
+            // top: 60px;
+            // right: 20%;
+            margin-top: 10px;
+            width: 60%;
+            height: 200px;
+            // border: 1px solid rgba(82, 64, 130, 0.2);
+        }
     }
+    
     .modal_success {
         position: relative;
         top: 50%;

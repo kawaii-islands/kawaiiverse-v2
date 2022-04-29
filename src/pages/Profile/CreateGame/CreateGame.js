@@ -97,7 +97,7 @@ const CreateGame = () => {
                 }
                 lists.push({ gameAddress, gameName, gameUrl });
             }
-            setGameList(lists);
+            setGameList(lists.reverse());
         } catch (err) {
             console.log(err);
             setLoadingGameList(false);
@@ -411,7 +411,7 @@ const CreateGame = () => {
                     />
                     {componentErrorName}
                     <input
-                        placeholder="Symbol"
+                        placeholder="Game symbol"
                         className={errorSymbol ? cx("input_error") : cx("input")}
                         required
                         value={gameInfo.symbol || ""}
@@ -436,12 +436,14 @@ const CreateGame = () => {
                             style={{ display: "none" }}
                             onChange={e => handleUploadImage(e)}
                         />
+
+                        {componentErrorImage}
+                    </div>
+                    <div className={cx("input_container", "input_container--image")}>
                         {gameInfo.avatar && (
                             <img src={gameInfo.avatar || ""} alt="preview" className={cx("preview-img")} />
                         )}
-                        {componentErrorImage}
                     </div>
-
                     {componentButtonCreate}
                 </>
             );
