@@ -56,7 +56,9 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             setLoadingGetList(true);
             const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
             const gameList = await getGameList();
+            console.log(gameList);
             let nftSaleList = await getNftList(gameList);
+            
             nftSaleList = nftSaleList.filter(nft => {
                 return nft.nftAddress === address && nft.owner === account;
             });
@@ -95,6 +97,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                     KAWAII_STORE_ABI,
                     [],
                 );
+                console.log("totalGame : ",totalGame)
                 const tmpArray = Array.from({ length: totalGame }, (v, i) => i);
                 const gameListData = await Promise.all(
                     tmpArray.map(async (nftId, index) => {
@@ -106,6 +109,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                             [index],
                         );
                         let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
+                        
                         return { gameAddress, gameName };
                     }),
                 );
@@ -187,6 +191,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             return;
         }
         try {
+           
             if (chainId !== BSC_CHAIN_ID) {
                 const error = await createNetworkOrSwitch(library.provider);
                 console.log(error);
@@ -198,7 +203,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             setLoading(true);
             setStepLoading(0);
             setShowModalLoading(true);
-            if (!isApprovedForAll) {
+            // if (!isApprovedForAll) {
                 await write(
                     "setApprovalForAll",
                     library.provider,
@@ -209,7 +214,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                         from: account,
                     },
                 );
-            }
+            // }
 
             const tokenIds = listSell.map(nft => nft.tokenId);
             const amounts = listSell.map(nft => nft.quantity);
@@ -228,20 +233,25 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                     setStepLoading(1);
                 },
             );
+            listSell.forEach((item) => {
+                let nft = {};
+                nft.tokenId = item.tokenId;
+                nft.amount = item.quantity;
+                nft.price = nft.price;
+                nft.tokenUnit = "0x6fe3d0f096fc932a905accd1eb1783f6e4cec717";
+                nft.supply = item.supply;
+                return nft;
+            })
             let bodyParams = {
                 contract: address,
-                amount: Number(listSell[0].quantity),
-                tokenId: Number(listSell[0].tokenId),
-                price: Number(listSell[0].price),
-                supply: Number(listSell[0].supply),
-                tokenUnit: "0x6fe3d0f096fc932a905accd1eb1783f6e4cec717",
+                data: listSell,
                 owner: account,
                 sign: sign,
             };
             console.log(JSON.stringify(bodyParams));
 
-            const res = await axios.post(`${URL}/v1/sale`, bodyParams);
-            console.log(res);
+            // const res = await axios.post(`${URL}/v1/sale`, bodyParams);
+            // console.log(res);
             setStepLoading(2);
             setSubmitted(false);
             setListSell([]);

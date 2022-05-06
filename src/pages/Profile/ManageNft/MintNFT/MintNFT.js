@@ -260,7 +260,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         let listTokenId = data.map(token => token.tokenId);
         let listTokenSupply = data.map(token => token.supply);
         let listTokenAccount = Array(listTokenId.length).fill(account);
-
+        console.log(listTokenId,listTokenSupply,listTokenAccount)
         if (chainId !== BSC_CHAIN_ID) {
             const error = await createNetworkOrSwitch(library.provider);
             if (error) {
