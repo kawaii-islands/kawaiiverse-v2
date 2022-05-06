@@ -398,7 +398,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                             setStateForNftData("tokenId", e.target.value, index);
                                         }}
                                     />
-                                    {console.log("err :>> ", listErr[index].tokenIdErr)}
                                     {listErr[index].tokenIdErr &&
                                         (() => {
                                             if (!item.tokenId) {
