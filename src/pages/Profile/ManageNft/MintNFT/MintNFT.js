@@ -50,6 +50,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                 type: "",
                 value: "",
                 image: "",
+                valueType: "",
             },
         ],
         rarity: "",
@@ -80,7 +81,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
     const [imageIdx, setImageIdx] = useState();
     const [stepLoading, setStepLoading] = useState(0);
     const [loadingTitle, setLoadingTitle] = useState("");
-    const [hash, setHash] = useState();
+    const [hash, setHash] = useState(window.localStorage.getItem("hashCreateToken"));
     const listPending = window.localStorage.getItem("listNftPending")
         ? JSON.parse(window.localStorage.getItem("listNftPending"))
         : [];
@@ -89,12 +90,24 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
 
     useEffect(() => {
         if (listPending.length > 0) {
-            console.log("listPending :>> ", listPending);
             setListNft(listPending);
         }
+
+        const checkTransactionCreateToken = async () => {
+            const receipt = await web3.eth.getTransactionReceipt(hash);
+            if (!receipt?.status) {
+                window.localStorage.setItem("listNftPending", []);
+                setStepLoading(3);
+            }
+        };
+
+        if (hash) {
+			checkTransactionCreateToken();
+		}
     }, []);
 
     useEffect(() => {
+		const listPending = window.localStorage.getItem("listNftPending");
         if (stepLoading === 3 && listPending.length > 0) {
             setLoadingSubmit(false);
             setShowPendingModal(true);
@@ -109,7 +122,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         try {
             const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
             if (res.status === 200) {
-                console.log(res.data.data);
                 setListNftByContract(res.data.data);
             }
         } catch (err) {
@@ -125,7 +137,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
             let check = listNftByContract?.filter(nft => parseInt(nft.tokenId) === parseInt(value));
             let checkDuplicate = listNft?.filter(nft => parseInt(nft.tokenId) === parseInt(value));
 
-            console.log("check :>> ", check);
             if (check?.length > 0) {
                 listErrCopy[id] = { ...listErrCopy[id], tokenIdExist: true };
             } else listErrCopy[id] = { ...listErrCopy[id], tokenIdExist: false };
@@ -178,8 +189,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
             listNftByContract?.filter(nft => parseInt(nft.tokenId) === parseInt(data[i].tokenId));
             let checkDuplicate = [];
             listNft?.filter(nft => parseInt(nft.tokenId) === parseInt(data[i].tokenId));
-
-            console.log("flag :>> ", flag);
 
             if (check?.length > 0 || checkDuplicate?.length > 0) {
                 flag = true;
@@ -260,7 +269,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         let listTokenId = data.map(token => token.tokenId);
         let listTokenSupply = data.map(token => token.supply);
         let listTokenAccount = Array(listTokenId.length).fill(account);
-        console.log(listTokenId,listTokenSupply,listTokenAccount)
+
         if (chainId !== BSC_CHAIN_ID) {
             const error = await createNetworkOrSwitch(library.provider);
             if (error) {
@@ -281,6 +290,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
             hash => {
                 console.log(hash);
                 setHash(hash);
+                window.localStorage.setItem("hashCreateToken", hash);
                 setStepLoading(1);
                 window.localStorage.setItem("listNftPending", JSON.stringify(listNft));
             },
@@ -296,7 +306,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         try {
             const added = await client.add(file);
             const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-            console.log(url);
             setStateForNftData("imageUrl", url, index);
         } catch (error) {
             console.log("Error uploading file: ", error);
@@ -312,7 +321,6 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         try {
             if (!listPending.length) {
                 const checkData = await checkInvalidData(listNft);
-                console.log("checkData :>> ", checkData);
                 if (checkData) return;
 
                 setLoadingSubmit(true);
@@ -335,7 +343,9 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
             if (res.status === 200) {
                 console.log(res);
                 setStepLoading(2);
+				setListNft([]);
                 window.localStorage.setItem("listNftPending", []);
+                window.localStorage.setItem("hashCreateToken", '');
             }
         } catch (err) {
             console.log(err.response);
@@ -537,7 +547,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                                     setOpenMintNFTBox={setOpenMintNFTBox}
                                     listNft={listNft}
                                     setListNft={setListNft}
-									gameSelected={gameSelected}
+                                    gameSelected={gameSelected}
                                 />
                             )}
                         </div>

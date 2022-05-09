@@ -1,0 +1,179 @@
+.modal-box {
+    border-radius: 8px;
+    max-width: 760px;
+    z-index: 9999;
+
+    :global(.modal-content) {
+        width: 760px;
+        background: #ebe3ff;
+        border-radius: 8px;
+    }
+
+    .modal-body {
+        background: #ebe3ff;
+        border-radius: 8px;
+        padding: 25px 55px;
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(181, 167, 216, 0.5);
+
+            .left {
+                display: flex;
+                align-items: center;
+
+                .text {
+                    font-style: normal;
+                    font-weight: 700;
+                    font-size: 20px;
+                    line-height: 150%;
+                    color: #4200ff;
+                    padding-left: 15px;
+                }
+            }
+
+            .right {
+                color: #4200ff;
+                font-size: 28px;
+                cursor: pointer;
+            }
+        }
+
+        .body {
+            padding-top: 32px;
+            display: flex;
+            // align-items: center;
+
+            &-left {
+                width: 35%;
+                text-align: center;
+
+                .image {
+                    width: 220px;
+                    height: 220px;
+                    border: 1px solid #aba4d9;
+                    border-radius: 12px;
+                    margin-bottom: 16px;
+                }
+
+                .id {
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 20px;
+                    line-height: 150%;
+                    color: #402a7d;
+                }
+            }
+
+            &-right {
+                max-width: 65%;
+                min-width: 65%;
+                padding-left: 60px;
+
+                .one-field {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 10px;
+
+                    .input {
+                        background: transparent;
+                        color: #402a7d;
+                        font-weight: 600;
+                        padding: 10px;
+                        border: 1px solid #aba4d9;
+                        border-radius: 6px;
+                        width: 100%;
+                        text-align: center;
+						margin: 6px 0px;
+
+                        &:focus {
+                            outline: none;
+                        }
+                    }
+
+					.total-price {
+						text-align: right;
+						font-weight: 600;
+						font-size: 14px;
+					}
+
+                    .title {
+                        font-style: normal;
+                        font-weight: 500;
+                        font-size: 18px;
+                        line-height: 150%;
+                        color: #4200ff;
+                    }
+
+                    .value {
+                        font-weight: 500;
+                        font-size: 18px;
+                        line-height: 150%;
+                        color: #e684f8;
+                        display: flex;
+                        align-items: center;
+
+
+                        .kwt-token {
+                            display: flex;
+                            align-items: center;
+                            color: #4200ff;
+                            margin-right: 12px;
+                        }
+                    }
+                }
+
+                .box-input {
+                    padding: 10px;
+                    border: 1px solid #aba4d9;
+                    border-radius: 6px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    width: 320px;
+
+                    .kwt-token {
+                        display: flex;
+                        align-items: center;
+                        color: #402a7d;
+                        font-weight: 600;
+                        margin-right: 12px;
+                    }
+
+                    .input {
+                        border: none !important;
+                        background: transparent;
+                        color: #402a7d;
+                        font-weight: 600;
+
+                        &:focus {
+                            outline: none;
+                        }
+                    }
+                }
+
+                .button {
+                    background: linear-gradient(270.94deg, #fb35ff 4.88%, #8d4abc 99.69%);
+                    border-radius: 6px;
+                    padding: 10px;
+                    width: 100%;
+                    text-align: center;
+                    color: #f3f3f3;
+                    font-weight: 500;
+                    font-size: 16px;
+                    margin-top: 36px;
+                }
+            }
+        }
+    }
+}
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

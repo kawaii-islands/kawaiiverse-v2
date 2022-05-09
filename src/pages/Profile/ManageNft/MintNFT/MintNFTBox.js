@@ -21,6 +21,7 @@ let oneAttribute = {
     type: "",
     value: "",
     image: "",
+	valueType: "",
 };
 
 const client = create("https://ipfs.infura.io:5001/api/v0");
@@ -55,12 +56,12 @@ const MintNFTBox = ({
     }, [listAttribute]);
 
     const getListCategory = async () => {
-		let cate = [];
+        let cate = [];
         listNft.map((item, id) => {
-			if (item.category) {
-				cate=[...cate, item.category];
-			}
-		});
+            if (item.category) {
+                cate = [...cate, item.category];
+            }
+        });
 
         let listCategory = [];
         let uniqueCategory = [];
@@ -68,19 +69,18 @@ const MintNFTBox = ({
         try {
             const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
             if (res.status === 200) {
-
                 res.data.data.map((item, index) => {
-					if (item.category) {
-						listCategory=[...listCategory, item.category];
-					}
-				});
+                    if (item.category) {
+                        listCategory = [...listCategory, item.category];
+                    }
+                });
             }
         } catch (err) {
             console.log(err);
         }
 
-		listCategory = [...listCategory, ...cate];
-		uniqueCategory = [...new Set(listCategory)];
+        listCategory = [...listCategory, ...cate];
+        uniqueCategory = [...new Set(listCategory)];
         setListCategory(uniqueCategory);
         setListCategoryDisplay(uniqueCategory);
     };

@@ -27,6 +27,9 @@ import { BSC_CHAIN_ID, BSC_rpcUrls } from "src/consts/blockchain";
 import LoadingModal from "src/components/LoadingModal2/LoadingModal";
 // import KAWAII_STORE_ABI from "src/utils/abi/KawaiiverseStore.json";
 import logoKawaii from "src/assets/images/logo_kawaii.png";
+import BuyNftModal from "./BuyNftModal";
+import defaultImage from "src/assets/icons/default_image.svg";
+
 const cx = cn.bind(styles);
 const web3 = new Web3(BSC_rpcUrls);
 
@@ -45,6 +48,7 @@ const NFTDetail = () => {
     const [hash, setHash] = useState();
     const [loadingModal, setLoadingModal] = useState(false);
     const [amountBuy, setAmountBuy] = useState(0);
+    const [openBuyNftModal, setOpenBuyNftModal] = useState(false);
 
     useEffect(() => {
         getNftInfo();
@@ -113,6 +117,8 @@ const NFTDetail = () => {
             return;
         }
 
+		setOpenBuyNftModal(false);
+
         try {
             if (chainId !== BSC_CHAIN_ID) {
                 const error = await createNetworkOrSwitch(library.provider);
@@ -152,6 +158,7 @@ const NFTDetail = () => {
             setLoadingModal(false);
         }
     };
+
     return loading ? (
         <LoadingPage />
     ) : (
@@ -214,13 +221,7 @@ const NFTDetail = () => {
                             <LeftOutlined />
                         </Button>
                         <div className={cx("image-box")}>
-                            <img
-                                src={
-                                    nftInfo?.imageUrl ||
-                                    `https://images.kawaii.global/kawaii-marketplace-image/items/201103.png`
-                                }
-                                alt="icon"
-                            />
+                            <img src={nftInfo?.imageUrl || defaultImage} alt="icon" />
                         </div>
                     </Col>
 
@@ -230,10 +231,19 @@ const NFTDetail = () => {
                                 <span className={cx("first")}>{nftInfo?.name}</span>
                                 <span className={cx("second")}>#{nftInfo?.tokenId}</span>
                             </div>
-                            <Button className={cx("buy-btn")} onClick={buyNft}>
+                            <Button className={cx("buy-btn")} onClick={() => setOpenBuyNftModal(true)}>
                                 Buy NFT
                             </Button>
                         </div>
+
+                        <BuyNftModal
+                            open={openBuyNftModal}
+                            onHide={() => setOpenBuyNftModal(false)}
+                            nftInfo={nftInfo}
+                            amountBuy={amountBuy}
+                            setAmountBuy={setAmountBuy}
+                            buyNft={buyNft}
+                        />
 
                         <div className={cx("category")}>{nftInfo?.category}</div>
                         <div className={cx("content")}>
@@ -243,12 +253,12 @@ const NFTDetail = () => {
                                     {Number(nftInfo?.amount) - Number(nftInfo?.alreadySale)}
                                 </span>
                             </div>
-                            <div>
+                            {/* <div>
                                 <span className={cx("title")}>Amount:</span>
                                 <input
                                     placeholder="0"
                                     type="number"
-									min={0}
+                                    min={0}
                                     style={{
                                         background: "#FAF0FF",
                                         borderRadius: "4px",
@@ -257,19 +267,17 @@ const NFTDetail = () => {
                                         border: "none",
                                     }}
                                     onChange={e => setAmountBuy(e.target.value)}
-									className={cx("price-input")}
-									pattern="^[1-9][0-9]*$"
+                                    className={cx("price-input")}
+                                    pattern="^[1-9][0-9]*$"
                                 />
-                                <br />
-                                {/* {<span style={{ color: "#dc615d" }}>Invalid number!</span>} */}
-                            </div>
+                            </div> */}
                         </div>
                         <div className={cx("content")}>
                             <div style={{ width: "70%" }}>
                                 <span className={cx("title")}>Price/NFT:</span>
                                 <span className={cx("value")}>{web3.utils.fromWei(nftInfo?.price)} KWT</span>
                             </div>
-                            <div>
+                            {/* <div>
                                 <span className={cx("title")}>Total Price:</span>
                                 <span className={cx("value")}>
                                     {console.log("nftInfo.price :>> ", nftInfo.price)}
@@ -278,7 +286,7 @@ const NFTDetail = () => {
                                         : 0}{" "}
                                     KWT
                                 </span>
-                            </div>
+                            </div> */}
                         </div>
                         <div className={cx("content")}>
                             <span className={cx("title")}>Author:</span>
@@ -290,45 +298,22 @@ const NFTDetail = () => {
                         </div>
                         <div className={cx("content", "content-attribute")}>
                             <span className={cx("title")}>Attributes:</span>
-                            <div className={cx("list-attribute")}>
-                                {nftInfo.attributes?.map((info, ind) => (
-                                    <div className={cx("one-attribute")} key={`attribute-${ind}`}>
-                                        <div className={cx("info-image")}>
-                                            <img src={info?.image || logoKawaii} alt="attr" />
-                                        </div>
-                                        <div className={cx("info-attribute")}>
-                                            <div className={cx("info-header")}>{info?.type}</div>
-                                            <div className={cx("info-text")}>{info?.value}</div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* <Grid container spacing={2}>
-                                {nftInfo.attributes?.map((info, idx) => (
-                                    <Grid
-                                        item
-                                        container
-                                        xs={6}
-                                        key={idx}
-                                        style={{ display: "flex", alignItems: "center" }}
-                                    >
-                                        <Grid item xs={4}>
+                            {nftInfo.attributes?.length > 0 && (
+                                <div className={cx("list-attribute")}>
+                                    {nftInfo.attributes?.map((info, ind) => (
+                                        <div className={cx("one-attribute")} key={`attribute-${ind}`}>
                                             <div className={cx("info-image")}>
-                                                <img src={info.image}></img>
+                                                <img src={info?.image || defaultImage} alt="attr" />
                                             </div>
-                                        </Grid>
-                                        <Grid item xs={8} className={cx("info-group")}>
-                                            <div className={cx("info-group-header")}>{info.type}</div>
-                                            <div className={cx("info-group-text")}>{info.value}</div>
-                                        </Grid>
-                                    </Grid>
-                                ))}
-                            </Grid> */}
+                                            <div className={cx("info-attribute")}>
+                                                <div className={cx("info-header")}>{info?.type}</div>
+                                                <div className={cx("info-text")}>{info?.value}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                        {/* <Button className={cx("buy-btn")} onClick={buyNft}>
-                            Buy NFT
-                        </Button> */}
                     </Col>
                 </Row>
             </div>

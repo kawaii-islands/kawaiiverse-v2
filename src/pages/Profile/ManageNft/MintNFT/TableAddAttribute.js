@@ -13,6 +13,7 @@ const client = create("https://ipfs.infura.io:5001/api/v0");
 const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute, setStateForNftData }) => {
     const [loadingUploadAttributeImg, setLoadingUploadAttributeImg] = useState(false);
     const [indexImg, setIndexImg] = useState(0);
+    const [checkNameAttribute, setCheckNameAttribute] = useState(false);
 
     const handleUploadAttributeImage = async (e, idx) => {
         setLoadingUploadAttributeImg(true);
@@ -27,6 +28,21 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
         } catch (error) {
             console.log("Error uploading file: ", error);
         }
+    };
+
+    const checkNameAttributeExist = value => {
+        let check = false;
+        if (value) {
+            for (let i = 0; i < listAttribute.length - 1; i++) {
+                if (listAttribute[i].type.toLowerCase() === value.toLowerCase()) {
+                    check = true;
+                    break;
+                }
+            }
+        }
+
+        setDetailAttribute("checkName", check);
+        console.log("check :>> ", check);
     };
 
     return (
@@ -46,13 +62,21 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
 
             {listAttribute.map((item, idx) => (
                 <Row className={cx("data")} key={`attr-${idx}`}>
-                    <Col xs={5} className={cx("data-cell")}>
+                    <Col
+                        xs={5}
+                        className={cx("data-cell")}
+                        style={{ flexDirection: "column", alignItems: "flex-start" }}
+                    >
                         <input
                             placeholder="Name"
                             value={item?.type}
-                            className={cx("input")}
-                            onChange={e => setDetailAttribute("type", e.target.value, idx)}
+                            className={cx("input", "invalid")}
+                            onChange={e => {
+                                setDetailAttribute("type", e.target.value, idx);
+                                checkNameAttributeExist(e.target.value);
+                            }}
                         />
+                        <div style={{ color: "#9e494d" }}>{"Duplicate"}</div>
                     </Col>
                     <Col xs={9} className={cx("data-cell")}>
                         {loadingUploadAttributeImg && indexImg === idx ? (
@@ -67,7 +91,7 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                             onChange={e => {
                                 setDetailAttribute("image", e.target.value, idx);
                             }}
-                            style={{ width: "50%", marginLeft: '5px' }}
+                            style={{ width: "50%", marginLeft: "5px" }}
                         />
                         <span>&nbsp; or:</span>
                         <span className={cx("image-upload")}>
@@ -97,11 +121,9 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                         <DeleteOutlinedIcon
                             className={cx("delete-icon")}
                             onClick={() => {
-                                if (listAttribute.length > 1) {
-                                    let arr = [...listAttribute];
-                                    arr.splice(idx, 1);
-                                    setListAttribute(arr);
-                                }
+                                let arr = [...listAttribute];
+                                arr.splice(idx, 1);
+                                setListAttribute(arr);
                             }}
                         />
                     </Col>
