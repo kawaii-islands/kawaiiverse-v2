@@ -21,6 +21,7 @@ let oneAttribute = {
     type: "",
     value: "",
     image: "",
+	valueType: "",
 };
 
 const client = create("https://ipfs.infura.io:5001/api/v0");
@@ -55,18 +56,33 @@ const MintNFTBox = ({
     }, [listAttribute]);
 
     const getListCategory = async () => {
+        let cate = [];
+        listNft.map((item, id) => {
+            if (item.category) {
+                cate = [...cate, item.category];
+            }
+        });
+
+        let listCategory = [];
+        let uniqueCategory = [];
+
         try {
             const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
             if (res.status === 200) {
-                let listCategory = res.data.data.map((item, index) => item.category);
-                let uniqueCategory = [...new Set(listCategory)];
-                setListCategory(uniqueCategory);
-                setListCategoryDisplay(uniqueCategory);
-                console.log("uniqueCategory :>> ", uniqueCategory);
+                res.data.data.map((item, index) => {
+                    if (item.category) {
+                        listCategory = [...listCategory, item.category];
+                    }
+                });
             }
         } catch (err) {
             console.log(err);
         }
+
+        listCategory = [...listCategory, ...cate];
+        uniqueCategory = [...new Set(listCategory)];
+        setListCategory(uniqueCategory);
+        setListCategoryDisplay(uniqueCategory);
     };
 
     const setDetailAttribute = (key, value, index) => {
@@ -95,7 +111,7 @@ const MintNFTBox = ({
     const handleSelectCategory = value => {
         let result = [...listCategory];
         if (value) {
-            result = listCategory.filter(item => item.includes(value));
+            result = listCategory.filter(item => item.toLowerCase().includes(value.toLowerCase()));
         }
         setListCategoryDisplay(result);
     };

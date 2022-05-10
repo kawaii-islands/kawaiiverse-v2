@@ -9,7 +9,6 @@ import defaultImage from "src/assets/icons/default_image.svg";
 const cx = cn.bind(styles);
 
 const DetailModal = ({ openDetailModal, onHide, selectedNft }) => {
-    console.log(selectedNft);
     return (
         <Modal show={openDetailModal} onHide={onHide} dialogClassName={cx("modal-box")} centered>
             <Modal.Body className={cx("modal-body")}>
@@ -51,13 +50,12 @@ const DetailModal = ({ openDetailModal, onHide, selectedNft }) => {
                             </div>
                             <div className={cx("content", "content-attribute")}>
                                 <span className={cx("title")}>Attributes:</span>
-                                {console.log(selectedNft)}
-                                {/* <span className={cx("value")}>{nftInfo?.description}</span> */}
+
                                 <div className={cx("list-attribute")}>
                                     {selectedNft?.attributes.map((info, ind) => (
                                         <div className={cx("one-attribute")} key={ind}>
                                             <div className={cx("info-image")}>
-                                                <img src={info?.image} alt="attr" />
+                                                <img src={info?.image ? info?.image : defaultImage} alt="attr" />
                                             </div>
                                             <div className={cx("info-attribute")}>
                                                 <div className={cx("info-header")}>{info?.type}</div>
