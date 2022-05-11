@@ -21,7 +21,12 @@ let oneAttribute = {
     type: "",
     value: "",
     image: "",
-	valueType: "Text",
+    valueType: "Text",
+};
+
+const oneAttributeError = {
+    nameDuplicate: false,
+    valueNull: false,
 };
 
 const client = create("https://ipfs.infura.io:5001/api/v0");
@@ -42,10 +47,15 @@ const MintNFTBox = ({
     const [listCategory, setListCategory] = useState([]);
     const [showListCategory, setShowListCategory] = useState(false);
     const [listCategoryDisplay, setListCategoryDisplay] = useState();
+    const [listAttributeError, setListAttributeError] = useState([]);
 
     useEffect(() => {
         setListAttribute(data.attributes);
         getListCategory();
+
+        let tmpArray = Array(listAttribute.length).fill(oneAttributeError);
+        setListAttributeError(tmpArray);
+
         setTimeout(() => {
             setLoading(false);
         }, 1500);
@@ -92,20 +102,11 @@ const MintNFTBox = ({
         setListAttribute(listAttributeCopy);
     };
 
-    const handleUploadImage = async e => {
-        setLoadingUploadImg(true);
-        const file = e.target.files[0];
+    const setAttributeError = (key, value, index) => {
+        let listAttributeErrorCopy = [...listAttributeError];
+        listAttributeErrorCopy[index] = { ...listAttributeErrorCopy[index], [key]: value };
 
-        try {
-            const added = await client.add(file);
-            const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-
-            setStateForNftData("imageUrl", url);
-        } catch (error) {
-            console.log("Error uploading file: ", error);
-        }
-
-        setLoadingUploadImg(false);
+        setListAttributeError(listAttributeErrorCopy);
     };
 
     const handleSelectCategory = value => {
@@ -115,6 +116,16 @@ const MintNFTBox = ({
         }
         setListCategoryDisplay(result);
     };
+
+	const checkValueNull = () => {
+		for (let i = 0; i < listAttributeError?.length; i++) {
+			if (!listAttribute[i].value) {
+				setAttributeError("valueNull", true, i);
+			} else {
+				setAttributeError("valueNull", false, i);
+			}
+		}
+	}
 
     return (
         <div className={cx("mintNFT-box")}>
@@ -196,11 +207,18 @@ const MintNFTBox = ({
                                 setListAttribute={setListAttribute}
                                 setDetailAttribute={setDetailAttribute}
                                 setStateForNftData={setStateForNftData}
+                                listAttributeError={listAttributeError}
+                                setAttributeError={setAttributeError}
+								setListAttributeError={setListAttributeError}
                             />
                         </div>
                         <div
                             className={cx("add-attribute")}
-                            onClick={() => setListAttribute([...listAttribute, oneAttribute])}
+                            onClick={() => {
+                                setListAttribute([...listAttribute, oneAttribute]);
+                                setListAttributeError([...listAttributeError, oneAttributeError]);
+								checkValueNull();
+                            }}
                         >
                             <img src={plusCircleIcon} alt="add-icon" className={cx("add-icon")} /> Add attribute
                         </div>

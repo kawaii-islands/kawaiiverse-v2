@@ -99,12 +99,12 @@ $mobile: 576px;
             .input {
                 @extend .input;
                 width: 100%;
+				padding: 4px;
             }
 
             .invalid {
                 border: 1px solid rgba(240, 134, 134, 0.99) !important;
                 border-radius: 4px;
-                padding: 4px;
 
                 // &:focus {
                 // 	border-radius: 0px;

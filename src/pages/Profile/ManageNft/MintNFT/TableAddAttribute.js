@@ -12,12 +12,18 @@ import { DownOutlined } from "@ant-design/icons";
 const cx = cn.bind(styles);
 const client = create("https://ipfs.infura.io:5001/api/v0");
 
-const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute, setStateForNftData }) => {
+const TableAddAttribute = ({
+    listAttribute,
+    setListAttribute,
+    setDetailAttribute,
+    listAttributeError,
+    setAttributeError,
+    setListAttributeError,
+}) => {
     const [loadingUploadAttributeImg, setLoadingUploadAttributeImg] = useState(false);
     const [loadingUploadValueImg, setLoadingUploadValueImg] = useState(false);
     const [indexImg, setIndexImg] = useState(0);
     const [indexValue, setIndexValue] = useState(0);
-    const [checkNameAttribute, setCheckNameAttribute] = useState(false);
 
     const handleUploadAttributeImage = async (e, idx) => {
         setLoadingUploadAttributeImg(true);
@@ -49,19 +55,17 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
         }
     };
 
-    const checkNameAttributeExist = value => {
-        let check = false;
+    const checkNameAttributeDuplicate = (key, value, index) => {
+        let checkDuplicate = [];
         if (value) {
-            for (let i = 0; i < listAttribute.length - 1; i++) {
-                if (listAttribute[i].type.toLowerCase() === value.toLowerCase()) {
-                    check = true;
-                    break;
-                }
-            }
+            checkDuplicate = listAttribute?.filter(attr => attr.type.toLowerCase() === value.toLowerCase());
         }
 
-        setDetailAttribute("checkName", check);
-        console.log("check :>> ", check);
+        if (checkDuplicate.length) {
+            setAttributeError(key, true, index);
+        } else {
+            setAttributeError(key, false, index);
+        }
     };
 
     const menu = (
@@ -100,13 +104,15 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                         <input
                             placeholder="Name"
                             value={item?.type}
-                            className={cx("input")}
+                            className={cx("input", listAttributeError[idx]?.nameDuplicate && "invalid")}
                             onChange={e => {
                                 setDetailAttribute("type", e.target.value, idx);
-                                // checkNameAttributeExist(e.target.value);
+                                checkNameAttributeDuplicate("nameDuplicate", e.target.value, idx);
                             }}
                         />
-                        {/* <div style={{ color: "#9e494d" }}>{"Duplicate"}</div> */}
+                        {listAttributeError[idx]?.nameDuplicate && (
+                            <div style={{ color: "#9e494d" }}>{"Duplicate"}</div>
+                        )}
                     </Col>
                     <Col xs={7} className={cx("data-cell")}>
                         {loadingUploadAttributeImg && indexImg === idx ? (
@@ -139,8 +145,12 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                             />
                         </span>
                     </Col>
-                    <Col xs={11} className={cx("data-cell")}>
-                        <div className={cx("content")}>
+                    <Col
+                        xs={11}
+                        className={cx("data-cell")}
+                        style={{ flexDirection: "column", alignItems: "flex-start" }}
+                    >
+                        <div className={cx("content", listAttributeError[idx]?.valueNull && "invalid")}>
                             <Dropdown
                                 overlay={menu}
                                 className={cx("drop-down")}
@@ -203,14 +213,20 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                                 )}
                             </div>
                         </div>
+                        {listAttributeError[idx]?.valueNull && (
+                            <div style={{ color: "#9e494d" }}>{"Please enter value!"}</div>
+                        )}
                     </Col>
                     <Col xs={2} className={cx("data-cell")} style={{ padding: "0px" }}>
                         <DeleteOutlinedIcon
                             className={cx("delete-icon")}
                             onClick={() => {
-                                let arr = [...listAttribute];
-                                arr.splice(idx, 1);
-                                setListAttribute(arr);
+                                let arr1 = [...listAttribute];
+                                let arr2 = [...listAttributeError];
+                                arr1.splice(idx, 1);
+                                arr2.splice(idx, 1);
+                                setListAttribute(arr1);
+                                setListAttributeError(arr2);
                             }}
                         />
                     </Col>
