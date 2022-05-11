@@ -55,16 +55,42 @@ const TableAddAttribute = ({
         }
     };
 
-    const checkNameAttributeDuplicate = (key, value, index) => {
-        let checkDuplicate = [];
-        if (value) {
-            checkDuplicate = listAttribute?.filter(attr => attr.type.toLowerCase() === value.toLowerCase());
+    const checkNameAttributeDuplicate = (value, index) => {
+        let listAttributeErrorCopy = [...listAttributeError];
+
+        if (!value && listAttribute[index].value) {
+            listAttributeErrorCopy[index] = { ...listAttributeErrorCopy[index], nameNull: true };
+            setListAttributeError(listAttributeErrorCopy);
+            return;
         }
 
-        if (checkDuplicate.length) {
-            setAttributeError(key, true, index);
+        if (value) {
+            listAttributeErrorCopy[index] = { ...listAttributeErrorCopy[index], nameNull: false };
+            let checkDuplicate = [];
+            checkDuplicate = listAttribute?.filter(attr => attr.type.toLowerCase() === value.toLowerCase());
+            if (checkDuplicate.length) {
+                listAttributeErrorCopy[index] = { ...listAttributeErrorCopy[index], nameDuplicate: true };
+            } else {
+                listAttributeErrorCopy[index] = { ...listAttributeErrorCopy[index], nameDuplicate: false };
+            }
+
+            setListAttributeError(listAttributeErrorCopy);
+        }
+    };
+
+    const checkValueNull = (value, i) => {
+        if (!value && listAttribute[i].type) {
+            setAttributeError("valueNull", true, i);
         } else {
-            setAttributeError(key, false, index);
+            setAttributeError("valueNull", false, i);
+        }
+    };
+
+    const checkNameNull = (value, i) => {
+        if (!value && listAttribute[i].value) {
+            setAttributeError("nameNull", true, i);
+        } else {
+            setAttributeError("nameNull", false, i);
         }
     };
 
@@ -104,15 +130,21 @@ const TableAddAttribute = ({
                         <input
                             placeholder="Name"
                             value={item?.type}
-                            className={cx("input", listAttributeError[idx]?.nameDuplicate && "invalid")}
+                            className={cx(
+                                "input",
+                                (listAttributeError[idx]?.nameDuplicate || listAttributeError[idx]?.nameNull) &&
+                                    "invalid",
+                            )}
                             onChange={e => {
                                 setDetailAttribute("type", e.target.value, idx);
-                                checkNameAttributeDuplicate("nameDuplicate", e.target.value, idx);
+                                checkNameAttributeDuplicate(e.target.value, idx);
                             }}
+                            onBlur={() => checkValueNull(item.value, idx)}
                         />
-                        {listAttributeError[idx]?.nameDuplicate && (
+                        {(listAttributeError[idx]?.nameDuplicate && (
                             <div style={{ color: "#9e494d" }}>{"Duplicate"}</div>
-                        )}
+                        )) ||
+                            (listAttributeError[idx]?.nameNull && <div style={{ color: "#9e494d" }}>{"Invalid!"}</div>)}
                     </Col>
                     <Col xs={7} className={cx("data-cell")}>
                         {loadingUploadAttributeImg && indexImg === idx ? (
@@ -167,7 +199,11 @@ const TableAddAttribute = ({
                                         placeholder="String"
                                         value={item?.value}
                                         className={cx("input")}
-                                        onChange={e => setDetailAttribute("value", e.target.value, idx)}
+                                        onChange={e => {
+                                            setDetailAttribute("value", e.target.value, idx);
+                                            checkValueNull(e.target.value, idx);
+                                        }}
+                                        onBlur={() => checkNameNull(item.type, idx)}
                                     />
                                 ) : (
                                     <div>
@@ -187,8 +223,10 @@ const TableAddAttribute = ({
                                             className={cx("input")}
                                             onChange={e => {
                                                 setDetailAttribute("value", e.target.value, idx);
+                                                checkValueNull(e.target.value, idx);
                                             }}
                                             style={{ width: "50%", marginLeft: "5px" }}
+                                            onBlur={() => checkNameNull(item.type, idx)}
                                         />
                                         <span>&nbsp; or:</span>
                                         <span className={cx("image-upload")}>
@@ -206,7 +244,9 @@ const TableAddAttribute = ({
                                                 onChange={e => {
                                                     setIndexValue(idx);
                                                     handleUploadValueImage(e, idx);
+                                                    checkValueNull(e.target.value, idx);
                                                 }}
+                                                onBlur={() => checkNameNull(item.type, idx)}
                                             />
                                         </span>
                                     </div>

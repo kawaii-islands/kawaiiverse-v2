@@ -26,6 +26,7 @@ let oneAttribute = {
 
 const oneAttributeError = {
     nameDuplicate: false,
+    nameNull: false,
     valueNull: false,
 };
 
@@ -117,16 +118,6 @@ const MintNFTBox = ({
         setListCategoryDisplay(result);
     };
 
-	const checkValueNull = () => {
-		for (let i = 0; i < listAttributeError?.length; i++) {
-			if (!listAttribute[i].value) {
-				setAttributeError("valueNull", true, i);
-			} else {
-				setAttributeError("valueNull", false, i);
-			}
-		}
-	}
-
     return (
         <div className={cx("mintNFT-box")}>
             <div className={cx("main-box")}>
@@ -209,7 +200,7 @@ const MintNFTBox = ({
                                 setStateForNftData={setStateForNftData}
                                 listAttributeError={listAttributeError}
                                 setAttributeError={setAttributeError}
-								setListAttributeError={setListAttributeError}
+                                setListAttributeError={setListAttributeError}
                             />
                         </div>
                         <div
@@ -217,7 +208,6 @@ const MintNFTBox = ({
                             onClick={() => {
                                 setListAttribute([...listAttribute, oneAttribute]);
                                 setListAttributeError([...listAttributeError, oneAttributeError]);
-								checkValueNull();
                             }}
                         >
                             <img src={plusCircleIcon} alt="add-icon" className={cx("add-icon")} /> Add attribute
