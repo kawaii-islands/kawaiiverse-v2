@@ -117,7 +117,7 @@ const NFTDetail = () => {
             return;
         }
 
-		setOpenBuyNftModal(false);
+        setOpenBuyNftModal(false);
 
         try {
             if (chainId !== BSC_CHAIN_ID) {
@@ -298,21 +298,31 @@ const NFTDetail = () => {
                         </div>
                         <div className={cx("content", "content-attribute")}>
                             <span className={cx("title")}>Attributes:</span>
-                            {nftInfo.attributes?.length > 0 && (
-                                <div className={cx("list-attribute")}>
-                                    {nftInfo.attributes?.map((info, ind) => (
-                                        <div className={cx("one-attribute")} key={`attribute-${ind}`}>
-                                            <div className={cx("info-image")}>
-                                                <img src={info?.image || defaultImage} alt="attr" />
+                            <div className={cx("list-attribute")}>
+                                {nftInfo?.attributes.length > 0 &&
+                                    nftInfo?.attributes
+                                        .filter(item => item.valueType === "Image")
+                                        .map((info, ind) => (
+                                            <div className={cx("one-attribute")} key={ind}>
+                                                <div className={cx("attr-header")}>
+                                                    <img
+                                                        src={info?.image ? info?.image : defaultImage}
+                                                        alt="attr"
+                                                        className={cx("attr-image")}
+                                                    />
+                                                    <div className={cx("attr-name")}>{info?.type}</div>
+                                                </div>
+
+                                                <div className={cx("attr-value")}>
+                                                    <img
+                                                        src={info?.value ? info?.value : defaultImage}
+                                                        alt="attr"
+                                                        className={cx("value-image")}
+                                                    />
+                                                </div>
                                             </div>
-                                            <div className={cx("info-attribute")}>
-                                                <div className={cx("info-header")}>{info?.type}</div>
-                                                <div className={cx("info-text")}>{info?.value}</div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                                        ))}
+                            </div>
                         </div>
                     </Col>
                 </Row>

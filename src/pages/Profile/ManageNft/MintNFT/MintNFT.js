@@ -50,7 +50,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                 type: "",
                 value: "",
                 image: "",
-                valueType: "",
+                valueType: "Text",
             },
         ],
         rarity: "",

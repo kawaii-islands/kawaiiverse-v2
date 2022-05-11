@@ -276,7 +276,9 @@ const Profile = () => {
             // setLoadingListNFT(false);
         }
     };
-    let displayList = listSearch.length > 0 || search !== "" ? listSearch : listNft;
+    let displayListTemp = listSearch.length > 0 || search !== "" ? listSearch : listNft;
+	let displayList = displayListTemp.reverse();
+	
     const menu = (
         <Menu className={cx("menu-dropdown")}>
             <Menu.Item

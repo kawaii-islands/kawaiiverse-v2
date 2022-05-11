@@ -44,7 +44,7 @@
 
                 .left {
                     width: 320px;
-                    height: 320px;
+					height: 320px;
                     border-radius: 8px;
                     border: 1px solid #ad99e7;
                     margin-right: 40px;
@@ -119,28 +119,46 @@
                             flex-wrap: wrap;
 
                             .one-attribute {
-                                display: flex;
-                                align-items: center;
                                 color: #ffffff;
                                 min-width: 50%;
-                                padding: 10px;
-                                
 
-                                .info-image {
-                                    margin-right: 16px;
+                                .attr-header {
+                                    display: flex;
+                                    align-items: center;
+
+                                    .attr-image {
+                                        border-radius: 3px;
+                                        width: 16px;
+                                        height: 16px;
+                                        margin-right: 4px;
+										background-color: #ffffff;
+                                    }
+
+                                    .attr-name {
+                                        font-style: normal;
+                                        font-weight: 500;
+                                        font-size: 12px;
+                                        line-height: 150%;
+                                        color: #ffffff;
+                                    }
                                 }
 
-                                .info-attribute {
-                                    .info-header {
-                                        font-weight: 500;
-                                        font-size: 16px;
-                                    }
+                                .attr-value {
+                                    font-weight: 500;
+                                    font-size: 22px;
+                                    line-height: 150%;
+                                    color: #ffffff;
+									margin-top: 8px;
 
-                                    .info-text {
-                                        font-weight: 300;
-                                        font-size: 14px;
-                                        line-height: 150%;
-                                    }
+									.value-image {
+										text-overflow: ellipsis;
+										white-space: nowrap;
+										overflow: hidden;
+										border-radius: 3px;
+                                        width: 32px;
+                                        height: 32px;
+										background-color: #ffffff;
+									}
                                 }
                             }
                         }
