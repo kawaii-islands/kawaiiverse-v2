@@ -100,7 +100,7 @@ const ListModal = ({ open, onHide, listNft, title, desc,selectNft }) => {
                     ))}
                 </div>
 
-                <div className={cx("pagination")}>
+               {displayList.length/pageSize > 1 &&  <div className={cx("pagination")}>
                     <Pagination
                         pageSize={pageSize}
                         showSizeChanger={false}
@@ -109,7 +109,7 @@ const ListModal = ({ open, onHide, listNft, title, desc,selectNft }) => {
                         onChange={page => setCurrentPage(page)}
                         itemRender={itemRender}
                     />
-                </div>
+                </div>}
             </div>
         </Modal>
     );

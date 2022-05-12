@@ -289,7 +289,7 @@ const ViewItemNFT = ({ isSellNFT, setIsSellNFT }) => {
                     />
                 )}
             </Row>
-            {gameItemList?.length > 0 && (
+            {displayList?.length/PAGE_SIZE > 1 && (
                 <div className={cx("pagination")}>
                     <Pagination
                         pageSize={PAGE_SIZE}
