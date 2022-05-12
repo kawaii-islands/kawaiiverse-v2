@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useLayoutEffect,useRef  } from "react";
+import React, { useEffect, useState, useLayoutEffect, useRef } from "react";
 import LoadingPage from "src/components/LoadingPage/LoadingPage";
 import MainLayout from "src/components/MainLayout";
 import styles from "./index.module.scss";
@@ -49,7 +49,6 @@ const Profile = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const firstUpdate = useRef(true);
     const handleSearch = e => {
-     
         setSearch(e.target.value);
         let listSearch = listNft.filter(nft => {
             if (nft.name) {
@@ -60,7 +59,7 @@ const Profile = () => {
             }
             return false;
         });
-        
+
         if (e.target.value === "") {
             setListSearch([]);
             return;
@@ -89,7 +88,6 @@ const Profile = () => {
         setGameSelected([]);
     };
 
-    
     useEffect(() => {
         getGameList();
     }, []);
@@ -97,11 +95,9 @@ const Profile = () => {
         if (firstUpdate.current) {
             firstUpdate.current = false;
             return;
-          }else{
-            
+        } else {
             logGameData();
-          }
-        
+        }
     }, [gameSelected]);
     const itemRender = (current, type, originalElement) => {
         if (type === "prev") {
@@ -113,7 +109,6 @@ const Profile = () => {
         return originalElement;
     };
 
-    
     const getGameItemLength = async gameAddress => {
         let length;
         length = await read("lengthSellNFT1155", BSC_CHAIN_ID, KAWAIIVERSE_STORE_ADDRESS, KAWAII_STORE_ABI, [
@@ -145,18 +140,17 @@ const Profile = () => {
         return mergedArray;
     };
 
-    const logGameData = async (a) => {
+    const logGameData = async a => {
         // setLoadingListNFT(true);
-        
+
         try {
             let game;
             if (gameSelected?.length) {
                 game = gameSelected;
-            } 
-            else{
+            } else {
                 game = gameList;
             }
-            if(a){
+            if (a) {
                 game = a;
             }
             const tmpGameArray = Array(game.length).fill(1);
@@ -169,15 +163,15 @@ const Profile = () => {
                         const gameItemData = await Promise.all(
                             tmpItemArray.map(async (nftId, index) => {
                                 let gameItem = await getGameItemData(game[idx].gameAddress, index);
-                                
+
                                 gameItem.index = index;
-                                gameItem.game = game[idx]; 
+                                gameItem.game = game[idx];
                                 return gameItem;
                             }),
                         );
                         let mergeArray = mergeArrayData(gameItemData, res.data.data);
                         mergeArray = mergeArray.filter(nft => {
-                            return nft.contract && ((Number(nft?.amount) - Number(nft?.alreadySale)) > 0)
+                            return nft.contract && Number(nft?.amount) - Number(nft?.alreadySale) > 0;
                         });
                         return mergeArray;
                     }
@@ -256,15 +250,13 @@ const Profile = () => {
                     let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
                     let res = await axios.get(`${URL}/v1/game/logo?contract=${gameAddress}`);
                     // console.log(gameAddress, gameName)
-                    if(res.status === 200 && res.data.data[0]){
-                        
+                    if (res.status === 200 && res.data.data[0]) {
                         return { gameAddress, gameName, logoUrl: res.data.data[0].logoUrl };
                     }
                     return { gameAddress, gameName };
                 }),
             );
 
-            
             logGameData(gameListData);
             setGameList(gameListData);
 
@@ -276,9 +268,8 @@ const Profile = () => {
             // setLoadingListNFT(false);
         }
     };
-    let displayListTemp = listSearch.length > 0 || search !== "" ? listSearch : listNft;
-	let displayList = displayListTemp.reverse();
-	
+    let displayList = listSearch.length > 0 || search !== "" ? listSearch : listNft;
+
     const menu = (
         <Menu className={cx("menu-dropdown")}>
             <Menu.Item
@@ -347,11 +338,10 @@ const Profile = () => {
                                 </Dropdown>
                             </div>
                         </div>
-						
+
                         <div className={cx("right-filter")}>
                             {gameSelected.map((game, idx) => (
                                 <div className={cx("filter-box")} key={game.gameAddress}>
-                                    
                                     <img
                                         className={cx("filter-box-image")}
                                         src={cancel}
@@ -362,9 +352,11 @@ const Profile = () => {
                                 </div>
                             ))}
 
-                            {gameSelected.length > 0 && <div className={cx("filter-clear")} onClick={handleClearFilter}>
-                                CLEAR ALL
-                            </div>}
+                            {gameSelected.length > 0 && (
+                                <div className={cx("filter-clear")} onClick={handleClearFilter}>
+                                    CLEAR ALL
+                                </div>
+                            )}
                         </div>
 
                         <Row gutter={[20, 20]} className={cx("list")}>
@@ -373,7 +365,9 @@ const Profile = () => {
                             ) : (
                                 <ListNft
                                     loading={loadingListNFT}
-                                    gameItemList={displayList.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)}
+                                    gameItemList={displayList
+                                        .reverse()
+                                        .slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)}
                                     place="marketplace"
                                     // gameSelected={address}
                                 />
