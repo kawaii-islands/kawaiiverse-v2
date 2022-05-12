@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./TableAddAttribute.module.scss";
 import cn from "classnames/bind";
 import { Col, Row, Spin } from "antd";
@@ -8,16 +8,29 @@ import uploadImageIcon from "src/assets/icons/uploadImage.svg";
 import defaultImage from "src/assets/icons/default_image.svg";
 import { Menu, Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
+import axios from "axios";
+import { URL } from "src/consts/constant";
 
 const cx = cn.bind(styles);
 const client = create("https://ipfs.infura.io:5001/api/v0");
 
-const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute, setStateForNftData }) => {
+const TableAddAttribute = ({
+    listAttribute,
+    setListAttribute,
+    setDetailAttribute,
+    listAttributeError,
+    setAttributeError,
+    setListAttributeError,
+    gameSelected,
+    listNft,
+	setListNft,
+}) => {
     const [loadingUploadAttributeImg, setLoadingUploadAttributeImg] = useState(false);
     const [loadingUploadValueImg, setLoadingUploadValueImg] = useState(false);
     const [indexImg, setIndexImg] = useState(0);
     const [indexValue, setIndexValue] = useState(0);
-    const [checkNameAttribute, setCheckNameAttribute] = useState(false);
+    const [listAttrCurrent, setListAttrCurrent] = useState([]);
+    const [listAttrBefore, setListAttrBefore] = useState([]);
 
     const handleUploadAttributeImage = async (e, idx) => {
         setLoadingUploadAttributeImg(true);
@@ -49,19 +62,84 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
         }
     };
 
-    const checkNameAttributeExist = value => {
-        let check = false;
-        if (value) {
-            for (let i = 0; i < listAttribute.length - 1; i++) {
-                if (listAttribute[i].type.toLowerCase() === value.toLowerCase()) {
-                    check = true;
-                    break;
-                }
-            }
+    const checkNameAttributeDuplicate = (value, index) => {
+        let listAttributeErrorCopy = [...listAttributeError];
+
+        if (!value && listAttribute[index].value) {
+            listAttributeErrorCopy[index] = { ...listAttributeErrorCopy[index], nameNull: true };
+            setListAttributeError(listAttributeErrorCopy);
+            return;
         }
 
-        setDetailAttribute("checkName", check);
-        console.log("check :>> ", check);
+        if (value) {
+            listAttributeErrorCopy[index] = { ...listAttributeErrorCopy[index], nameNull: false };
+            let checkDuplicate = [];
+            checkDuplicate = listAttribute?.filter(attr => attr.type.toLowerCase() === value.toLowerCase());
+            if (checkDuplicate.length) {
+                listAttributeErrorCopy[index] = { ...listAttributeErrorCopy[index], nameDuplicate: true };
+            } else {
+                listAttributeErrorCopy[index] = { ...listAttributeErrorCopy[index], nameDuplicate: false };
+            }
+
+            setListAttributeError(listAttributeErrorCopy);
+        }
+    };
+
+    const checkValueNull = (value, i) => {
+        if (!value && listAttribute[i].type) {
+            setAttributeError("valueNull", true, i);
+        } else {
+            setAttributeError("valueNull", false, i);
+        }
+    };
+
+    const checkNameNull = (value, i) => {
+        if (!value && listAttribute[i].value) {
+            setAttributeError("nameNull", true, i);
+        } else {
+            setAttributeError("nameNull", false, i);
+        }
+    };
+
+    const getListAttributeName = async keyword => {
+        let listAttrNameBefore = [];
+        let uniqueAttrNameBefore = [];
+
+        try {
+            const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
+            if (res.status === 200) {
+                res.data.data.map((item, index) => {
+                    item.attributes.map((attr, ind) => {
+                        if (keyword && attr.type.toLowerCase().includes(keyword.toLowerCase())) {
+                            listAttrNameBefore = [...listAttrNameBefore, attr];
+                        }
+                    });
+                });
+            }
+        } catch (err) {
+            console.log(err);
+        }
+
+        let tmpArr2 = listAttrNameBefore.filter(item => !listAttribute.find(i => i.type === item.type));
+        uniqueAttrNameBefore = [...new Set(tmpArr2)];
+        setListAttrBefore(uniqueAttrNameBefore);
+
+        let attrCurrent = [];
+        listNft.map((item, id) => {
+            item.attributes?.map(attr => {
+                if (keyword && attr.type.toLowerCase().includes(keyword.toLowerCase())) {
+                    attrCurrent = [...attrCurrent, attr];
+                }
+            });
+        });
+
+        let tmpArr1 = attrCurrent.filter(
+            item =>
+                !listAttribute.find(i => i.type === item.type) && !uniqueAttrNameBefore.find(i => i.type === item.type),
+        );
+        let uniqueAttrNameCurrent = [...new Set(tmpArr1)];
+
+        setListAttrCurrent(uniqueAttrNameCurrent);
     };
 
     const menu = (
@@ -74,6 +152,57 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
             </Menu.Item>
         </Menu>
     );
+
+    const menuAttrName = (
+        <Menu className={cx("menu-dropdown")}>
+            <Menu.ItemGroup title="Current Attribute Name">
+                {listAttrCurrent.map((attr, id) => (
+                    <Menu.Item
+                        key={`current-${id}`}
+                        onClick={() => handleSelectAttribute(attr.type, attr.image, "current")}
+                    >
+                        {attr.type}
+                    </Menu.Item>
+                ))}
+            </Menu.ItemGroup>
+            <Menu.ItemGroup title="Before Attribute Name">
+                {listAttrBefore.map((attr, id) => (
+                    <Menu.Item
+                        key={`before-${id}`}
+                        onClick={() => handleSelectAttribute(attr.type, attr.image, "before")}
+                    >
+                        {attr.type}
+                    </Menu.Item>
+                ))}
+            </Menu.ItemGroup>
+        </Menu>
+    );
+
+    const handleSelectAttribute = (type, image, typeAttr) => {
+        let listAttributeCopy = [...listAttribute];
+        listAttributeCopy[indexImg] = { ...listAttributeCopy[indexImg], type: type, image: image };
+        setListAttribute(listAttributeCopy);
+
+        if (typeAttr === "before") {
+            setAttributeError("disable", true, indexImg);
+        } else {
+            setAttributeError("disable", false, indexImg);
+        }
+    };
+
+	// const handleChangeImageCurrentAttr = (keyword, imageUrl) => {
+	// 	let tmpArray = listNft;
+
+	// 	listNft.map((item, id) => {
+    //         item.attributes?.map(attr => {
+    //             if (attr.type.toLowerCase() === keyword.toLowerCase()) {
+    //                 attr.image = imageUrl;
+    //             }
+    //         });
+    //     });
+
+	// 	setListNft(tmpArray);
+	// }
 
     return (
         <div className={cx("table")}>
@@ -97,16 +226,36 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                         className={cx("data-cell")}
                         style={{ flexDirection: "column", alignItems: "flex-start" }}
                     >
-                        <input
-                            placeholder="Name"
-                            value={item?.type}
-                            className={cx("input")}
-                            onChange={e => {
-                                setDetailAttribute("type", e.target.value, idx);
-                                // checkNameAttributeExist(e.target.value);
-                            }}
-                        />
-                        {/* <div style={{ color: "#9e494d" }}>{"Duplicate"}</div> */}
+                        <Dropdown
+                            overlay={menuAttrName}
+                            className={cx("drop-down")}
+                            trigger={["click"]}
+                            onClick={() => setIndexImg(idx)}
+                        >
+                            <div className={cx("drop-down-label")}>
+                                <input
+                                    placeholder="Name"
+                                    value={item?.type}
+                                    disabled={listAttributeError[idx]?.disable}
+                                    className={cx(
+                                        "input",
+                                        (listAttributeError[idx]?.nameDuplicate || listAttributeError[idx]?.nameNull) &&
+                                            "invalid",
+                                    )}
+                                    onChange={e => {
+                                        setDetailAttribute("type", e.target.value, idx);
+                                        checkNameAttributeDuplicate(e.target.value, idx);
+                                        getListAttributeName(e.target.value);
+                                    }}
+                                    onBlur={() => checkValueNull(item.value, idx)}
+                                />
+                            </div>
+                        </Dropdown>
+
+                        {(listAttributeError[idx]?.nameDuplicate && (
+                            <div style={{ color: "#9e494d" }}>{"Duplicate"}</div>
+                        )) ||
+                            (listAttributeError[idx]?.nameNull && <div style={{ color: "#9e494d" }}>{"Invalid!"}</div>)}
                     </Col>
                     <Col xs={7} className={cx("data-cell")}>
                         {loadingUploadAttributeImg && indexImg === idx ? (
@@ -122,6 +271,7 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                                 setDetailAttribute("image", e.target.value, idx);
                             }}
                             style={{ width: "50%", marginLeft: "5px" }}
+                            disabled={listAttributeError[idx]?.disable}
                         />
                         <span>&nbsp; or:</span>
                         <span className={cx("image-upload")}>
@@ -136,11 +286,16 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                                     setIndexImg(idx);
                                     handleUploadAttributeImage(e, idx);
                                 }}
+                                disabled={listAttributeError[idx]?.disable}
                             />
                         </span>
                     </Col>
-                    <Col xs={11} className={cx("data-cell")}>
-                        <div className={cx("content")}>
+                    <Col
+                        xs={11}
+                        className={cx("data-cell")}
+                        style={{ flexDirection: "column", alignItems: "flex-start" }}
+                    >
+                        <div className={cx("content", listAttributeError[idx]?.valueNull && "invalid")}>
                             <Dropdown
                                 overlay={menu}
                                 className={cx("drop-down")}
@@ -157,7 +312,11 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                                         placeholder="String"
                                         value={item?.value}
                                         className={cx("input")}
-                                        onChange={e => setDetailAttribute("value", e.target.value, idx)}
+                                        onChange={e => {
+                                            setDetailAttribute("value", e.target.value, idx);
+                                            checkValueNull(e.target.value, idx);
+                                        }}
+                                        onBlur={() => checkNameNull(item.type, idx)}
                                     />
                                 ) : (
                                     <div>
@@ -177,8 +336,10 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                                             className={cx("input")}
                                             onChange={e => {
                                                 setDetailAttribute("value", e.target.value, idx);
+                                                checkValueNull(e.target.value, idx);
                                             }}
                                             style={{ width: "50%", marginLeft: "5px" }}
+                                            onBlur={() => checkNameNull(item.type, idx)}
                                         />
                                         <span>&nbsp; or:</span>
                                         <span className={cx("image-upload")}>
@@ -196,21 +357,29 @@ const TableAddAttribute = ({ listAttribute, setListAttribute, setDetailAttribute
                                                 onChange={e => {
                                                     setIndexValue(idx);
                                                     handleUploadValueImage(e, idx);
+                                                    checkValueNull(e.target.value, idx);
                                                 }}
+                                                onBlur={() => checkNameNull(item.type, idx)}
                                             />
                                         </span>
                                     </div>
                                 )}
                             </div>
                         </div>
+                        {listAttributeError[idx]?.valueNull && (
+                            <div style={{ color: "#9e494d" }}>{"Please enter value!"}</div>
+                        )}
                     </Col>
                     <Col xs={2} className={cx("data-cell")} style={{ padding: "0px" }}>
                         <DeleteOutlinedIcon
                             className={cx("delete-icon")}
                             onClick={() => {
-                                let arr = [...listAttribute];
-                                arr.splice(idx, 1);
-                                setListAttribute(arr);
+                                let arr1 = [...listAttribute];
+                                let arr2 = [...listAttributeError];
+                                arr1.splice(idx, 1);
+                                arr2.splice(idx, 1);
+                                setListAttribute(arr1);
+                                setListAttributeError(arr2);
                             }}
                         />
                     </Col>

@@ -52,17 +52,47 @@ const DetailModal = ({ openDetailModal, onHide, selectedNft }) => {
                                 <span className={cx("title")}>Attributes:</span>
 
                                 <div className={cx("list-attribute")}>
-                                    {selectedNft?.attributes.map((info, ind) => (
-                                        <div className={cx("one-attribute")} key={ind}>
-                                            <div className={cx("info-image")}>
-                                                <img src={info?.image ? info?.image : defaultImage} alt="attr" />
+                                    {selectedNft?.attributes
+                                        .filter(item => item.valueType === "Text")
+                                        .map((info, ind) => (
+                                            <div className={cx("one-attribute")} key={ind}>
+                                                <div className={cx("attr-header")}>
+                                                    <img
+                                                        src={info?.image ? info?.image : defaultImage}
+                                                        alt="attr"
+                                                        className={cx("attr-image")}
+                                                    />
+                                                    <div className={cx("attr-name")}>{info?.type}</div>
+                                                </div>
+
+                                                <div className={cx("attr-value")}>{info?.value}</div>
                                             </div>
-                                            <div className={cx("info-attribute")}>
-                                                <div className={cx("info-header")}>{info?.type}</div>
-                                                <div className={cx("info-text")}>{info?.value}</div>
+                                        ))}
+                                </div>
+
+                                <div className={cx("list-attribute")}>
+                                    {selectedNft?.attributes
+                                        .filter(item => item.valueType === "Image")
+                                        .map((info, ind) => (
+                                            <div className={cx("one-attribute")} key={ind}>
+                                                <div className={cx("attr-header")}>
+                                                    <img
+                                                        src={info?.image ? info?.image : defaultImage}
+                                                        alt="attr"
+                                                        className={cx("attr-image")}
+                                                    />
+                                                    <div className={cx("attr-name")}>{info?.type}</div>
+                                                </div>
+
+                                                <div className={cx("attr-value")}>
+                                                    <img
+                                                        src={info?.value ? info?.value : defaultImage}
+                                                        alt="attr"
+                                                        className={cx("value-image")}
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
                                 </div>
                             </div>
                         </div>

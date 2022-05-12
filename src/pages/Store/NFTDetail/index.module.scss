@@ -94,8 +94,8 @@
                 color: #f6f7fb;
                 padding: 10px 30px;
                 width: fit-content;
-				font-size: 18px;
-				height: fit-content;
+                font-size: 18px;
+                height: fit-content;
             }
         }
 
@@ -135,26 +135,45 @@
                 flex-wrap: wrap;
 
                 .one-attribute {
-                    display: flex;
-                    align-items: center;
                     color: #ffffff;
                     min-width: 50%;
-                    padding: 10px;
 
-                    .info-image {
-                        margin-right: 16px;
-                    }
+                    .attr-header {
+                        display: flex;
+                        align-items: center;
 
-                    .info-attribute {
-                        .info-header {
-                            font-weight: 500;
-                            font-size: 16px;
+                        .attr-image {
+                            border-radius: 3px;
+                            width: 16px;
+                            height: 16px;
+                            margin-right: 4px;
+                            background-color: #ffffff;
                         }
 
-                        .info-text {
-                            font-weight: 300;
-                            font-size: 14px;
+                        .attr-name {
+                            font-style: normal;
+                            font-weight: 500;
+                            font-size: 12px;
                             line-height: 150%;
+                            color: #ffffff;
+                        }
+                    }
+
+                    .attr-value {
+                        font-weight: 500;
+                        font-size: 22px;
+                        line-height: 150%;
+                        color: #ffffff;
+                        margin-top: 8px;
+
+                        .value-image {
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            border-radius: 3px;
+                            width: 32px;
+                            height: 32px;
+                            background-color: #ffffff;
                         }
                     }
                 }
@@ -199,6 +218,6 @@
 
 .price-input::-webkit-outer-spin-button,
 .price-input::-webkit-inner-spin-button {
-	-webkit-appearance: none;
-	margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }

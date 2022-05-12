@@ -50,7 +50,7 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
                 type: "",
                 value: "",
                 image: "",
-                valueType: "",
+                valueType: "Text",
             },
         ],
         rarity: "",
@@ -102,12 +102,12 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
         };
 
         if (hash) {
-			checkTransactionCreateToken();
-		}
+            checkTransactionCreateToken();
+        }
     }, []);
 
     useEffect(() => {
-		const listPending = window.localStorage.getItem("listNftPending");
+        const listPending = window.localStorage.getItem("listNftPending");
         if (stepLoading === 3 && listPending.length > 0) {
             setLoadingSubmit(false);
             setShowPendingModal(true);
@@ -193,6 +193,18 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
             if (check?.length > 0 || checkDuplicate?.length > 0) {
                 flag = true;
             }
+
+            for (let j = 0; j < data[i].attributes.length; j++) {
+				if (data[i].attributes[j].type && !data[i].attributes[j].value) {
+					flag = true;
+					break;
+				}
+
+				if (!data[i].attributes[j].type && data[i].attributes[j].value) {
+					flag = true;
+					break;
+				}
+			}
         }
 
         setListErr(arr);
@@ -343,9 +355,9 @@ const MintNFT = ({ setIsMintNFT, gameSelected }) => {
             if (res.status === 200) {
                 console.log(res);
                 setStepLoading(2);
-				setListNft([]);
+                setListNft([]);
                 window.localStorage.setItem("listNftPending", []);
-                window.localStorage.setItem("hashCreateToken", '');
+                window.localStorage.setItem("hashCreateToken", "");
             }
         } catch (err) {
             console.log(err.response);
