@@ -10,6 +10,7 @@ import { Menu, Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { URL } from "src/consts/constant";
+import _ from "lodash";
 
 const cx = cn.bind(styles);
 const client = create("https://ipfs.infura.io:5001/api/v0");
@@ -23,7 +24,7 @@ const TableAddAttribute = ({
     setListAttributeError,
     gameSelected,
     listNft,
-	setListNft,
+    setListNft,
 }) => {
     const [loadingUploadAttributeImg, setLoadingUploadAttributeImg] = useState(false);
     const [loadingUploadValueImg, setLoadingUploadValueImg] = useState(false);
@@ -102,6 +103,12 @@ const TableAddAttribute = ({
     };
 
     const getListAttributeName = async keyword => {
+        if (!keyword) {
+            setListAttrBefore([]);
+            setListAttrCurrent([]);
+            return;
+        }
+
         let listAttrNameBefore = [];
         let uniqueAttrNameBefore = [];
 
@@ -110,7 +117,7 @@ const TableAddAttribute = ({
             if (res.status === 200) {
                 res.data.data.map((item, index) => {
                     item.attributes.map((attr, ind) => {
-                        if (keyword && attr.type.toLowerCase().includes(keyword.toLowerCase())) {
+                        if (attr.type.toLowerCase().includes(keyword.toLowerCase())) {
                             listAttrNameBefore = [...listAttrNameBefore, attr];
                         }
                     });
@@ -121,13 +128,13 @@ const TableAddAttribute = ({
         }
 
         let tmpArr2 = listAttrNameBefore.filter(item => !listAttribute.find(i => i.type === item.type));
-        uniqueAttrNameBefore = [...new Set(tmpArr2)];
+        uniqueAttrNameBefore = _.uniqBy(tmpArr2, "type");
         setListAttrBefore(uniqueAttrNameBefore);
 
         let attrCurrent = [];
         listNft.map((item, id) => {
             item.attributes?.map(attr => {
-                if (keyword && attr.type.toLowerCase().includes(keyword.toLowerCase())) {
+                if (attr.type.toLowerCase().includes(keyword.toLowerCase())) {
                     attrCurrent = [...attrCurrent, attr];
                 }
             });
@@ -137,7 +144,7 @@ const TableAddAttribute = ({
             item =>
                 !listAttribute.find(i => i.type === item.type) && !uniqueAttrNameBefore.find(i => i.type === item.type),
         );
-        let uniqueAttrNameCurrent = [...new Set(tmpArr1)];
+        let uniqueAttrNameCurrent = _.uniqBy(tmpArr1, "type");
 
         setListAttrCurrent(uniqueAttrNameCurrent);
     };
@@ -159,7 +166,7 @@ const TableAddAttribute = ({
                 {listAttrCurrent.map((attr, id) => (
                     <Menu.Item
                         key={`current-${id}`}
-                        onClick={() => handleSelectAttribute(attr.type, attr.image, "current")}
+                        onClick={() => handleSelectAttribute(attr.type, attr.image, "current", attr.valueType)}
                     >
                         {attr.type}
                     </Menu.Item>
@@ -169,7 +176,7 @@ const TableAddAttribute = ({
                 {listAttrBefore.map((attr, id) => (
                     <Menu.Item
                         key={`before-${id}`}
-                        onClick={() => handleSelectAttribute(attr.type, attr.image, "before")}
+                        onClick={() => handleSelectAttribute(attr.type, attr.image, "before", attr.valueType)}
                     >
                         {attr.type}
                     </Menu.Item>
@@ -178,9 +185,17 @@ const TableAddAttribute = ({
         </Menu>
     );
 
-    const handleSelectAttribute = (type, image, typeAttr) => {
+    const handleSelectAttribute = (type, image, typeAttr, valueType) => {
+        setListAttrBefore([]);
+        setListAttrCurrent([]);
+
         let listAttributeCopy = [...listAttribute];
-        listAttributeCopy[indexImg] = { ...listAttributeCopy[indexImg], type: type, image: image };
+        listAttributeCopy[indexImg] = {
+            ...listAttributeCopy[indexImg],
+            type: type,
+            image: image,
+            valueType: valueType,
+        };
         setListAttribute(listAttributeCopy);
 
         if (typeAttr === "before") {
@@ -190,10 +205,10 @@ const TableAddAttribute = ({
         }
     };
 
-	// const handleChangeImageCurrentAttr = (keyword, imageUrl) => {
-	// 	let tmpArray = listNft;
+    // const handleChangeImageCurrentAttr = (keyword, imageUrl) => {
+    // 	let tmpArray = listNft;
 
-	// 	listNft.map((item, id) => {
+    // 	listNft.map((item, id) => {
     //         item.attributes?.map(attr => {
     //             if (attr.type.toLowerCase() === keyword.toLowerCase()) {
     //                 attr.image = imageUrl;
@@ -201,8 +216,8 @@ const TableAddAttribute = ({
     //         });
     //     });
 
-	// 	setListNft(tmpArray);
-	// }
+    // 	setListNft(tmpArray);
+    // }
 
     return (
         <div className={cx("table")}>
@@ -261,34 +276,44 @@ const TableAddAttribute = ({
                         {loadingUploadAttributeImg && indexImg === idx ? (
                             <Spin style={{ marginLeft: "10px" }} size="small" />
                         ) : (
-                            <img src={item?.image ? item?.image : defaultImage} alt="nft-icon" width={20} height={20} />
-                        )}
-                        <input
-                            value={item?.image}
-                            placeholder="String"
-                            className={cx("input")}
-                            onChange={e => {
-                                setDetailAttribute("image", e.target.value, idx);
-                            }}
-                            style={{ width: "50%", marginLeft: "5px" }}
-                            disabled={listAttributeError[idx]?.disable}
-                        />
-                        <span>&nbsp; or:</span>
-                        <span className={cx("image-upload")}>
-                            <label htmlFor={`attr-image-${idx}`}>
-                                <img src={uploadImageIcon} alt="upload-img" className={cx("upload-img-icon")} />
-                            </label>
-                            <input
-                                id={`attr-image-${idx}`}
-                                type="file"
-                                accept="image/*"
-                                onChange={e => {
-                                    setIndexImg(idx);
-                                    handleUploadAttributeImage(e, idx);
-                                }}
-                                disabled={listAttributeError[idx]?.disable}
+                            <img
+                                src={item?.image ? item?.image : defaultImage}
+                                alt="nft-icon"
+                                width={listAttributeError[idx]?.disable ? 32 : 20}
+                                height={listAttributeError[idx]?.disable ? 32 : 20}
                             />
-                        </span>
+                        )}
+                        {!listAttributeError[idx]?.disable && (
+                            <input
+                                value={item?.image}
+                                placeholder="String"
+                                className={cx("input")}
+                                onChange={e => {
+                                    setDetailAttribute("image", e.target.value, idx);
+                                }}
+                                style={{ width: "50%", marginLeft: "5px" }}
+                            />
+                        )}
+
+                        {!listAttributeError[idx]?.disable && (
+                            <>
+                                <span>&nbsp; or:</span>
+                                <span className={cx("image-upload")}>
+                                    <label htmlFor={`attr-image-${idx}`}>
+                                        <img src={uploadImageIcon} alt="upload-img" className={cx("upload-img-icon")} />
+                                    </label>
+                                    <input
+                                        id={`attr-image-${idx}`}
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={e => {
+                                            setIndexImg(idx);
+                                            handleUploadAttributeImage(e, idx);
+                                        }}
+                                    />
+                                </span>
+                            </>
+                        )}
                     </Col>
                     <Col
                         xs={11}
@@ -301,9 +326,11 @@ const TableAddAttribute = ({
                                 className={cx("drop-down")}
                                 trigger={["click"]}
                                 onClick={() => setIndexValue(idx)}
+                                disabled={listAttributeError[idx]?.disable}
                             >
                                 <div className={cx("drop-down-label")}>
-                                    <span>{item?.valueType || "Type"}</span> <DownOutlined />
+                                    <span>{item?.valueType || "Type"}</span>{" "}
+                                    {!listAttributeError[idx]?.disable && <DownOutlined />}
                                 </div>
                             </Dropdown>
                             <div className={cx("input-box")}>
