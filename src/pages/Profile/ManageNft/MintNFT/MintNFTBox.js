@@ -28,6 +28,7 @@ const oneAttributeError = {
     nameDuplicate: false,
     nameNull: false,
     valueNull: false,
+	disable: false,
 };
 
 const client = create("https://ipfs.infura.io:5001/api/v0");
@@ -201,6 +202,9 @@ const MintNFTBox = ({
                                 listAttributeError={listAttributeError}
                                 setAttributeError={setAttributeError}
                                 setListAttributeError={setListAttributeError}
+								gameSelected={gameSelected}
+								listNft={listNft}
+								setListNft={setListNft}
                             />
                         </div>
                         <div
