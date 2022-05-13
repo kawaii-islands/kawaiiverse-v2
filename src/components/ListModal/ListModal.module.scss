@@ -3,12 +3,19 @@ $mobile: 576px;
 // $break-point-1: 1180px;
 $break-point-2: 912px;
 $break-point-3: 767px;
+.modal{
+    :global{
+        .modal-content{
+            transform: translate(-50%, 0) !important;
+        }
+    }
+}
 .modal-style {
     background: #ebe3ff;
     border-radius: 8px;
     width: 1080px;
-    margin: 60px auto;
-    padding: 20px;
+    // margin: 60px auto;
+    // padding: 20px;
     height: fit-content;
 
     .close-icon {
@@ -28,7 +35,7 @@ $break-point-3: 767px;
         font-weight: 500;
         font-size: 16px !important;
         @media (max-width: $break-point-3) {
-          margin: 20px 0px;
+            margin: 20px 0px;
         }
     }
     .title {
@@ -70,7 +77,25 @@ $break-point-3: 767px;
             cursor: pointer;
             margin-right: 20px;
             margin-bottom: 20px;
+            opacity: 0.75;
+            position: relative;
+            &-active {
+                opacity: 1;
+            }
+            .no-check {
+                display: none;
+            }
+            .check {
+                display: block;
+                position: absolute;
+                top: -30px;
+                right: -20px;
 
+                img {
+                    width: 60px;
+                    height: 60px;
+                }
+            }
             .top {
                 border-bottom: 1px solid #ad99e7;
                 box-sizing: border-box;
@@ -89,7 +114,6 @@ $break-point-3: 767px;
                     width: 100%;
                     height: 100%;
                     border-radius: 6px 6px 0px 0px;
-                
                 }
             }
 
@@ -113,15 +137,24 @@ $break-point-3: 767px;
             }
         }
     }
-
+    .ok {
+        width: fit-content;
+        margin: auto;
+        margin-top: 20px;
+        button {
+            background: blueviolet;
+            color: #fff;
+            padding: 8px 12px;
+        }
+    }
     .pagination {
         text-align: center;
         margin-top: 0px;
-        :global{
-            .ant-pagination-item-active{
+        :global {
+            .ant-pagination-item-active {
                 transform: scale(1.1);
                 background: linear-gradient(180deg, #6f08fe 0%, #513e7d 100%) !important;
-                a{
+                a {
                     // color: red !important;
                 }
             }
