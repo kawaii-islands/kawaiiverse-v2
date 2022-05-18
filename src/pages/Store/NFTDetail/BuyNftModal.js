@@ -16,6 +16,14 @@ const web3 = new Web3(BSC_rpcUrls);
 const cx = cn.bind(styles);
 
 const BuyNftModal = ({ open, onHide, nftInfo, amountBuy, setAmountBuy, buyNft }) => {
+    const handleInput = (e) => {
+        const value = Number(e.target.value);
+        if(value < 0 || (value > (Number(nftInfo?.amount) - Number(nftInfo?.alreadySale) )) ){
+            return;
+        }
+        setAmountBuy(e.target.value)
+
+    }
     return (
         <Modal show={open} onHide={onHide} dialogClassName={cx("modal-box")} centered>
             <Modal.Body className={cx("modal-body")}>
@@ -61,9 +69,10 @@ const BuyNftModal = ({ open, onHide, nftInfo, amountBuy, setAmountBuy, buyNft })
                                 className={cx("input")}
                                 placeholder="0"
                                 type="number"
-                                min={0}
-                                onChange={e => setAmountBuy(e.target.value)}
+                                min="0"
+                                onChange={handleInput}
                                 pattern="^[1-9][0-9]*$"
+                                value={amountBuy}
                             />
                             {/* <div className={cx("total-price")}>
                                 <span style={{ color: "#4200ff" }}>

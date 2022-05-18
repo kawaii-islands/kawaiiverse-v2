@@ -18,17 +18,11 @@ const Item = ({
     addItem,
     submitted,
     setSubmitted,
-    rowItem,
-    setRowItem,
-    success,
-    setSuccess
-}) => {
     
-    const [nft, setNft] = useState({});
-    const [info, setInfo] = useState({
-        price: 0,
-        quantity: 0,
-    });
+    success,
+    setSuccess,
+    nft,
+}) => {
     const [showError, setShowError] = useState({
         price: false,
         quantity: false,
@@ -36,68 +30,79 @@ const Item = ({
     const [showModal, setShowModal] = useState(false);
     const [deleted, setDeleted] = useState(false);
 
-    const selectNft = nft => {
-        setNft({ ...nft });
-        setShowModal(false);
-        setListSell([...listSell, nft]);
-        let newList = [...list];
-        newList = newList.filter(item => item._id !== nft._id);
-        setList(newList);
-        setSubmitted(false);
-        setRowItem(rowItem + 1);
-        setShowError({price: false, quantity: false})
-        // setSuccess(false);
-    };
+    useEffect(() => {
+        if (success) {
+            setSubmitted(false);
 
+            setDeleted(false);
+        }
+    }, [success]);
     useEffect(() => {
         let newError = { ...showError };
-        if ((info.price === 0 || info.price === "0") && submitted) {
+        
+        if ((!nft.price || !nft.price === "0" || nft.price === 0) && submitted) {
             newError.price = true;
         }
-        if ((info.quantity === 0 || info.quantity === "0") && submitted) {
+        if ((!nft.quantity  || !nft.quantity === "0" || nft.quantity === 0) && submitted) {
             newError.quantity = true;
         }
-        setShowError(newError);
+        
+        setShowError({...newError});
     }, [submitted]);
-    useEffect(() => {
-        if(success){
-            setInfo({price: 0, quantity: 0});
-            setSubmitted(false);
-            
-            setDeleted(false);
-            setNft({})
-        }
-    }, [success])
-    
+    // const selectNft = nft => {
+    //     setNft({ ...nft });
+    //     setShowModal(false);
+    //     setListSell([...listSell, nft]);
+    //     let newList = [...list];
+    //     newList = newList.filter(item => item._id !== nft._id);
+    //     setList(newList);
+    //     setSubmitted(false);
+    //     setRowItem(rowItem + 1);
+    //     setShowError({price: false, quantity: false})
+    //     // setSuccess(false);
+    // };
+
+    const selectNft = listNft => {
+        setListSell([...listSell, ...listNft]);
+        
+        setShowModal(false);
+        setSubmitted(false);
+        setShowError({price: false, quantity: false});
+    };
 
     const handleInput = e => {
-        if (!nft._id) {
-            return;
-        }
+        // if (!nft._id) {
+        //     return;
+        // }
         // const pattern = /^0[0-9]/;
         // console.log();
         // if(pattern.test(e.target.value)){
         //     console.log(Number(e.target.value).toString());
         // }
-        setShowError({ ...showError, [e.target.name]: false });
-        // setSubmitted(false);
+        if(Number(e.target.value) === 0){
+            setShowError({ ...showError, [e.target.name]: true });
+        }else{
+            setShowError({ ...showError, [e.target.name]: false });
+        }
+        
+        setSubmitted(false);
         if (e.target.name === "quantity") {
             if (Number(e.target.value) > nft.supply) return;
         }
-        setInfo({ ...info, [e.target.name]: Number(e.target.value).toString() });
-        setNft({ ...nft, [e.target.name]: Number(e.target.value).toString() });
         let index;
         const updateNft = listSell.filter((item, idx) => {
-            if (item._id === nft._id) {
+            if (item.tokenId === nft.tokenId) {
                 index = idx;
-                return item._id === nft._id;
+                return item.tokenId === nft.tokenId;
             }
             return false;
         });
-        updateNft[0][e.target.name] = Number(e.target.value).toString();
+        const updateNft2 = JSON.parse(JSON.stringify(updateNft))
+        // clone deep
+        updateNft2[0][e.target.name] = Number(e.target.value).toString();
         const newList = listSell.map((item, idx) => {
             if (idx === index) {
-                item = updateNft[0];
+                item = updateNft2[0];
             }
             return item;
         });
@@ -105,34 +110,35 @@ const Item = ({
     };
 
     const changeQuantity = name => {
-        if (!nft._id) {
+        if (!nft.tokenId) {
             return;
         }
+        nft.quantity = nft.quantity || 0;
+
         // setShowError(false);
         setShowError({ ...showError, quantity: false });
-        // setSubmitted(false);
+        setSubmitted(false);
 
         let index;
         const updateNft = listSell.filter((item, idx) => {
-            if (item._id === nft._id) {
+            if (item.tokenId === nft.tokenId) {
                 index = idx;
-                return item._id === nft._id;
+                return item.tokenId === nft.tokenId;
             }
             return false;
         });
+        const updateNft2 = JSON.parse(JSON.stringify(updateNft));
+        // clone deep
+
         if (name === "minus") {
-            setInfo({ ...info, quantity: Math.max(info.quantity - 1, 0) });
-            setNft({ ...nft, quantity: Math.max(info.quantity - 1, 0) });
-            updateNft[0]["quantity"] = Math.max(info.quantity - 1, 0);
+            updateNft[0]["quantity"] = Math.max(Number(nft.quantity) - 1, 0);
         }
         if (name === "plus") {
-            setInfo({ ...info, quantity: Math.min(info.quantity + 1, nft.supply) });
-            setNft({ ...nft, quantity: Math.min(info.quantity + 1, nft.supply) });
-            updateNft[0]["quantity"] = Math.min(info.quantity + 1, nft.supply);
+            updateNft[0]["quantity"] = Math.min(Number(nft.quantity) + 1, nft.supply);
         }
         const newList = listSell.map((item, idx) => {
             if (idx === index) {
-                item = updateNft[0];
+                item = updateNft2[0];
             }
             return item;
         });
@@ -143,26 +149,24 @@ const Item = ({
     const deleteRow = nft => {
         let newList = [...listSell];
         newList = newList.filter((item, idx) => {
-            return item._id !== nft._id;
+            return item.tokenId !== nft.tokenId;
         });
-        nft.amount = 0;
-        nft.price = 0;
-        setList([...list, nft]);
 
+        
+        
+        
         setListSell([...newList]);
         setCanAdd(true);
-        setNft({});
-        setInfo({ price: 0, quantity: 0 });
-        if (index + 1 < rowItem) {
-            setDeleted(true);
-            setRowItem(rowItem - 1);
-            return;
-        }
-        setRowItem(rowItem - 1);
+        
+        
     };
+    list = list.filter(function (val) {
+        return listSell.indexOf(val) === -1;
+    });
+    
     return (
         <>
-            <Row className={cx("container", (deleted && !success) && "container-hide")}>
+            <Row className={cx("container", deleted && !success && "container-hide")}>
                 {!nft._id ? (
                     <div className={cx("add")} onClick={() => setShowModal(true)}>
                         <img src={addRowItem} alt="add" className={cx("add-icon")} />{" "}
@@ -184,7 +188,7 @@ const Item = ({
                             <Col span={4} style={{ textAlign: "center" }} className={cx("input-wrapper")}>
                                 <input
                                     className={cx("price-input", showError.price && "error-input")}
-                                    value={info.price}
+                                    value={nft.price || 0}
                                     min={0}
                                     // disabled={nft._id ? true : false}
                                     // disabled={true}
@@ -203,7 +207,7 @@ const Item = ({
                                         -
                                     </div>
                                     <input
-                                        value={info.quantity}
+                                        value={nft.quantity || 0}
                                         min={0}
                                         max={nft.supply || 0}
                                         name="quantity"
@@ -240,9 +244,7 @@ const Item = ({
                                 {showError.price && <div className={cx("error")}>Price greater than 0</div>}
                             </Col>
                             <Col span={5} style={{ textAlign: "center" }}>
-                                {showError.quantity && (
-                                    <div className={cx("error")}>Quantity greater than 0</div>
-                                )}
+                                {showError.quantity && <div className={cx("error")}>Quantity greater than 0</div>}
                             </Col>
                             <Col span={3} style={{ textAlign: "center" }}></Col>
                             <Col span={3} style={{ textAlign: "center" }}></Col>

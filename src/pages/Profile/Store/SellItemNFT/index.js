@@ -28,7 +28,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
     const history = useHistory();
     const [list, setList] = useState([]);
     const [listSell, setListSell] = useState([]);
-    const [rowItem, setRowItem] = useState(1);
+    
     const [canAdd, setCanAdd] = useState(false);
 
     const [error, setError] = useState(false);
@@ -56,7 +56,6 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             setLoadingGetList(true);
             const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
             const gameList = await getGameList();
-            console.log(gameList);
             let nftSaleList = await getNftList(gameList);
             
             nftSaleList = nftSaleList.filter(nft => {
@@ -97,7 +96,6 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                     KAWAII_STORE_ABI,
                     [],
                 );
-                console.log("totalGame : ",totalGame)
                 const tmpArray = Array.from({ length: totalGame }, (v, i) => i);
                 const gameListData = await Promise.all(
                     tmpArray.map(async (nftId, index) => {
@@ -174,13 +172,11 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
 
     const addItem = () => {
         if (!canAdd) return;
-        setRowItem(rowItem + 1);
+        
         setCanAdd(false);
     };
 
     const sellNft = async () => {
-        console.log(listSell);
-        // return;
         if (listSell?.length === 0) return;
         setSubmitted(true);
         let pass = true;
@@ -190,6 +186,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
         if (!pass) {
             return;
         }
+        
         try {
            
             if (chainId !== BSC_CHAIN_ID) {
@@ -248,14 +245,14 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 owner: account,
                 sign: sign,
             };
-            console.log(JSON.stringify(bodyParams));
+            
 
             // const res = await axios.post(`${URL}/v1/sale`, bodyParams);
             // console.log(res);
             setStepLoading(2);
             setSubmitted(false);
             setListSell([]);
-            setRowItem(1);
+            getListNft();
             setSuccess(true);
         } catch (err) {
             console.log(err);
@@ -325,14 +322,13 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 {loadingGetList ? (
                     <Spin className={cx("spin")} />
                 ) : (
-                    new Array(rowItem)
-                        .fill()
+                    [...listSell, 1]
                         .map((i, idx) => (
                             <Item
+                                nft = {i}
                                 setList={setList}
                                 setCanAdd={setCanAdd}
-                                setRowItem={setRowItem}
-                                rowItem={rowItem}
+                                
                                 addItem={addItem}
                                 submitted={submitted}
                                 setSubmitted={setSubmitted}

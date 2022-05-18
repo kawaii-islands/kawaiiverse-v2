@@ -469,7 +469,7 @@ const CreateGame = () => {
 
                     {componentGameList}
                 </Grid>
-                <div className={cx("pagination")}>
+                {totalGame/PAGE_SIZE > 1 && <div className={cx("pagination")}>
                     <Pagination
                         pageSize={PAGE_SIZE}
                         showSizeChanger={false}
@@ -478,7 +478,7 @@ const CreateGame = () => {
                         onChange={page => setCurrentPage(page)}
                         itemRender={itemRender}
                     />
-                </div>
+                </div>}
                 <Modal open={open} onClose={handleClose}>
                     <div className={cx("modal-style")}>{componentModal}</div>
                 </Modal>

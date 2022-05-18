@@ -184,7 +184,7 @@ const ViewNFT = ({ gameSelected, setIsMintNFT }) => {
                 )}
             </Row>
 
-            {listNft?.length > 0 && (
+            {listNft?.length/pageSize > 1 && (
                 <div className={cx("pagination")}>
                     <Pagination
                         pageSize={pageSize}

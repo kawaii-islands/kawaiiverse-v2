@@ -1,4 +1,5 @@
-import { Modal } from "@mui/material";
+// import { Modal } from "@mui/material";
+import Modal from 'react-bootstrap/Modal';
 import React, { useState } from "react";
 import styles from "./ListModal.module.scss";
 import cn from "classnames/bind";
@@ -7,15 +8,16 @@ import closeIcon from "src/assets/icons/close-icon.svg";
 import { Pagination } from "antd";
 import { InputAdornment, TextField, Input, Button } from "@mui/material";
 import { Search as SearchIcon } from "@material-ui/icons";
-
+import checkIcon from "src/assets/images/success.png";
 const cx = cn.bind(styles);
 
 const pageSize = 4;
 
-const ListModal = ({ open, onHide, listNft, title, desc,selectNft }) => {
+const ListModal = ({ open, onHide, listNft, title, desc, selectNft }) => {
     const [currentPage, setCurrentPage] = useState(1);
     // const [openDetailModal, setOpenDetailModal] = useState(false);
     // const [selectedNft, setSelectedNft] = useState();
+    const [listSelected, setListSelected] = useState([]);
     const [search, setSearch] = useState("");
     const [listSearch, setListSearch] = useState([]);
     const itemRender = (current, type, originalElement) => {
@@ -27,7 +29,7 @@ const ListModal = ({ open, onHide, listNft, title, desc,selectNft }) => {
         }
         return originalElement;
     };
-    const handleSearch = (e) => {
+    const handleSearch = e => {
         setSearch(e.target.value);
         let listSearch = listNft.filter(nft => {
             if (nft.name) {
@@ -43,11 +45,29 @@ const ListModal = ({ open, onHide, listNft, title, desc,selectNft }) => {
             return;
         }
         setListSearch([...listSearch]);
+    };
+    const clickNft = nft => {
+        const { tokenId } = nft;
+        let list = [...listSelected];
+        let isExist = listSelected.find(nft => nft.tokenId === tokenId);
+        if (!isExist) {
+            list.push(nft);
+        } else {
+            list = list.filter(nft => nft.tokenId !== tokenId);
+        }
+
+        setListSelected(list);
+        
+    };
+    const clickOk = () => {
+        selectNft(listSelected);
+        setListSelected([]);
     }
-    const displayList = (listSearch.length || search) ? listSearch : listNft;
+    const displayList = listSearch.length || search ? listSearch : listNft;
     return (
-        <Modal open={open} onClose={onHide}>
-            <div className={cx("modal-style")}>
+        <Modal show={open} onHide={onHide} backdrop="static" centered className={cx("modal")}>
+            <Modal.Body className={cx("modal-style")}>
+            <div >
                 <div className={cx("close-icon")} onClick={onHide}>
                     <img src={closeIcon} alt="close-icon" />
                 </div>
@@ -64,53 +84,64 @@ const ListModal = ({ open, onHide, listNft, title, desc,selectNft }) => {
                     }
                 />
                 <div className={cx("title")}>
-                    <div className={cx("big-title")}>{title}</div>
+                    <div className={cx("big-title")}>{title} : {listSelected.length}</div>
                     <div className={cx("sub-title")}>{desc}</div>
                 </div>
 
                 <div className={cx("list-nft")}>
-                    {displayList.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) => (
-                        <div
-                            className={cx("nft-item")}
-                            key={index}
-                            onClick={() => {
-                                selectNft(item);
-                            }}
-                        >
+                    {displayList.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) => {
+                        const isExist = listSelected.find(nft => nft.tokenId === item.tokenId);
+                        return (
                             <div
-                                className={cx("top")}
+                                className={cx("nft-item", isExist && "nft-item-active")}
+                                key={index}
+                                onClick={() => {
+                                    // selectNft(item);
+                                    clickNft(item);
+                                }}
                             >
-                                <img
-                                    src={
-                                        item?.imageUrl
-                                            ? `${item.imageUrl}`
-                                            : `https://images.kawaii.global/kawaii-marketplace-image/items/201003.png`
-                                    }
-									alt="preview-img"
-									className={cx("preview-img")}
-                                />
-                            </div>
+                                <div className={cx(isExist ? "check" : "no-check")}>
+                                    <img src={checkIcon}/>
+                                </div>
+                                <div className={cx("top")}>
+                                    <img
+                                        src={
+                                            item?.imageUrl
+                                                ? `${item.imageUrl}`
+                                                : `https://images.kawaii.global/kawaii-marketplace-image/items/201003.png`
+                                        }
+                                        alt="preview-img"
+                                        className={cx("preview-img")}
+                                    />
+                                </div>
 
-                            <div className={cx("bottom")}>
-                                <div className={cx("title")}>{item?.name || "Name"}</div>
-                                <div className={cx("nftId")}>#{item?.tokenId}</div>
-                                <div className={cx("nftId")}>Supply:{item?.supply}</div>
+                                <div className={cx("bottom")}>
+                                    <div className={cx("title")}>{item?.name || "Name"}</div>
+                                    <div className={cx("nftId")}>#{item?.tokenId}</div>
+                                    <div className={cx("nftId")}>Supply:{item?.supply}</div>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
-                <div className={cx("pagination")}>
-                    <Pagination
-                        pageSize={pageSize}
-                        showSizeChanger={false}
-                        current={currentPage}
-                        total={displayList?.length}
-                        onChange={page => setCurrentPage(page)}
-                        itemRender={itemRender}
-                    />
+                {displayList.length / pageSize > 1 && (
+                    <div className={cx("pagination")}>
+                        <Pagination
+                            pageSize={pageSize}
+                            showSizeChanger={false}
+                            current={currentPage}
+                            total={displayList?.length}
+                            onChange={page => setCurrentPage(page)}
+                            itemRender={itemRender}
+                        />
+                    </div>
+                )}
+                <div className={cx("ok")}>
+                    <Button onClick={clickOk}>OK</Button>
                 </div>
             </div>
+            </Modal.Body>
         </Modal>
     );
 };
