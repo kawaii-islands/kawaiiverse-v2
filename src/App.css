@@ -138,3 +138,7 @@ body > iframe {pointer-events: none;}
     margin: 0 !important;
     max-width: unset !important;
 }
+
+.ant-dropdown-menu {
+	padding: 0px !important;
+}

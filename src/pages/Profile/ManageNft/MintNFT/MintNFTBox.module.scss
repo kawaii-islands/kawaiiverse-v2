@@ -24,6 +24,23 @@ $mobile: 576px;
             align-items: flex-start !important;
             margin-bottom: 30px;
 
+			
+			.drop-down {
+				background: transparent;
+				width: fit-content;
+
+				&-label {
+					cursor: default;
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					min-width: 82px;
+					color: #402A7D;
+					padding: 0px;
+				}
+			}
+
+
             .table-attribute {
                 .table {
                     width: 100%;

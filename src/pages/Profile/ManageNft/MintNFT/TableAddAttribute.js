@@ -42,6 +42,7 @@ const TableAddAttribute = ({
             const url = `https://ipfs.infura.io/ipfs/${added.path}`;
 
             setDetailAttribute("image", url, idx);
+            handleSyncAttribute("image", url, listAttribute[idx]?.type);
             setLoadingUploadAttributeImg(false);
         } catch (error) {
             console.log("Error uploading file: ", error);
@@ -151,10 +152,22 @@ const TableAddAttribute = ({
 
     const menu = (
         <Menu className={cx("menu-dropdown")}>
-            <Menu.Item key={`${indexImg}-text`} onClick={() => setDetailAttribute("valueType", "Text", indexValue)}>
+            <Menu.Item
+                key={`${indexImg}-text`}
+                onClick={() => {
+                    setDetailAttribute("valueType", "Text", indexValue);
+                    handleSyncAttribute("valueType", "Text", listAttribute[indexValue]?.type);
+                }}
+            >
                 <div>Text</div>
             </Menu.Item>
-            <Menu.Item key={`${indexImg}-image`} onClick={() => setDetailAttribute("valueType", "Image", indexValue)}>
+            <Menu.Item
+                key={`${indexImg}-image`}
+                onClick={() => {
+                    setDetailAttribute("valueType", "Image", indexValue);
+                    handleSyncAttribute("valueType", "Image", listAttribute[indexValue]?.type);
+                }}
+            >
                 <div>Image</div>
             </Menu.Item>
         </Menu>
@@ -205,19 +218,25 @@ const TableAddAttribute = ({
         }
     };
 
-    // const handleChangeImageCurrentAttr = (keyword, imageUrl) => {
-    // 	let tmpArray = listNft;
+    const handleSyncAttribute = (key, value, name) => {
+        if (!name) {
+            return;
+        }
 
-    // 	listNft.map((item, id) => {
-    //         item.attributes?.map(attr => {
-    //             if (attr.type.toLowerCase() === keyword.toLowerCase()) {
-    //                 attr.image = imageUrl;
-    //             }
-    //         });
-    //     });
+        let tmpArray = [...listNft];
 
-    // 	setListNft(tmpArray);
-    // }
+        tmpArray?.map((item, id) => {
+            item.attributes?.map((attr, index) => {
+                if (attr.type?.toLowerCase() === name?.toLowerCase()) {
+                    item.attributes[index] = { ...item.attributes[index], [key]: value };
+                }
+            });
+        });
+
+        console.log("tmpArray :>> ", tmpArray);
+
+        setListNft(tmpArray);
+    };
 
     return (
         <div className={cx("table")}>
@@ -290,6 +309,7 @@ const TableAddAttribute = ({
                                 className={cx("input")}
                                 onChange={e => {
                                     setDetailAttribute("image", e.target.value, idx);
+                                    handleSyncAttribute("image", e.target.value, item?.type);
                                 }}
                                 style={{ width: "50%", marginLeft: "5px" }}
                             />

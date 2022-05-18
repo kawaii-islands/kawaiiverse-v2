@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./MintNFTBox.module.scss";
 import cn from "classnames/bind";
-import { Col, Row, Spin } from "antd";
+import { Col, Row, Spin, Menu, Dropdown } from "antd";
 import { useHistory } from "react-router";
 import subtractIcon from "src/assets/icons/subtract.svg";
 import uploadImageIcon from "src/assets/icons/uploadImage.svg";
@@ -28,7 +28,7 @@ const oneAttributeError = {
     nameDuplicate: false,
     nameNull: false,
     valueNull: false,
-	disable: false,
+    disable: false,
 };
 
 const client = create("https://ipfs.infura.io:5001/api/v0");
@@ -44,16 +44,18 @@ const MintNFTBox = ({
 }) => {
     const history = useHistory();
     const [loading, setLoading] = useState(true);
-    const [loadingUploadImg, setLoadingUploadImg] = useState(false);
     const [listAttribute, setListAttribute] = useState([data.attributes]);
     const [listCategory, setListCategory] = useState([]);
     const [showListCategory, setShowListCategory] = useState(false);
     const [listCategoryDisplay, setListCategoryDisplay] = useState();
     const [listAttributeError, setListAttributeError] = useState([]);
+    const [listRarity, setListRarity] = useState([]);
+    const [listRarityDisplay, setListRarityDisplay] = useState([]);
 
     useEffect(() => {
         setListAttribute(data.attributes);
         getListCategory();
+        getListRarity();
 
         let tmpArray = Array(listAttribute.length).fill(oneAttributeError);
         setListAttributeError(tmpArray);
@@ -67,7 +69,7 @@ const MintNFTBox = ({
         setStateForNftData("attributes", listAttribute);
     }, [listAttribute]);
 
-	const getListNftByContract = async () => {
+    const getListNftByContract = async () => {
         try {
             const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
             if (res.status === 200) {
@@ -77,7 +79,6 @@ const MintNFTBox = ({
             console.log(err);
         }
     };
-
 
     const getListCategory = async () => {
         let cate = [];
@@ -131,7 +132,7 @@ const MintNFTBox = ({
         setListCategoryDisplay(result);
     };
 
-	const getListRarity = async () => {
+    const getListRarity = async () => {
         let rarity = [];
         listNft.map((item, id) => {
             if (item.rarity) {
@@ -139,15 +140,15 @@ const MintNFTBox = ({
             }
         });
 
-        let listCategory = [];
-        let uniqueCategory = [];
+        let listRarity = [];
+        let uniqueRarity = [];
 
         try {
             const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
             if (res.status === 200) {
                 res.data.data.map((item, index) => {
-                    if (item.category) {
-                        listCategory = [...listCategory, item.category];
+                    if (item.rarity) {
+                        listRarity = [...listRarity, item.rarity];
                     }
                 });
             }
@@ -155,11 +156,39 @@ const MintNFTBox = ({
             console.log(err);
         }
 
-        listCategory = [...listCategory, ...rarity];
-        uniqueCategory = [...new Set(listCategory)];
-        setListCategory(uniqueCategory);
-        setListCategoryDisplay(uniqueCategory);
+        listRarity = [...listRarity, ...rarity];
+        uniqueRarity = [...new Set(listRarity)];
+        setListRarity(uniqueRarity);
+        setListRarityDisplay(uniqueRarity);
     };
+
+    const handleSelectRarity = value => {
+        let result = [...listRarity];
+        if (value) {
+            result = listRarity.filter(item => item.toLowerCase().includes(value.toLowerCase()));
+        }
+        setListRarityDisplay(result);
+    };
+
+    const menuRarity = (
+        <Menu className={cx("menu-dropdown")}>
+            {listRarityDisplay?.map((rarity, idx) => (
+                <Menu.Item key={idx} onClick={() => setStateForNftData("rarity", rarity)}>
+                    <div>{rarity}</div>
+                </Menu.Item>
+            ))}
+        </Menu>
+    );
+
+	const menuCategory = (
+        <Menu className={cx("menu-dropdown")}>
+            {listCategoryDisplay?.map((category, idx) => (
+                <Menu.Item key={idx} onClick={() => setStateForNftData("category", category)}>
+                    <div>{category}</div>
+                </Menu.Item>
+            ))}
+        </Menu>
+    );
 
     return (
         <div className={cx("mintNFT-box")}>
@@ -169,36 +198,19 @@ const MintNFTBox = ({
                         Category:
                     </Col>
                     <Col span={20}>
-                        <input
-                            value={data.category}
-                            placeholder="Enter category"
-                            className={cx("input")}
-                            onFocus={() => setShowListCategory(true)}
-                            // onBlur={() => !selected && setShowListCategory(false)}
-                            onChange={e => {
-                                setStateForNftData("category", e.target.value);
-                                handleSelectCategory(e.target.value);
-                            }}
-                        />
-                        {showListCategory && (
-                            <div className={cx("card")}>
-                                {listCategoryDisplay?.map(
-                                    (category, index) =>
-                                        category && (
-                                            <div
-                                                key={index}
-                                                onClick={() => {
-                                                    setStateForNftData("category", category);
-                                                    setShowListCategory(false);
-                                                }}
-                                                className={cx("valueSelect")}
-                                            >
-                                                {category}
-                                            </div>
-                                        ),
-                                )}
+                        <Dropdown overlay={menuCategory} className={cx("drop-down")} trigger={["click"]}>
+                            <div className={cx("drop-down-label")}>
+                                <input
+                                    value={data.category}
+                                    placeholder="Enter category"
+                                    className={cx("input")}
+                                    onChange={e => {
+                                        setStateForNftData("category", e.target.value);
+                                        handleSelectCategory(e.target.value);
+                                    }}
+                                />
                             </div>
-                        )}
+                        </Dropdown>
                     </Col>
                 </Row>
 
@@ -207,12 +219,19 @@ const MintNFTBox = ({
                         Rarity:
                     </Col>
                     <Col span={20}>
-                        <input
-                            value={data.rarity}
-                            placeholder="Enter rarity"
-                            className={cx("input")}
-                            onChange={e => setStateForNftData("rarity", e.target.value)}
-                        />
+                        <Dropdown overlay={menuRarity} className={cx("drop-down")} trigger={["click"]}>
+                            <div className={cx("drop-down-label")}>
+                                <input
+                                    value={data.rarity}
+                                    placeholder="Enter rarity"
+                                    className={cx("input")}
+                                    onChange={e => {
+                                        setStateForNftData("rarity", e.target.value);
+                                        handleSelectRarity(e.target.value);
+                                    }}
+                                />
+                            </div>
+                        </Dropdown>
                     </Col>
                 </Row>
 
@@ -244,9 +263,9 @@ const MintNFTBox = ({
                                 listAttributeError={listAttributeError}
                                 setAttributeError={setAttributeError}
                                 setListAttributeError={setListAttributeError}
-								gameSelected={gameSelected}
-								listNft={listNft}
-								setListNft={setListNft}
+                                gameSelected={gameSelected}
+                                listNft={listNft}
+                                setListNft={setListNft}
                             />
                         </div>
                         <div
