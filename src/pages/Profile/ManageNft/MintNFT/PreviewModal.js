@@ -71,16 +71,17 @@ const PreviewModal = ({ open, onHide, listNft }) => {
                             </div>
                         ))}
                     </div>
-
                     <div className={cx("pagination")}>
-                        <Pagination
-                            pageSize={pageSize}
-                            showSizeChanger={false}
-                            current={currentPage}
-                            total={listNft?.length}
-                            onChange={page => setCurrentPage(page)}
-                            itemRender={itemRender}
-                        />
+                        {listNft.length > pageSize && (
+                            <Pagination
+                                pageSize={pageSize}
+                                showSizeChanger={false}
+                                current={currentPage}
+                                total={listNft?.length}
+                                onChange={page => setCurrentPage(page)}
+                                itemRender={itemRender}
+                            />
+                        )}
                     </div>
 
                     <DetailModal
