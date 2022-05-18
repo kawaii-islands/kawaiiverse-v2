@@ -67,6 +67,18 @@ const MintNFTBox = ({
         setStateForNftData("attributes", listAttribute);
     }, [listAttribute]);
 
+	const getListNftByContract = async () => {
+        try {
+            const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
+            if (res.status === 200) {
+                return res.data.data;
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+
     const getListCategory = async () => {
         let cate = [];
         listNft.map((item, id) => {
@@ -117,6 +129,36 @@ const MintNFTBox = ({
             result = listCategory.filter(item => item.toLowerCase().includes(value.toLowerCase()));
         }
         setListCategoryDisplay(result);
+    };
+
+	const getListRarity = async () => {
+        let rarity = [];
+        listNft.map((item, id) => {
+            if (item.rarity) {
+                rarity = [...rarity, item.rarity];
+            }
+        });
+
+        let listCategory = [];
+        let uniqueCategory = [];
+
+        try {
+            const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
+            if (res.status === 200) {
+                res.data.data.map((item, index) => {
+                    if (item.category) {
+                        listCategory = [...listCategory, item.category];
+                    }
+                });
+            }
+        } catch (err) {
+            console.log(err);
+        }
+
+        listCategory = [...listCategory, ...rarity];
+        uniqueCategory = [...new Set(listCategory)];
+        setListCategory(uniqueCategory);
+        setListCategoryDisplay(uniqueCategory);
     };
 
     return (

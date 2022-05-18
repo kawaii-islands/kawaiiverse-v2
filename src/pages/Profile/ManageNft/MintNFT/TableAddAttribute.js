@@ -278,7 +278,7 @@ const TableAddAttribute = ({
                         ) : (
                             <img
                                 src={item?.image ? item?.image : defaultImage}
-                                alt="nft-icon"
+                                alt="ic"
                                 width={listAttributeError[idx]?.disable ? 32 : 20}
                                 height={listAttributeError[idx]?.disable ? 32 : 20}
                             />
@@ -352,7 +352,7 @@ const TableAddAttribute = ({
                                         ) : (
                                             <img
                                                 src={item?.value ? item?.value : defaultImage}
-                                                alt="nft-icon"
+                                                alt="ic"
                                                 width={16}
                                                 height={16}
                                             />
