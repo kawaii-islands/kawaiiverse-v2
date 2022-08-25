@@ -28,7 +28,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
     const history = useHistory();
     const [list, setList] = useState([]);
     const [listSell, setListSell] = useState([]);
-    
+
     const [canAdd, setCanAdd] = useState(false);
 
     const [error, setError] = useState(false);
@@ -55,9 +55,10 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
         try {
             setLoadingGetList(true);
             const res = await axios.get(`${URL}/v1/nft/${gameSelected.toLowerCase()}`);
+            console.log(res);
             const gameList = await getGameList();
             let nftSaleList = await getNftList(gameList);
-            
+
             nftSaleList = nftSaleList.filter(nft => {
                 return nft.nftAddress === address && nft.owner === account;
             });
@@ -107,7 +108,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                             [index],
                         );
                         let gameName = await read("name", BSC_CHAIN_ID, gameAddress, NFT1155_ABI, []);
-                        
+
                         return { gameAddress, gameName };
                     }),
                 );
@@ -172,7 +173,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
 
     const addItem = () => {
         if (!canAdd) return;
-        
+
         setCanAdd(false);
     };
 
@@ -186,9 +187,8 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
         if (!pass) {
             return;
         }
-        
+
         try {
-           
             if (chainId !== BSC_CHAIN_ID) {
                 const error = await createNetworkOrSwitch(library.provider);
                 console.log(error);
@@ -200,7 +200,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
             setLoading(true);
             setStepLoading(0);
             setShowModalLoading(true);
-            // if (!isApprovedForAll) {
+            if (!isApprovedForAll) {
                 await write(
                     "setApprovalForAll",
                     library.provider,
@@ -211,7 +211,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                         from: account,
                     },
                 );
-            // }
+            }
 
             const tokenIds = listSell.map(nft => nft.tokenId);
             const amounts = listSell.map(nft => nft.quantity);
@@ -230,7 +230,7 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                     setStepLoading(1);
                 },
             );
-            listSell.forEach((item) => {
+            listSell.forEach(item => {
                 let nft = {};
                 nft.tokenId = item.tokenId;
                 nft.amount = item.quantity;
@@ -238,14 +238,13 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 nft.tokenUnit = "0x6fe3d0f096fc932a905accd1eb1783f6e4cec717";
                 nft.supply = item.supply;
                 return nft;
-            })
+            });
             let bodyParams = {
                 contract: address,
                 data: listSell,
                 owner: account,
                 sign: sign,
             };
-            
 
             // const res = await axios.post(`${URL}/v1/sale`, bodyParams);
             // console.log(res);
@@ -322,25 +321,23 @@ const SellItemNFT = ({ gameSelected, setIsSellNFT, isSellNFT }) => {
                 {loadingGetList ? (
                     <Spin className={cx("spin")} />
                 ) : (
-                    [...listSell, 1]
-                        .map((i, idx) => (
-                            <Item
-                                nft = {i}
-                                setList={setList}
-                                setCanAdd={setCanAdd}
-                                
-                                addItem={addItem}
-                                submitted={submitted}
-                                setSubmitted={setSubmitted}
-                                list={list}
-                                listSell={listSell}
-                                setListSell={setListSell}
-                                key={`row-item-${idx}`}
-                                index={idx}
-                                success={success}
-                                setSuccess={setSuccess}
-                            />
-                        ))
+                    [...listSell, 1].map((i, idx) => (
+                        <Item
+                            nft={i}
+                            setList={setList}
+                            setCanAdd={setCanAdd}
+                            addItem={addItem}
+                            submitted={submitted}
+                            setSubmitted={setSubmitted}
+                            list={list}
+                            listSell={listSell}
+                            setListSell={setListSell}
+                            key={`row-item-${idx}`}
+                            index={idx}
+                            success={success}
+                            setSuccess={setSuccess}
+                        />
+                    ))
                 )}
             </div>
             <div className={cx("wrapper-btn")}>
